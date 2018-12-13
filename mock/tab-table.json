@@ -1,0 +1,34 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "all": [
+      {
+        "id": 1,
+        "floorNum": 1,
+        "orderId": "1",
+        "signer":"张三",
+        "address": "杭州市江干区下沙",
+        "date": "2017-10-12",
+        "status": 1
+      },
+      {
+        "id": 2,
+        "floorNum": 2,
+        "orderId": "2",
+        "signer":"张三",
+        "address": "杭州市江干区下沙",
+        "date": "2017-10-12",
+        "status": 2
+      },
+      {
+        "id": 3,
+        "floorNum": 3,
+        "orderId": "3",
+        "signer":"张三",
+        "address": "杭州市江干区下沙",
+        "date": "2017-10-12",
+        "status": 3
+      }
+    ]
+  }
+}
