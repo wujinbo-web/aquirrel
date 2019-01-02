@@ -84,23 +84,10 @@ export default class EditDialog extends Component {
               />
             </FormItem>
 
-            <FormItem label="类别：" {...formItemLayout}>
-              <RadioGroup {...init('type', {
-                rules: [{ required: true, message: '必填选项' }],
-              })}>
-                <Radio id="shouru" value="0">
-                  收入
-                </Radio>
-                <Radio id="zhichu" value="1">
-                  支出
-                </Radio>
-              </RadioGroup>
-            </FormItem>
-
             <FormItem label="金额：" {...formItemLayout}>
               <Input
                 {...init('money', {
-                  rules: [{ required: true, message: '必填选项' },{ pattern:/^[0-9]*$/, message: '请输入数字' }],
+                  rules: [{ required: true, message: '必填选项' },{ pattern:/^\d{1,8}([\.]\d{0,2})?$/, message: '请输入8位数字，小数后两位' }],
                 })}
               />
             </FormItem>

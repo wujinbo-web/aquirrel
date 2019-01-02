@@ -5,15 +5,13 @@ import axios from 'axios';
 import CustomTable from './components/CustomTable';
 import DeleteBalloon from './components/DeleteBalloon';
 import { API_URL } from '../../../../config';
+import getStatusName from '@/tool/getStatusName';
 
 const TabPane = Tab.TabPane;
 const Toast = Feedback.toast;
 
 const tabs = [
   { tab: '全部', key: 'all' },
-  // { tab: '已发布', key: 'inreview' },
-  // { tab: '审核中', key: 'released' },
-  // { tab: '已拒绝', key: 'rejected' },
 ];
 
 export default class TabTable extends Component {
@@ -162,7 +160,7 @@ export default class TabTable extends Component {
           this.setState({total: response.data.Count});
           //数据组装
           let data=response.data.data.map((item)=>{
-            status=this.getStatusName(item.order.orderState,item.order.installState); //订单状态（中文）
+            status=getStatusName(item.order.orderState,item.order.installState); //订单状态（中文）
             status2=item.order.financeState?"已结清":"未结清";
             id=item.order.id;  //订单id
             name=item.name; //客户名
@@ -194,48 +192,12 @@ export default class TabTable extends Component {
         console.log(error);
       })
   }
-  //传入orderStatus订单状态和installState安装状态返回状态文字
-  getStatusName = (orderStatus,installState) => {
-    switch (orderStatus) {
-      case 1:
-        return "建立合同订单";
-      case 12:
-        return "收取定金（完成）";
-      case 2:
-        return "总单填写（完成）";
-      case 3:
-        return "测量完成";
-      case 4:
-        return "设计完成";
-      case 5:
-        return "生产完成";
-      case 6:
-        return "生产部入库完成";
-      case 7:
-        return "生产部出库完成";
-      case 8:
-        return "工程部入货完成";
-      case 9:
-        return "工程部出货完成";
-      case 10:
-        return "安装完成增项中";
-      case 11:
-        return "完成订单";
-      default:
-        return "状态出错2";
-    }
-  }
+
   //加载数据
   componentDidMount() {
     this.getOrderData(1);
   }
 
-  //分类切换 暂时用不到
-  // handleTabChange = (key) => {
-  //   this.setState({
-  //     tabKey: key,
-  //   });
-  // };
   //野马切换
   handleChange = (current) => {
     //修改页码

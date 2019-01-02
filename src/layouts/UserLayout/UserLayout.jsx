@@ -19,7 +19,7 @@ export default class UserLayout extends Component {
       <Layout className="user-layout" style={styles.container}>
         <div className="header">
           <a href="javascript:;" className="meta">
-          <span className="title"><img src={Logo} /><img src={LogoTitle} /></span>
+          <span className="title"><img src={Logo} /><img src={LogoTitle} style={{ marginLeft:"30px" }} /></span>
           </a>
         </div>
 
@@ -47,7 +47,7 @@ const styles = {
     width: '100%',
     height: '100vh',
     paddingTop: '100px',
-    background: `#fff url(${backGround}) center 140px no-repeat`,
-    backgroundSize: 'contain',
+    background: `#fff url(${backGround}) center no-repeat`,
+    backgroundSize: 'cover',
   },
 };

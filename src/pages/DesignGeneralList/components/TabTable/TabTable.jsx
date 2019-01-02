@@ -5,6 +5,7 @@ import axios from 'axios';
 import CustomTable from './components/CustomTable';
 import DeleteBalloon from './components/DeleteBalloon';
 import { API_URL } from '../../../../config';
+import getStatusName from '@/tool/getStatusName';
 
 const TabPane = Tab.TabPane;
 const Toast = Feedback.toast;
@@ -111,7 +112,7 @@ export default class TabTable extends Component {
           this.setState({total: response.data.Count});
           //数据组装
           let data=response.data.data.map((item)=>{
-            status=this.getStatusName(item.order.orderState,item.order.installState); //订单状态（中文）
+            status=getStatusName(item.order.orderState,item.order.installState); //订单状态（中文）
             status2=item.order.financeState?"已结清":"未结清";
             status3=item.order.text==""?"未填写":"已填写";
             id=item.order.id;  //订单id
@@ -142,33 +143,7 @@ export default class TabTable extends Component {
         console.log(error);
       })
   }
-  //传入orderStatus订单状态和installState安装状态返回状态文字
-  getStatusName = (orderStatus,installState) => {
-    switch (orderStatus) {
-      case 1:
-        return "建立合同订单";
-      case 12:
-        return "收取定金（完成）";
-      case 2:
-        return "总单填写(完成)";
-      case 3:
-        return "测量完成";
-      case 4:
-        return "设计完成";
-      case 5:
-        return "生产完成";
-      case 6:
-        return "入库完成";
-      case 7:
-        return "出库完成";
-      case 8:
-        return "安装完成增项中";
-      case 9:
-        return "完成订单";
-      default:
-        return "状态出错2";
-    }
-  }
+
   //加载数据
   componentDidMount() {
     this.getOrderData(1);

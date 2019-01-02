@@ -130,7 +130,7 @@ export default class SettingsForm extends Component {
       }).join(",");
       // 数据=》 order/5349a46196ed43ec9b8b5c7ac8ad815a.jpg,order/4dfb7c649462450b9d92bf04870427d3.jpg
 
-      let query=`order.drawingAddress=${drawing_address}&order.customerId=${values.custonId}&order.address=${values.address}&order.pmoney=${values.pmoney}&order.createTime=${contractDate}&order.signer=${values.signer}&order.fileAddress=${fileAddress}&order.text=`;
+      let query=`order.orderState=12&order.drawingAddress=${drawing_address}&order.customerId=${values.custonId}&order.address=${values.address}&order.pmoney=${values.pmoney}&order.createTime=${contractDate}&order.signer=${values.signer}&order.fileAddress=${fileAddress}&order.text=`;
       axios
         .get(`${API_URL}/saveOrder.do?${query}`)
         .then((response)=>{

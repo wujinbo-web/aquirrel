@@ -34,12 +34,6 @@ export default class TabTable extends Component {
     };
     this.columns = [
       {
-        title: '材料id',
-        dataIndex: 'id',
-        key: 'id',
-        width: 80,
-      },
-      {
         title: '类别',
         dataIndex: 'typeName',
         key: 'typeName',
@@ -129,7 +123,11 @@ export default class TabTable extends Component {
     });
   };
 
-
+  changeSearch = (value) => {
+    this.state.classId=value;
+    this.setState({});
+    this.getIndexData(this.state.current,value);
+  }
 
   render() {
     const { dataSource, customData } = this.state;
@@ -138,6 +136,16 @@ export default class TabTable extends Component {
         <Loading visible={this.state.visible} style={{display: 'block'}} shape="fusion-reactor">
         <IceContainer>
           <h2 style={{textAlign:"center"}}>查看库存</h2>
+            <div style={{ position: "relative" }}>
+              <Select
+                  size="large"
+                  placeholder="请选择..."
+                  style={{width:"200px"}}
+                  dataSource={customData}
+                  onChange={this.changeSearch}
+                  style={{ position: "absolute" , bottom: "10px", width: "300px" }}
+              />
+            </div>
           <Tab onChange={this.handleTabChange}>
             {tabs.map((item) => {
               return (

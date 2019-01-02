@@ -11,13 +11,9 @@ const TabPane = Tab.TabPane;
 const { Row, Col } = Grid;
 const Toast = Feedback.toast;
 
-// axios.defaults.withCredentials=true;
 
 const tabs = [
   { tab: '全部', key: 'all' },
-  // { tab: '已发布', key: 'inreview' },
-  // { tab: '审核中', key: 'released' },
-  // { tab: '已拒绝', key: 'rejected' },
 ];
 
 export default class TabTable extends Component {
@@ -43,6 +39,16 @@ export default class TabTable extends Component {
         title: '用户名称',
         dataIndex: 'name',    //数据的字段名
         key: 'name',
+      },
+      {
+        title: '公司名称',
+        dataIndex: 'companyName',    //数据的字段名
+        key: 'companyName',
+      },
+      {
+        title: '税号',
+        dataIndex: 'TFN',    //数据的字段名
+        key: 'TFN',
       },
       {
         title: '性别',
@@ -109,7 +115,16 @@ export default class TabTable extends Component {
       .then((response)=>{
         console.log(response.data,"客户接口");
         let data=response.data.data.map((item)=>{
-          return { name: item.customer.name, sex: item.customer.sex == 1 ? "男" : "女", tel: item.customer.phone, adress: item.customer.address, listnum: item.ordersCount, id: item.customer.id  }
+          return {
+            name: item.customer.name,
+            sex: item.customer.sex == 1 ? "男" : "女",
+            tel: item.customer.phone,
+            adress: item.customer.address,
+            listnum: item.ordersCount,
+            id: item.customer.id,
+            companyName: item.companyName,
+            TFN: item.TFN
+          }
         });
         this.setState({
           dataSource: {all: data},
@@ -135,7 +150,7 @@ export default class TabTable extends Component {
     // tel: "1231312"
     this.setState({ visible:true });
     axios
-      .get(`${API_URL}/updateCustomer.do?customer.id=${values.id}&customer.name=${values.name}&customer.sex=${values.sex=="男"? 1 : 0}&customer.phone=${values.tel}&customer.address=${values.adress}`)
+      .get(`${API_URL}/updateCustomer.do?customer.TFN=${values.TFN}&customer.companyName=${values.companyName}&customer.id=${values.id}&customer.name=${values.name}&customer.sex=${values.sex=="男"? 1 : 0}&customer.phone=${values.tel}&customer.address=${values.adress}`)
       .then((response)=>{
         this.setState({ visible: false });
         if(response.data.state=="success"){

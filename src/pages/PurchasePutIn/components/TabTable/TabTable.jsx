@@ -8,7 +8,7 @@ import DeleteBalloon from './components/DeleteBalloon';
 import FindDetail from './components/FindDetail';
 import AddPutIn from './components/AddPutIn';
 import WriteList from './components/WriteList';
-import { postQueryMaterials, postAddRecord, queryInOutMaterials, upDateInOutMaterialsState } from './../../../../api';
+import { postQueryMaterials, postAddRecord, queryInOutMaterials, upDateInOutMaterialsState, deleteInOutList } from './../../../../api';
 
 const Toast = Feedback.toast;
 const TabPane = Tab.TabPane;
@@ -29,7 +29,6 @@ export default class TabTable extends Component {
     this.state = {
       dataSource: {},
       tabKey: 'all',
-      materialsList: [], //材料列表
       current: 1,
       total:0,
       visible: false,
@@ -73,6 +72,7 @@ export default class TabTable extends Component {
               {
                 record.type==0?<WriteList record={record} index={index} writeList={this.writeList} />:""
               }
+              <DeleteBalloon handleRemove={()=>this.handleRemove(record,index)}  />
             </span>
           );
         },
@@ -81,7 +81,7 @@ export default class TabTable extends Component {
   }
 
   componentDidMount() {
-    this.getMaterialsList();
+    // this.getMaterialsList();
     this.getIndexData(this.state.current);
 
   }
@@ -117,6 +117,7 @@ export default class TabTable extends Component {
     return name;
   }
 
+
   //获取首页数据
   getIndexData = async (current) => {
     this.setState({ visible: true });
@@ -140,21 +141,30 @@ export default class TabTable extends Component {
   }
 
   //获取材料列表
-  getMaterialsList = async () => {
-    this.setState({ visible: true });
-    const response = await postQueryMaterials({pageSize:50});
-    let materialsList = response.data.data.map((item)=>{
-      return ({label:item[0].name,value:item[0].id});
-    })
-    this.setState({ materialsList, visible: false });
-  }
+  // getMaterialsList = async () => {
+  //   this.setState({ visible: true });
+  //   const response = await postQueryMaterials({pageSize:50});
+  //   let materialsList = response.data.data.map((item)=>{
+  //     return ({label:item[0].name,value:item[0].id});
+  //   })
+  //   this.setState({ materialsList, visible: false });
+  // }
 
-  handleRemove = (value, index) => {
-    const { dataSource, tabKey } = this.state;
-    dataSource[tabKey].splice(index, 1);
-    this.setState({
-      dataSource,
-    });
+  //删除进货单记录
+  handleRemove = async (record,index) => {
+    //record id="1f7161bb11e1401da68451405c67dcad"
+    let response = await deleteInOutList({ id: record.id });
+    console.log(response.data);
+    if(response.data.state == "success"){
+      const { dataSource, tabKey } = this.state;
+      dataSource[tabKey].splice(index, 1);
+      this.setState({
+        dataSource,
+      });
+    }else{
+      Toast.error(response.data.msg);
+    }
+
   };
 
   //添加进货记录单
@@ -195,12 +205,12 @@ export default class TabTable extends Component {
   }
 
   render() {
-    const { dataSource, materialsList } = this.state;
+    const { dataSource } = this.state;
     return (
       <div className="tab-table">
         <Loading visible={this.state.visible} style={{display: 'block'}} shape="fusion-reactor">
         <IceContainer>
-          <AddPutIn getFormValues={this.getFormValues} materialsList={materialsList} />
+          <AddPutIn getFormValues={this.getFormValues} />
           <Tab onChange={this.handleTabChange}>
             {tabs.map((item) => {
               return (

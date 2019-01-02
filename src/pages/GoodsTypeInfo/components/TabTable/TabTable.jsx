@@ -30,11 +30,6 @@ export default class TabTable extends Component {
     };
     this.columns = [
       {
-        title: '商品id',
-        dataIndex: 'id',
-        key: 'id',
-      },
-      {
         title: '商品名称',
         dataIndex: 'name',
         key: 'name',

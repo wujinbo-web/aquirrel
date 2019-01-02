@@ -3,6 +3,23 @@ import axios from 'axios';
 import { API_URL } from './../config';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
 
+export async function postUrl(url,params){
+  return axios({
+    url: `${API_URL}/${url}`,
+    method: 'post',
+    data: qs(params),
+  });
+}
+
+//查询开料单接口
+export async function deleteInOutList(params) {
+  return axios({
+    url: `${API_URL}/deleteMaterialsRecord.do`,
+    method: 'post',
+    data: qs(params),
+  });
+}
+
 //查询开料单接口
 export async function queryLog(params) {
   return axios({

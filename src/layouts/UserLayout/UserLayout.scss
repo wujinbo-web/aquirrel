@@ -19,6 +19,7 @@
     color: rgba(0, 0, 0, 0.85);
     font-family: 'Myriad Pro', 'Helvetica Neue', Arial, Helvetica, sans-serif;
     font-weight: 600;
+    margin-bottom: 20px;
   }
   .desc {
     margin: 10px 0;
@@ -47,8 +48,9 @@
   }
   .formTitle {
     text-align: center;
+    font-weight: 700;
     margin: 0 0 20px;
-    color: rgba(0, 0, 0, 0.85);
+    color: rgba(21, 98, 214, 1);
     font-weight: bold;
   }
   .inputIcon {
@@ -62,7 +64,7 @@
     font-size: 16px;
     height: 40px;
     line-height: 40px;
-    background: #e1a00f;
+    background: #53657d;
     border-radius: 4px;
   }
   .checkbox {

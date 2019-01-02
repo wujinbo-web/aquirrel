@@ -56,7 +56,6 @@ class UserLogin extends Component {
     return (
       <div className="user-login">
         <div className="formContainer">
-          <h4 className="formTitle">登 录</h4>
           <IceFormBinderWrapper
             value={this.state.value}
             onChange={this.formChange}
@@ -107,12 +106,7 @@ class UserLogin extends Component {
                 >
                   登 录
                 </Button>
-                <p className="account">
-                  <span className="tips-text" style={{ marginRight: '20px' }}>
-                    管理员登录：22/123456
-                  </span>
-                  <span className="tips-text">财务：zhangsan,设计: xiaoli,生产：zuozhu,工程：mingren</span>
-                </p>
+
               </Row>
             </div>
           </IceFormBinderWrapper>

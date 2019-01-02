@@ -6,6 +6,7 @@ import CustomTable from './components/CustomTable';
 import FindDetail from './components/FindDetail';
 import Success from './components/Success';
 import Faier from './components/Faier';
+import DeleteBalloon from './components/DeleteBalloon';
 import { postQueryMaterials, postAddRecord, queryInOutMaterials, upDateInOutMaterialsState } from './../../../../api';
 
 const Toast = Feedback.toast;
@@ -34,11 +35,6 @@ export default class TabTable extends Component {
     };
     this.columns = [
       {
-        title: '记录id',
-        dataIndex: 'id',
-        key: 'id',
-      },
-      {
         title: '创建时间',
         dataIndex: 'createTime',
         key: 'createTime',
@@ -61,7 +57,6 @@ export default class TabTable extends Component {
       {
         title: '详情',
         key: 'action',
-        width: '260',
         render: (value, index, record) => {
           return (
             <span>
@@ -73,36 +68,9 @@ export default class TabTable extends Component {
     ];
   }
 
-  // <Success handleRemove={ () => this.success(index,record)} />
-  // <Faier handleRemove={ () => this.faier(index,record) }/>
-  //
-  // //通过回调
-  // success = async (index,record) => {
-  //   this.setState({visible:true});
-  //   //record.id   type=1
-  //   const response = await upDateInOutMaterialsState({ id: record.id, type: 1 });
-  //   if(response.data.state=="success"){
-  //     Toast.success("已通过");
-  //     this.state.dataSource["all"].splice(index,1);
-  //     this.setState({visible:false});
-  //   }else{
-  //     Toast.error(response.data.msg);
-  //   }
-  // }
-  //
-  // //拒绝回调
-  // faier = async (index,record) => {
-  //   this.setState({visible:true});
-  //   //record.id   type=2
-  //   const response = await upDateInOutMaterialsState({ id: record.id, type: 2 });
-  //   if(response.data.state=="success"){
-  //     Toast.success("已拒绝");
-  //     this.state.dataSource["all"].splice(index,1);
-  //     this.setState({visible:false});
-  //   }else{
-  //     Toast.error(response.data.msg);
-  //   }
-  // }
+  handleRemove = (record,index) => {
+    console.log(record,index);
+  }
 
   componentDidMount() {
     this.getIndexData(this.state.current);

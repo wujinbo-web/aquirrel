@@ -64,14 +64,16 @@ import ProducList2 from './pages/ProducList2';
 import ProducList3 from './pages/ProducList3';
 import OrderSearchKailiao from './pages/OrderSearchKailiao';
 import ProducKuCun from './pages/ProducKuCun';
+import FinanceDetail from './pages/FinanceDetail';
 import NotFound from './pages/NotFound';
+import FinanceInvoicingList from './pages/FinanceInvoicingList';
+import InvoicingManage from './pages/InvoicingManage';
 
 const routerConfig = [
-  /*公共页面*/
   {
-    path: '/exception/403',
-    component: Forbidden,
+    path: '/goods2/typeadd',
     layout: BasicLayout,
+    component: GoodsTypeAdd,
   },
   {
     path: '/exception/404',
@@ -299,13 +301,14 @@ const routerConfig = [
     layout: BasicLayout,
     component: GoodsTypeInfo,
   },
+  /*公共页面*/
   {
-    path: '/goods/typeadd',
+    path: '/exception/403',
+    component: Forbidden,
     layout: BasicLayout,
-    component: GoodsTypeAdd,
   },
   {
-    path: '/goods2/typeadd',
+    path: '/goods/typeadd',
     layout: BasicLayout,
     component: GoodsTypeAdd,
   },
@@ -503,6 +506,21 @@ const routerConfig = [
     path: '/produc2/kucun',
     layout: BasicLayout,
     component: ProducKuCun,
+  },
+  {
+    path: '/finance/detail',
+    layout: BasicLayout,
+    component: FinanceDetail,
+  },
+  {
+    path: '/finance/invoicing',
+    layout: BasicLayout,
+    component: InvoicingManage,
+  },
+  {
+    path: '/finance/invoicinglist',
+    layout: BasicLayout,
+    component: FinanceInvoicingList,
   },
 ];
 

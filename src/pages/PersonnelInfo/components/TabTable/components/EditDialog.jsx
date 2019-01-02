@@ -58,6 +58,16 @@ export default class EditDialog extends Component {
         span: 14,
       },
     };
+    const role =[
+      {label: "超级管理员",value: "admin"},
+      {label: "普通管理员",value: "normAdmin"},
+      {label: "财务", value:"finance"},
+      {label: "设计", value:"measure"},
+      {label: "生产", value:"product"},
+      {label: "工程", value:"project"},
+      {label: "采购", value:"purchase"},
+      {label: "业务", value:"firm"},
+    ];
 
     return (
       <div style={styles.editDialog}>
@@ -96,8 +106,19 @@ export default class EditDialog extends Component {
 
             <FormItem label="部门：" {...formItemLayout}>
               <Select
+                style={{width:"150px"}}
                 dataSource={this.props.departmentDate}
                 {...init('departmentId', {    //title 字段名
+                  rules: [{ required: true, message: '必填选项' }],  //required  不能为空
+                })}
+              />
+            </FormItem>
+
+            <FormItem label="当前权限权限：" {...formItemLayout}>
+              <Select
+                style={{width:"150px"}}
+                dataSource={role}
+                {...init('roleId', {    //title 字段名
                   rules: [{ required: true, message: '必填选项' }],  //required  不能为空
                 })}
               />

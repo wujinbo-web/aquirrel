@@ -22,7 +22,7 @@ const goods={
   name: '商品管理',
   path: '/goods',
   icon: 'shop',
-  authority: ['admin','measure'],
+  authority: ['admin','normAdmin','measure'],
   children: [
     {
       name: '\u6DFB\u52A0\u5546\u54C1',
@@ -62,7 +62,7 @@ const personnel={
   name: '人员管理',
   path: '/personnel',
   icon: 'yonghu',
-  authority: ['admin','finance'],
+  authority: ['admin','normAdmin','finance'],
   children: [
     {
       name: '\u4EBA\u5458\u5217\u8868',
@@ -79,7 +79,7 @@ const department={
   name: '部门管理',
   path: '/department',
   icon: 'fans2',
-  authority: ['admin','finance'],
+  authority: ['admin','normAdmin','finance'],
   children: [
     {
       name: '部门列表',
@@ -124,6 +124,10 @@ const finance={
       name: '进货单',
       path: '/finance/examine',
     },
+    {
+      name: '开票管理',
+      path: '/finance/invoicing',
+    },
   ],
 };
 /*测量设计*/
@@ -131,7 +135,7 @@ const design={
   name: '测量设计',
   path: '/design',
   icon: 'edit2',
-  authority: ['admin','measure'],
+  authority: ['admin','normAdmin','measure'],
   children: [
     {
       name: '添加总单', //添加总单
@@ -153,7 +157,7 @@ const produc={
   name: '生产管理',
   path: '/produc',
   icon: 'sucai',
-  authority: ['admin','product'],
+  authority: ['admin','normAdmin','product'],
   children: [
     {
       name: '待生产列表',
@@ -183,7 +187,7 @@ const project={
   name: '工程管理',
   path: '/project',
   icon: 'qrcode',
-  authority: ['admin','project'],
+  authority: ['admin','normAdmin','project'],
   children: [
     {
       name: '待收货订单',
@@ -205,7 +209,7 @@ const purchase={
   name: '采购管理',
   path: '/purchase',
   icon: 'shopcar',
-  authority: ['admin','purchase'],
+  authority: ['admin','normAdmin','purchase'],
   children: [
     {
       name: '材料类别',
@@ -238,6 +242,7 @@ const message={
     },
   ],
 };
+
 
 //const asideMenuConfig = [home, goods, goods2, customer,customer2, personnel,personnel2, department,department2, order, finance,finance2, design,design2, produc,produc2, project,project2, purchase,purchase2, message ];
 const asideMenuConfig = [home, goods, customer, personnel, department, order, finance, design, produc, project, purchase, message ];

@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
-import { Tab, Feedback, Loading } from '@icedesign/base';
+import { Tab, Feedback, Loading, Button } from '@icedesign/base';
+import IceTitle from '@icedesign/title';
 import axios from 'axios';
 import { API_URL } from './../../../../config';
 import CustomTable from './components/CustomTable';
 import EditDialog from './components/EditDialog';
 import DeleteBalloon from './components/DeleteBalloon';
 import DeleteBalloon2 from './components/DeleteBalloon2';
+import { Grid } from "@icedesign/base";
 
+const { Row, Col } = Grid;
 const Toast = Feedback.toast;
 const TabPane = Tab.TabPane;
 
@@ -29,6 +32,8 @@ export default class TabTable extends Component {
       tabKey: 'all',
       visible: true,    //加载框是否显示
       dataMoney: {
+        name:"",
+        address: "",
         incomeMoney: "",
         payMoney: "",
         pool: "",
@@ -55,9 +60,15 @@ export default class TabTable extends Component {
         width: 60,
       },
       {
-        title: '类型',
-        dataIndex: 'typeName',
-        key: 'typeName',
+        title: '实际收入',
+        dataIndex: 'inMoney',
+        key: 'inMoney',
+        width: 60,
+      },
+      {
+        title: '实际支出',
+        dataIndex: 'payMoney',
+        key: 'payMoney',
         width: 60,
       },
       {
@@ -72,17 +83,11 @@ export default class TabTable extends Component {
         render: (value, index, record) => {
           return (
             <span>
-              {
-                record.moneyState=="未结清"? <DeleteBalloon2
-                  handleRemove={() => this.handleGathering(index, record)}
-                />: record.moneyState
-              }
-              {
-                record.moneyState=="未结清"? <DeleteBalloon
-                  handleRemove={() => this.handleCancel(index, record)}
-                />: ""
-              }
-
+              <Button
+                size="small"
+                type="primary"
+                onClick={()=>{this.props.redirctDetail(record.id)}}
+              >查看详情</Button>
             </span>
           );
         },
@@ -108,10 +113,9 @@ export default class TabTable extends Component {
             id:item.id,
             name:item.name,
             money:item.money,
+            inMoney: item.inMoney,
+            payMoney: item.payMoney,
             startTime:item.startTime,
-            moneyState:this.getMoneyStateName(item.moneyState),
-            typeName: item.type==0?"收入":"支出",
-            type:item.type
           });
         });
 
@@ -131,70 +135,60 @@ export default class TabTable extends Component {
       .get(`${API_URL}/findOrder.do?id=${this.props.id}`)
       .then((response)=>{
         //incomeMoney  收入  payMoney指出
+        let name = response.data.data[0].name;
         let data = response.data.data[0].order;
         let incomeMoney=data.incomeMoney;
+        let address=data.address;
         let payMoney=data.payMoney;
-        let pool = data.pmoney - data.incomeMoney;
+        let pool = (data.pmoney*100 - data.incomeMoney*100)/100;
         let pMoney = data.pmoney;
-        this.setState({ dataMoney: {incomeMoney, payMoney, pool, pMoney}, visible: false, });
+        this.setState({ dataMoney: {name, address,incomeMoney, payMoney, pool, pMoney}, visible: false, });
       })
       .catch((error)=>{
         console.log(error);
       })
   }
-  //状态码转化
-  getMoneyStateName = (status) => {
-    if(status==0){
-      return "未结清";
-    } else if(status==1){
-      return "已结清";
-    } else if (status==2){
-      return "已作废";
-    } else{
-      return "状态作废";
-    }
-  }
 
   //确认收款
-  handleGathering = (index, record) => {
-    this.setState({ visible: true });
-    axios
-      .get(`${API_URL}/updateMoneyState.do?id=${record.id}&moneyState=1`)
-      .then((response)=>{
-        if(response.data.state=="success"){
-          Toast.success("确认成功");
-          this.state.dataSource["all"][index].moneyState="已结清";
-          this.setState({
-            visible: false,
-          });
-          this.getIndexHeader();
-        }else{
-          Toast.error(response.data.msg);
-        }
-      })
-      .catch((error)=>{console.log(error);})
-
-  };
+  // handleGathering = (index, record) => {
+  //   this.setState({ visible: true });
+  //   axios
+  //     .get(`${API_URL}/updateMoneyState.do?id=${record.id}&moneyState=1`)
+  //     .then((response)=>{
+  //       if(response.data.state=="success"){
+  //         Toast.success("确认成功");
+  //         this.state.dataSource["all"][index].moneyState="已结清";
+  //         this.setState({
+  //           visible: false,
+  //         });
+  //         this.getIndexHeader();
+  //       }else{
+  //         Toast.error(response.data.msg);
+  //       }
+  //     })
+  //     .catch((error)=>{console.log(error);})
+  //
+  // };
 
   //作废款项
-  handleCancel = (index, record) => {
-    this.setState({ visible: true });
-    axios
-      .get(`${API_URL}/updateMoneyState.do?id=${record.id}&moneyState=2`)
-      .then((response)=>{
-        if(response.data.state=="success"){
-          Toast.success("确认成功");
-          this.state.dataSource["all"][index].moneyState="已作废";
-          this.setState({
-            visible: false,
-          });
-          this.getIndexHeader();
-        }else{
-          Toast.error(response.data.msg);
-        }
-      })
-      .catch((error)=>{console.log(error);})
-  };
+  // handleCancel = (index, record) => {
+  //   this.setState({ visible: true });
+  //   axios
+  //     .get(`${API_URL}/updateMoneyState.do?id=${record.id}&moneyState=2`)
+  //     .then((response)=>{
+  //       if(response.data.state=="success"){
+  //         Toast.success("确认成功");
+  //         this.state.dataSource["all"][index].moneyState="已作废";
+  //         this.setState({
+  //           visible: false,
+  //         });
+  //         this.getIndexHeader();
+  //       }else{
+  //         Toast.error(response.data.msg);
+  //       }
+  //     })
+  //     .catch((error)=>{console.log(error);})
+  // };
 
   handleTabChange = (key) => {
     this.setState({
@@ -207,9 +201,8 @@ export default class TabTable extends Component {
     this.setState({visible: true});
     //参数
     //values.money: 金额, values.name: 名字, this.props.id: 订单id
-    let query=(values.type==0?"":"&orderMoney.moneyState=1");
     axios
-      .get(`${API_URL}/saveOrderMoney.do?orderMoney.orderId=${this.props.id}&orderMoney.name=${values.name}&orderMoney.money=${values.money}&orderMoney.type=${values.type+query}`)
+      .get(`${API_URL}/saveOrderMoney.do?orderMoney.orderId=${this.props.id}&orderMoney.name=${values.name}&orderMoney.money=${values.money}`)
       .then((response)=>{
         console.log(response.data);
         if(response.data.state=="success"){
@@ -231,14 +224,36 @@ export default class TabTable extends Component {
     return (
       <div className="tab-table">
         <IceContainer>
-          <h2 style={styles.formTitle}>
-            当前订单id:{this.props.id};
-            订单总收入:{dataMoney.incomeMoney};
-            订单总支出:{dataMoney.payMoney};
-            合同金额:{dataMoney.pMoney};
-            剩余款项:{dataMoney.pool};
-          </h2>
           <Loading visible={this.state.visible} style={{display: 'block'}} shape="fusion-reactor">
+            <div style={{ display: "block", textAlign:"right",marginBottom:"-60px"}}>
+              <Button
+                size="small"
+                type="primary"
+                onClick={() => this.props.redirctInvoicingList(this.props.id)}
+              >查看开票</Button>
+            </div>
+          <IceTitle text="财务概况" />
+            <div
+              style={{
+                background:'#eee',
+                fontSize: '20px',
+                color:'#666',
+                height:'100px',
+                textAlign:'center',
+                paddingTop:'40px'
+              }}
+          >
+            <Row>
+              <Col>客户:{dataMoney.name}</Col>
+              <Col>地址:{dataMoney.address}</Col>
+              <Col>实际收入:{dataMoney.incomeMoney}</Col>
+              <Col>实际支出:{dataMoney.payMoney}</Col>
+              <Col>合同金额:{dataMoney.pMoney}</Col>
+              <Col>剩余款项:{dataMoney.pool}</Col>
+            </Row>
+          </div>
+
+
           <Tab onChange={this.handleTabChange}>
             {tabs.map((item) => {
               return (
@@ -252,7 +267,12 @@ export default class TabTable extends Component {
               );
             })}
           </Tab>
-          <EditDialog record={{name:"",money:"",type:"0"}} getFormValues={this.getFormValues} />
+          <EditDialog record={{name:"",money:""}} getFormValues={this.getFormValues} />
+          <Button
+            size="small"
+            type="primary"
+            onClick={()=>this.props.goBack()}
+          >返回</Button>
           </Loading>
         </IceContainer>
       </div>
@@ -267,12 +287,5 @@ const styles = {
     marginTop: 20,
     cursor: 'pointer',
     textAlign: 'center',
-  },
-  formTitle: {
-    margin: '0 0 20px',
-    fontSize: '14px',
-    paddingBottom: '10px',
-    borderBottom: '1px solid #eee',
-    color:'#2077FF',
   },
 };

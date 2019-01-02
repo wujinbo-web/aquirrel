@@ -36,7 +36,8 @@ export default class UserForm extends Component {
       },
       departmentId: [],
       rule:[
-        {label: "管理员",value: "admin"},
+        {label: "超级管理员",value: "admin"},
+        {label: "普通管理员",value: "normAdmin"},
         {label: "财务", value:"finance"},
         {label: "设计", value:"measure"},
         {label: "生产", value:"product"},

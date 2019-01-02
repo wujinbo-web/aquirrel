@@ -35,12 +35,6 @@ export default class TabTable extends Component {
     };
     this.columns = [
       {
-        title: '材料id',
-        dataIndex: 'id',
-        key: 'id',
-        width: 80,
-      },
-      {
         title: '类别',
         dataIndex: 'typeName',
         key: 'typeName',
@@ -138,9 +132,11 @@ export default class TabTable extends Component {
     }
   }
 
+  //获取列别
   getTypeData = async () =>{
     this.setState({ visible: true });
     const response = await queryMaterialsTypeList({ pageSize: 50 });
+    console.log(response);
     let customData=response.data.data.map((item)=>{
       return({ label: item.name, value: item.id });
     })

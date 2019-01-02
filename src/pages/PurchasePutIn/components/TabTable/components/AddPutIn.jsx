@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Dialog, Button, Form, Input, Field, Select, Grid, Feedback } from '@icedesign/base';
-import { getUuid } from './../../../../../api';
+import { getUuid, queryMaterialsTypeList, postQueryMaterials } from '@/api';
 
 const { Row, Col } = Grid;
 const FormItem = Form.Item;
@@ -18,6 +18,8 @@ export default class EditDialog extends Component {
       json:[],
       uuid:"",
       remark: "",
+      customData: [],
+      materialsList: [],
     };
   }
 
@@ -51,7 +53,25 @@ export default class EditDialog extends Component {
       uuid: response.data.uuid,
       json:[{name:"",materialsRecordId:response.data.uuid,materialsMainId:"",count:""}]
     });
+    //获取分类列表
+    const response2 = await queryMaterialsTypeList({ pageSize: 50 });
+    let customData=response2.data.data.map((item)=>{
+      return({ label: item.name, value: item.id });
+    })
+    customData.splice(0,0,{label:"全部分类", value: ""});
+    this.setState({
+      customData,
+    });
   };
+
+  //改变类别获取材料列表
+  getMaterialsList = async (value) => {
+    const response = await postQueryMaterials({pageSize:50,classId:value});
+    let materialsList = response.data.data.map((item)=>{
+      return ({label:item[0].name,value:item[0].id});
+    })
+    this.setState({ materialsList });
+  }
 
   onClose = () => {
     this.setState({
@@ -62,7 +82,7 @@ export default class EditDialog extends Component {
   //id转名字
   transformName = (id) => {
     let name;
-    const { materialsList } = this.props;
+    const { materialsList } = this.state;
     materialsList.forEach((item)=>{
       if(item.value==id){
         name = item.label;
@@ -105,8 +125,7 @@ export default class EditDialog extends Component {
   }
 
   render() {
-    const { materialsList } = this.props;
-    const { json } = this.state;
+    const { json, customData, materialsList } = this.state;
     const formItemLayout = {
       labelCol: {
         fixedSpan: 6,
@@ -126,7 +145,7 @@ export default class EditDialog extends Component {
           添加进货单
         </Button>
         <Dialog
-          style={{ width: 640 }}
+          style={{ width: 800 }}
           visible={this.state.visible}
           onOk={this.handleSubmit}
           closable="esc,mask,close"
@@ -147,7 +166,16 @@ export default class EditDialog extends Component {
                 <Col>
                   <Select
                     size="large"
-                    placeholder="请选择..."
+                    placeholder="请选择类别..."
+                    style={{width:"200px"}}
+                    onChange={this.getMaterialsList.bind(this)}
+                    dataSource={customData}
+                  />
+                </Col>
+                <Col>
+                  <Select
+                    size="large"
+                    placeholder="请选择材料..."
                     style={{width:"200px"}}
                     onChange={this.setPutInCount.bind(this,index,"materialsMainId")}
                     dataSource={materialsList}
@@ -162,7 +190,7 @@ export default class EditDialog extends Component {
                   />
                 </Col>
                 <Col>
-                  <Button size="small" shape="warning" onClick={this.reduceItem.bind(this,index)}>—</Button>
+                  <Button size="small" shape="warning" style={{ marginLeft: "5px" }} onClick={this.reduceItem.bind(this,index)}>—</Button>
                 </Col>
               </Row>
             );

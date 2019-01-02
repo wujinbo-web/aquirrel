@@ -100,7 +100,7 @@ export default class AddGoods extends Component {
             <FormItem label="价格：" {...formItemLayout}>
               <Input
                 {...init('price', {
-                  rules: [{ required: true, message: '必填选项' },{ pattern:/^[0-9]*$/, message: '请输入数字'}],
+                  rules: [{ required: true, message: '必填选项' },{ pattern:/^\d{1,8}([\.]\d{0,2})?$/, message: '请输入八位数字，小数点后面两位'}],
                 })}
               />
             </FormItem>
