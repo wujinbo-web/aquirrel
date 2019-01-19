@@ -85,16 +85,6 @@ export default class EditDialog extends Component {
                 })}
               />
             </FormItem>
-            <FormItem label="公司名称：" {...formItemLayout}>
-              <Input
-                {...init('companyName')}
-              />
-            </FormItem>
-            <FormItem label="税号：" {...formItemLayout}>
-              <Input
-                {...init('TFN')}
-              />
-            </FormItem>
 
             <FormItem label="用户性别：" {...formItemLayout}>
               <RadioGroup

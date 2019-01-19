@@ -47,7 +47,7 @@ export default class UserForm extends Component {
       this.setState({ visible: true });
       //请求接口
       axios
-        .get(`${API_URL}/saveCustomer.do?customer.company_name=${values.companyName}&customer.TFN=${values.TFN}&customer.name=${values.name}&customer.sex=${values.sex}&customer.phone=${values.phone}&customer.address=${values.address}&customer.level=1`)
+        .get(`${API_URL}/saveCustomer.do?customer.name=${values.name}&customer.sex=${values.sex}&customer.phone=${values.phone}&customer.address=${values.address}&customer.level=1`)
         .then((response)=>{
           this.setState({ visible: false });
           if(response.data.state==="success"){
@@ -98,37 +98,7 @@ export default class UserForm extends Component {
                     </Col>
                   </Row>
 
-                  <Row style={styles.formItem}>
-                    <Col xxs="6" s="3" l="3" style={styles.formLabel}>
-                      公司名称：
-                    </Col>
-                    <Col s="12" l="10">
-                      <IceFormBinder name="companyName" >
-                        <Input
-                          size="large"
-                          placeholder="请输入公司名称"
-                          style={{ width: '100%' }}
-                        />
-                      </IceFormBinder>
-                      <IceFormError name="companyName" />
-                    </Col>
-                  </Row>
 
-                  <Row style={styles.formItem}>
-                    <Col xxs="6" s="3" l="3" style={styles.formLabel}>
-                      税号：
-                    </Col>
-                    <Col s="12" l="10">
-                      <IceFormBinder name="TFN" >
-                        <Input
-                          size="large"
-                          placeholder="请输入税号"
-                          style={{ width: '100%' }}
-                        />
-                      </IceFormBinder>
-                      <IceFormError name="TFN" />
-                    </Col>
-                  </Row>
 
                   <Row style={styles.formItem}>
                     <Col xxs="6" s="3" l="3" style={styles.formLabel}>

@@ -1,10 +1,36 @@
 import React, { Component } from 'react';
-import { Dialog, Button, Form, Input, Field, Select, Grid, Feedback } from '@icedesign/base';
+import { Dialog, Button, Form, Input, Field, Select, Grid, Feedback, Upload } from '@icedesign/base';
 import { getUuid, queryMaterialsTypeList, postQueryMaterials } from '@/api';
+import { API_URL } from '@/config';
 
 const { Row, Col } = Grid;
 const FormItem = Form.Item;
 const Toast = Feedback.toast;
+const aliOssUrl = 'https://songshu-image.oss-cn-shanghai.aliyuncs.com/';
+
+function beforeUpload(info) {
+  console.log('beforeUpload callback : ', info);
+}
+//当图片发生改变时的回掉
+function onChange(info) {
+  console.log('onChane callback : ', info);
+}
+
+
+
+function onError(file) {
+  console.log('onError callback : ', file);
+}
+
+function formatter(res) {
+  return {
+    code: res == '上传失败' ? '1' : '0',   //0代表成功
+    imgURL: res,
+    downloadURL:`${aliOssUrl+res}`,
+    fileURL:`${aliOssUrl+res}`,
+    imgURL:`${aliOssUrl+res}`
+  };
+}
 
 export default class EditDialog extends Component {
   static displayName = 'EditDialog';
@@ -18,6 +44,7 @@ export default class EditDialog extends Component {
       json:[],
       uuid:"",
       remark: "",
+      file: '',
       customData: [],
       materialsList: [],
     };
@@ -39,7 +66,7 @@ export default class EditDialog extends Component {
       return false;
     }
     //做空校验证 end
-    this.props.getFormValues(json,this.state.remark);
+    this.props.getFormValues(json,this.state.remark,this.state.file);
     this.setState({
       visible: false,
     });
@@ -124,8 +151,15 @@ export default class EditDialog extends Component {
     this.setState({});
   }
 
+  onSuccess = (res, file) => {
+    console.log('onSuccess callback : ', res, file,"成功");
+    this.state.file = file.imgURL.split(aliOssUrl)[1];
+    this.setState({});
+  }
+
   render() {
     const { json, customData, materialsList } = this.state;
+    const data = new Date();
     const formItemLayout = {
       labelCol: {
         fixedSpan: 6,
@@ -196,8 +230,27 @@ export default class EditDialog extends Component {
             );
           })
         }
+          <Row style={{ lineHeight: "28px", marginBottom: '5px' }}>
+              进货备注: <Input type="text" onChange={this.changeRemark}/>
+          </Row>
           <Row style={{ lineHeight: "28px" }}>
-              进货备注:<Input onChange={this.changeRemark} />
+            文件附件：
+            <Upload
+              listType="text-image"
+              action={`${API_URL}/uploadFile.do`}
+              name="file"
+              accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp"
+              data={ { dir: `remark/${data.getFullYear()}_${data.getMonth()+1}_${data.getDate()}`,type:2 } }
+              beforeUpload={beforeUpload}
+              onChange={onChange}
+              onSuccess={this.onSuccess}
+              formatter = {formatter}
+              defaultFileList={[]}
+            >
+              <Button type="primary" style={{ margin: "0 0 10px" }}>
+                上传文件
+              </Button>
+            </Upload>
           </Row>
 
         </Dialog>

@@ -12,9 +12,12 @@ export default class DesignInfo extends Component {
   render() {
     return (
       <div className="design-info-page">
-        <TabTable redirectUrl={this.redirectUrl} redirect={this.redirect} />
+        <TabTable redirectUrl={this.redirectUrl} redirect={this.redirect} setLinkToEdit={this.setLinkToEdit} />
       </div>
     );
+  }
+  setLinkToEdit = (id) => {
+    this.props.history.push("/design/editgeneral?id="+id);
   }
   redirectUrl = (id,address) => {
     sessionStorage.design_orderId=id;

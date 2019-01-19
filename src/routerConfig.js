@@ -14,6 +14,7 @@ import Forbidden from './pages/Forbidden';
 import Empty from './pages/Empty';
 import Home from './pages/Home';
 import CustomerInfo from './pages/CustomerInfo';
+import CustomerInfo2 from './pages/CustomerInfo2';
 import CustomerAdd from './pages/CustomerAdd';
 import PersonnelAdd from './pages/PersonnelAdd';
 import DepartmentAdd from './pages/DepartmentAdd';
@@ -53,6 +54,7 @@ import DesignKailiao from './pages/DesignKailiao';
 import DesignKailiaoList from './pages/DesignKailiaoList';
 import DesignGeneralList from './pages/DesignGeneralList';
 import DesignAddGeneral from './pages/DesignAddGeneral';
+import DesignEditGeneral from './pages/DesignEditGeneral';
 import PurchaseList from './pages/PurchaseList';
 import PurchasePutIn from './pages/PurchasePutIn';
 import FinanceExamine from './pages/FinanceExamine';
@@ -67,18 +69,20 @@ import ProducKuCun from './pages/ProducKuCun';
 import FinanceDetail from './pages/FinanceDetail';
 import NotFound from './pages/NotFound';
 import FinanceInvoicingList from './pages/FinanceInvoicingList';
+import PurchaseTotall from './pages/PurchaseTotall';
+import LeavingMessage from './pages/LeavingMessage';
 import InvoicingManage from './pages/InvoicingManage';
 
 const routerConfig = [
   {
-    path: '/goods2/typeadd',
+    path: '/message/add',
     layout: BasicLayout,
-    component: GoodsTypeAdd,
+    component: MessageAdd,
   },
   {
-    path: '/exception/404',
-    component: NotFound,
+    path: '/goods/typeadd',
     layout: BasicLayout,
+    component: GoodsTypeAdd,
   },
   {
     path: '/exception/500',
@@ -123,7 +127,7 @@ const routerConfig = [
   {
     path: '/customer2/info',
     layout: BasicLayout,
-    component: CustomerInfo,
+    component: CustomerInfo2,
   },
   //客户添加
   {
@@ -308,14 +312,14 @@ const routerConfig = [
     layout: BasicLayout,
   },
   {
-    path: '/goods/typeadd',
+    path: '/exception/404',
+    component: NotFound,
     layout: BasicLayout,
-    component: GoodsTypeAdd,
   },
   {
-    path: '/message/add',
+    path: '/goods2/typeadd',
     layout: BasicLayout,
-    component: MessageAdd,
+    component: GoodsTypeAdd,
   },
   {
     path: '/project/list',
@@ -406,6 +410,11 @@ const routerConfig = [
     path: '/design/addgeneral',
     layout: BasicLayout,
     component: DesignAddGeneral,
+  },
+  {
+    path: '/design/editgeneral',
+    layout: BasicLayout,
+    component: DesignEditGeneral,
   },
   {
     path: '/purchase/list',
@@ -521,6 +530,16 @@ const routerConfig = [
     path: '/finance/invoicinglist',
     layout: BasicLayout,
     component: FinanceInvoicingList,
+  },
+  {
+    path: '/purchase/totall',
+    layout: BasicLayout,
+    component: PurchaseTotall,
+  },
+  {
+    path: '/leaving/message',
+    layout: BasicLayout,
+    component: LeavingMessage,
   },
 ];
 

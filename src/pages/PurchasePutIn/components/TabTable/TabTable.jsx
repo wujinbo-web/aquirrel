@@ -12,6 +12,7 @@ import { postQueryMaterials, postAddRecord, queryInOutMaterials, upDateInOutMate
 
 const Toast = Feedback.toast;
 const TabPane = Tab.TabPane;
+const aliOssUrl = 'https://songshu-image.oss-cn-shanghai.aliyuncs.com/';
 
 const tabs = [
   { tab: '全部', key: 'all' }
@@ -54,6 +55,18 @@ export default class TabTable extends Component {
         title: '备注',
         dataIndex: 'remark',
         key: 'remark',
+        width: 80,
+      },
+      {
+        title: '附件',
+        key: 'file',
+        render: (value, index, record) => {
+          return (
+            <span>
+              {record.file?<a href={aliOssUrl+record.file}>下载文档</a>:""}
+            </span>
+          );
+        },
       },
       {
         title: '状态',
@@ -131,6 +144,7 @@ export default class TabTable extends Component {
         type:item.type,
         typeName:this.typeToName(item.type),
         remark: item.remark,
+        file: item.file
       });
     });
     this.setState({
@@ -168,7 +182,7 @@ export default class TabTable extends Component {
   };
 
   //添加进货记录单
-  getFormValues = async (json,remark) => {
+  getFormValues = async (json,remark,file) => {
     this.setState({ visible: true });
     let dataJson = json.map((item)=>{
       return JSON.stringify(item);
@@ -179,6 +193,7 @@ export default class TabTable extends Component {
       type:0,
       json: `[${data}]`,
       remark  ,
+      file,
     });
     if(response.data.state=="success"){
       Toast.success(response.data.msg);

@@ -125,6 +125,10 @@ const finance={
       path: '/finance/examine',
     },
     {
+      name: '客户管理',
+      path: '/customer2/info'
+    },
+    {
       name: '开票管理',
       path: '/finance/invoicing',
     },
@@ -223,6 +227,10 @@ const purchase={
       name: '进货单', //进货管理
       path: '/purchase/putin',
     },
+    {
+      name: '进货统计', //进货管理
+      path: '/purchase/totall',
+    },
   ],
 };
 
@@ -232,6 +240,11 @@ const message={
   path: '/message',
   icon: 'message',
   children: [
+    {
+      name: '留言管理',
+      path: '/leaving/message',
+      authority: 'admin',
+    },
     {
       name: '发布消息',
       path: '/message/add',

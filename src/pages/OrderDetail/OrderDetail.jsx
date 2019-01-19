@@ -4,6 +4,7 @@ import { Grid, Button, Upload, Loading, Table } from '@icedesign/base';
 import { API_URL } from './../../config';
 import axios from 'axios';
 import { queryCountList } from './../../api';
+import getStatusName from '@/tool/getStatusName';
 
 const { Row, Col } = Grid;
 const { ImageUpload } = Upload;
@@ -47,7 +48,7 @@ export default class OrderDetail extends Component {
         let dataSource={
           name:arr.name,
           phone: arr.phone,
-          orderState:this.getStatusName(arr.order.orderState),
+          orderState:getStatusName(arr.order.orderState),
           financeState:arr.order.financeState==0?"未结清":"已结清",
           signer:arr.order.signer,
           address: arr.order.address,
@@ -114,38 +115,6 @@ export default class OrderDetail extends Component {
 
   }
 
-  //转化订单状态
-  getStatusName = (orderStatus,installState) => {
-    switch (orderStatus) {
-      case 1:
-        return "建立合同订单";
-      case 12:
-        return "收取定金（完成）";
-      case 2:
-        return "总单填写（完成）";
-      case 3:
-        return "测量完成";
-      case 4:
-        return "设计完成";
-      case 5:
-        return "生产完成";
-      case 6:
-        return "生产部入库完成";
-      case 7:
-        return "生产部出库完成";
-      case 8:
-        return "工程部入货完成";
-      case 9:
-        return "工程部出货完成";
-      case 10:
-        return "安装完成增项中";
-      case 11:
-        return "完成订单";
-      default:
-        return "状态出错2";
-    }
-  }
-
   getTabelHeadName = (key) =>　{
     if(key == "name"){
       return "名称";
@@ -158,7 +127,7 @@ export default class OrderDetail extends Component {
     }else if (key == "count"){
        return "开料数";
     }else if (key == "unproNum"){
-       return "待生产数";
+       return "待生产";
     }else if (key == "proNum"){
        return "已生产";
     }else if (key == "dputNum"){
@@ -172,7 +141,7 @@ export default class OrderDetail extends Component {
     }else if (key == "installNum"){
        return "安装数";
     }else if (key == "uninstallNum"){
-       return "待安装数";
+       return "待安装";
     } else{
       return key
     }
@@ -195,9 +164,11 @@ export default class OrderDetail extends Component {
               <Row style={styles.item} >财务状态：{financeState}</Row>
               <Row style={styles.item} >签约金额：{pmoney==null?"0":pmoney}元</Row>
             </Col>
-            <Col l="6">
+            <Col l="6" style={{ marginRight: "20px" }}>
               <Row style={styles.item} >客户：{name}</Row>
               <Row style={styles.item} >手机：{phone}</Row>
+            </Col>
+            <Col l="6">
               <Row style={styles.item} >签约人：{signer}</Row>
               <Row style={styles.item} >地点：{address}</Row>
               <Row style={styles.item} >签约时间：{createTime}</Row>
@@ -211,131 +182,139 @@ export default class OrderDetail extends Component {
               })
             }
           </Table>
-
-
           <Row style={styles.title} >订单流程：</Row>
-          <Row style={styles.item} l="6"><span style={orderState=="建立合同订单"?{color:"red",fontWeight:"bold"}: {}}>1 建立合同订单</span></Row>
-          <Row style={styles.content}>
-            下载合同：
-            {
-              fileAddress.split(',').map((item,index)=>{
-                return (
-                  <Button
-                    key={index}
-                    onClick={()=>{window.open(`https://songshu-image.oss-cn-shanghai.aliyuncs.com/${item}`)}}
-                  >
-                    合同{index+1}
-                  </Button>
-                );
-              })
-            }
-            <br/>
-            下载设计图：
-            {
-              drawingAddress.split(',').map((item,index)=>{
-                return (
-                  <Button
-                    key={index}
-                    onClick={()=>{window.open(`https://songshu-image.oss-cn-shanghai.aliyuncs.com/${item}`)}}
-                  >
-                    设计图{index+1}
-                  </Button>
-                );
-              })
-            }
-
-          </Row>
-          <Row style={styles.item} l="6"><span style={orderState=="收取定金(完成)"?{color:"red",fontWeight:"bold"}: {}}>2 收取定金(完成)</span></Row>
-          <Row style={styles.content}>
-            <Button
-              onClick={()=>{sessionStorage.finance_orderId=id;this.props.history.push('/finance/list');}}
-            >
-              查看财务列表
-            </Button>
-          </Row>
-          <Row style={styles.item} l="6"><span style={orderState=="总单填写（完成）"?{color:"red",fontWeight:"bold"}: {}}>3 总单填写（完成）</span></Row>
-          <Row style={styles.item} l="6"><span style={orderState=="测量完成"?{color:"red",fontWeight:"bold"}: {}}>4 测量完成</span></Row>
-            <Row style={styles.content}>
-              <Button
-                onClick={()=>{
-                  sessionStorage.design_orderId=id;
-                  sessionStorage.design_address=address;
-                  this.props.history.push('/design/floor');
-                }}
-              >
-                查看测量表
-              </Button>
-            </Row>
-          <Row style={styles.item} l="6"><span style={orderState=="设计完成"?{color:"red",fontWeight:"bold"}: {}}>5 设计完成</span></Row>
-            <Row style={styles.content}>
-              <Button
-                onClick={()=>{
-                  sessionStorage.design2_orderId=id;
-                  this.props.history.push('/desgin/lailiao');
-                }}
-              >
-                查看开料单
-              </Button>
-            </Row>
-          <Row style={styles.item} l="6"><span style={orderState=="生产完成"?{color:"red",fontWeight:"bold"}: {}}>6 生产完成</span></Row>
-            <Row style={styles.content}>
-              <Button
-                onClick={()=>{
-                  sessionStorage.produc_orderId=id;
-                  this.props.history.push('/produc/list');
-                }}
-              >
-                查看生产清单
-              </Button>
-            </Row>
-          <Row style={styles.item} l="6"><span style={orderState=="生产部入库完成"?{color:"red",fontWeight:"bold"}: {}}>7 生产部入库完成</span></Row>
-            <Row style={styles.content}>
-              <Button
-                onClick={()=>{
-                  sessionStorage.project_orderId=id;
-                  this.props.history.push('/produc/putin');
-                }}
-              >
-                查看入库单
-              </Button>
-            </Row>
-          <Row style={styles.item} l="6"><span style={orderState=="生产部出库完成"?{color:"red",fontWeight:"bold"}: {}}>8 生产部出库完成</span></Row>
-            <Row style={styles.content}>
-              <Button
-                onClick={()=>{
-                  sessionStorage.project_orderId2=id;
-                  this.props.history.push('/produc/putout');
-                }}
-              >
-                查看出库单
-              </Button>
-            </Row>
-            <Row style={styles.item} l="6"><span style={orderState=="工程部入货完成"?{color:"red",fontWeight:"bold"}: {}}>9 工程部入货完成</span></Row>
+          <Row>
+            <Col>
+              <Row style={styles.item} l="6"><span style={orderState=="建立合同订单"?{color:"red",fontWeight:"bold"}: {}}>1 建立合同订单</span></Row>
               <Row style={styles.content}>
+                下载合同：
+                {
+                  fileAddress.split(',').map((item,index)=>{
+                    return (
+                      <Button
+                        key={index}
+                        onClick={()=>{window.open(`https://songshu-image.oss-cn-shanghai.aliyuncs.com/${item}`)}}
+                      >
+                        合同{index+1}
+                      </Button>
+                    );
+                  })
+                }
+                下载设计图：
+                  {
+                    drawingAddress.split(',').map((item,index)=>{
+                      return (
+                        <Button
+                          key={index}
+                          onClick={()=>{window.open(`https://songshu-image.oss-cn-shanghai.aliyuncs.com/${item}`)}}
+                        >
+                          设计图{index+1}
+                        </Button>
+                      );
+                    })
+                  }
+
+              </Row>
+              <Row style={styles.item} l="6"><span style={orderState=="总单填写（完成）"?{color:"red",fontWeight:"bold"}: {}}>2 总单填写（完成）</span></Row>
+              <Row style={styles.content} l="6">
                 <Button
                   onClick={()=>{
-                    sessionStorage.project_orderId2=id;
-                    this.props.history.push('/project/putin');
+                    sessionStorage.design_orderId=id;
+                    sessionStorage.design_address=address;
+                    this.props.history.push('/design/floor');
                   }}
                 >
-                  查看入货单
+                  查看测量表
                 </Button>
               </Row>
-              <Row style={styles.item} l="6"><span style={orderState=="工程部出货完成"?{color:"red",fontWeight:"bold"}: {}}>10 工程部出货完成</span></Row>
+              <Row style={styles.item} l="6"><span style={orderState=="测量完成"?{color:"red",fontWeight:"bold"}: {}}>3 测量完成</span></Row>
                 <Row style={styles.content}>
                   <Button
                     onClick={()=>{
-                      sessionStorage.project_orderId2=id;
-                      this.props.history.push('/project/putout');
+                      sessionStorage.design_orderId=id;
+                      sessionStorage.design_address=address;
+                      this.props.history.push('/design/floor');
                     }}
                   >
-                    查看出货单
+                    查看测量表
                   </Button>
                 </Row>
-          <Row style={styles.item} l="6"><span style={orderState=="完成订单"?{color:"red",fontWeight:"bold"}: {}}>11 完成订单</span></Row>
-            <Row style={styles.content}>
-              增项:{append==null?"暂无":append}
-            </Row>
+              <Row style={styles.item} l="6"><span style={orderState=="设计完成"?{color:"red",fontWeight:"bold"}: {}}>4 设计完成</span></Row>
+                <Row style={styles.content}>
+                  <Button
+                    onClick={()=>{
+                      sessionStorage.design2_orderId=id;
+                      this.props.history.push('/desgin/lailiao');
+                    }}
+                  >
+                    查看开料单
+                  </Button>
+                </Row>
+              <Row style={styles.item} l="6"><span style={orderState=="生产完成"?{color:"red",fontWeight:"bold"}: {}}>5 生产完成</span></Row>
+                <Row style={styles.content}>
+                  <Button
+                    onClick={()=>{
+                      sessionStorage.produc_orderId=id;
+                      this.props.history.push('/produc/list');
+                    }}
+                  >
+                    查看生产清单
+                  </Button>
+                </Row>
+            </Col>
+            <Col>
+              <Row style={styles.item} l="6"><span style={orderState=="生产部入库完成"?{color:"red",fontWeight:"bold"}: {}}>6 生产部入库完成</span></Row>
+                <Row style={styles.content}>
+                  <Button
+                    onClick={()=>{
+                      sessionStorage.produc_orderId2=id;
+                      this.props.history.push('/produc/putin');
+                    }}
+                  >
+                    查看入库单
+                  </Button>
+                </Row>
+              <Row style={styles.item} l="6"><span style={orderState=="生产部出库完成"?{color:"red",fontWeight:"bold"}: {}}>8 生产部出库完成</span></Row>
+                <Row style={styles.content}>
+                  <Button
+                    onClick={()=>{
+                      sessionStorage.produc_orderId3=id;
+                      this.props.history.push('/produc/putout');
+                    }}
+                  >
+                    查看出库单
+                  </Button>
+                </Row>
+                <Row style={styles.item} l="6"><span style={orderState=="工程部收货完成"?{color:"red",fontWeight:"bold"}: {}}>9 工程部收货完成</span></Row>
+                  <Row style={styles.content}>
+                    <Button
+                      onClick={()=>{
+                        sessionStorage.project_orderId2=id;
+                        this.props.history.push('/project/putout');
+                      }}
+                    >
+                      查看收货单
+                    </Button>
+                  </Row>
+                  <Row style={styles.item} l="6"><span style={orderState=="安装完成增项中"?{color:"red",fontWeight:"bold"}: {}}>10 安装完成增项中</span></Row>
+                    <Row style={styles.content}>
+                      <Button
+                        onClick={()=>{
+                          sessionStorage.project_orderId3=id;
+                          this.props.history.push('/project/preinstall');
+                        }}
+                      >
+                        查看出货单
+                      </Button>
+                    </Row>
+              <Row style={styles.item} l="6"><span style={orderState=="完成订单"?{color:"red",fontWeight:"bold"}: {}}>11 完成订单</span></Row>
+                <Row style={styles.content}>
+                  增项:{append==null?"暂无":append}
+                </Row>
+            </Col>
+          </Row>
+
+
         </IceContainer>
         </Loading>
       </div>
@@ -363,6 +342,7 @@ const styles = {
     height: "30px",
     lineHeight: "30px",
     borderBottom: "1px solid #eee",
-    color: "rgb(32, 119, 255)",
+    color:"black",
+
   }
 }

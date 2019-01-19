@@ -42,12 +42,6 @@ export default class TabTable extends Component {
     };
     this.columns = [
       {
-        title: 'id',
-        dataIndex: 'id',
-        key: 'id',
-        width: 60,
-      },
-      {
         title: '类目',
         dataIndex: 'name',
         key: 'name',

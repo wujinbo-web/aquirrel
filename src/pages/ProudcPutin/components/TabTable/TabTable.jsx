@@ -32,12 +32,6 @@ export default class TabTable extends Component {
     };
     this.columns = [
       {
-        title: '订单id',
-        dataIndex: 'id',
-        key: 'id',
-        width: 70,
-      },
-      {
         title: '客户',
         dataIndex: 'name',
         key: 'name',
@@ -65,12 +59,6 @@ export default class TabTable extends Component {
         dataIndex: 'status',
         key: 'status',
         width: 120,
-      },
-      {
-        title: '财务状态',
-        dataIndex: 'status2',
-        key: 'status2',
-        width: 100,
       },
       {
         title: '操作',

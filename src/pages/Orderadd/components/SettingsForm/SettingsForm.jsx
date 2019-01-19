@@ -70,10 +70,10 @@ export default class SettingsForm extends Component {
 
   componentDidMount = () => {
     axios
-      .post(`${API_URL}/findCustomerList.do`,{pageSize: 100,pageIndex: 1})
+      .post(`${API_URL}/findCustomerList.do?pageSize=100&pageIndex=1`)
       .then((response)=>{
         this.setState({ visible: false });
-        console.log(response.data,"客户接口");
+        console.log(response,"客户接口");
         let customData=response.data.data.map((item)=>{
           return { label: item.customer.name, value: item.customer.id  }
         });

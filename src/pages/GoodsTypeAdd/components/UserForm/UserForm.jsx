@@ -30,26 +30,26 @@ export default class UserForm extends Component {
     };
   }
 
-  checkPasswd = (rule, values, callback) => {
-    if (!values) {
-      callback('请输入新密码');
-    } else if (values.length < 8) {
-      callback('密码必须大于8位');
-    } else if (values.length > 16) {
-      callback('密码必须小于16位');
-    } else {
-      callback();
-    }
-  };
-
-  checkPasswd2 = (rule, values, callback, stateValues) => {
-    console.log('stateValues:', stateValues);
-    if (values && values !== stateValues.passwd) {
-      callback('两次输入密码不一致');
-    } else {
-      callback();
-    }
-  };
+  // checkPasswd = (rule, values, callback) => {
+  //   if (!values) {
+  //     callback('请输入新密码');
+  //   } else if (values.length < 8) {
+  //     callback('密码必须大于8位');
+  //   } else if (values.length > 16) {
+  //     callback('密码必须小于16位');
+  //   } else {
+  //     callback();
+  //   }
+  // };
+  //
+  // checkPasswd2 = (rule, values, callback, stateValues) => {
+  //   console.log('stateValues:', stateValues);
+  //   if (values && values !== stateValues.passwd) {
+  //     callback('两次输入密码不一致');
+  //   } else {
+  //     callback();
+  //   }
+  // };
 
   formChange = (value) => {
     this.setState({

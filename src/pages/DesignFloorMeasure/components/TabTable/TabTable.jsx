@@ -232,7 +232,7 @@ export default class TabTable extends Component {
         <IceContainer>
           <h1 style={{ textAlign: "center" }}>{floorNum}楼测量单</h1>
           <h2 style={{ fontSize: "14px", color: "rgb(32, 119, 255)" }}>
-            当前订单ID: {id},楼层ID:{floorNumId}
+            当前订单ID: {id}
             <Button size='small' type='primary' style={{ float: "right" }} onClick={this.onOpen}>添加房间</Button>
           </h2>
 

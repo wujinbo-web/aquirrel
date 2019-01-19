@@ -31,12 +31,6 @@ export default class TabTable extends Component {
     };
     this.columns = [
       {
-        title: '订单id',
-        dataIndex: 'id',
-        key: 'id',
-        width: 70,
-      },
-      {
         title: '客户',
         dataIndex: 'name',
         key: 'name',
@@ -67,12 +61,6 @@ export default class TabTable extends Component {
         width: 150,
       },
       {
-        title: '财务状态',
-        dataIndex: 'status2',
-        key: 'status2',
-        width: 100,
-      },
-      {
         title: '操作',
         width: 250,
         key: 'action',
@@ -80,11 +68,20 @@ export default class TabTable extends Component {
           return (
             <span>
               <Button
-                style={{ marginRight: "5px"}}
+                 type='primary'
+                 style={{ marginRight: "5px"}}
                  record={record}
                  onClick={ () => { this.setLinkToRoom(record) }}
               >
                 编辑测量单
+              </Button>
+              <Button
+                 type='primary'
+                 style={{ marginRight: "5px"}}
+                 record={record}
+                 onClick={ () => { this.props.setLinkToEdit(record.id) }}
+              >
+                编辑总单
               </Button>
               {
                 record.status=="总单填写（完成）"?<Button

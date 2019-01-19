@@ -17,7 +17,7 @@ export default (orderStatus) => {
     case 7:
       return "生产部出库完成";
     case 8:
-      return "工程部入货完成";
+      return "工程部收货完成";
     case 9:
       return "工程部出货完成";
     case 10:

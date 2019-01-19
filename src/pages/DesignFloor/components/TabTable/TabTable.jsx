@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
-import { Tab, Button, Feedback } from '@icedesign/base';
+import { Tab, Button, Feedback, Table } from '@icedesign/base';
 import axios from 'axios';
 import CustomTable from './components/CustomTable';
 import EditDialog from './components/EditDialog';
 import DeleteBalloon from './components/DeleteBalloon';
+import { queryCountList } from '@/api';
 import { postDesignFindFloor, getDesignAddFloor, getDesignFindFloor } from './../../../../api';
 
 const TabPane = Tab.TabPane;
@@ -26,6 +27,8 @@ export default class TabTable extends Component {
     this.state = {
       dataSource: {},
       tabKey: 'all',
+      tableData:[],
+      tableHead: [],
     };
     this.columns = [
       {
@@ -61,6 +64,75 @@ export default class TabTable extends Component {
 
   componentDidMount() {
     this.getFloorData();
+    this.getCountList();
+  }
+
+  getCountList = async () => {
+    const { id } = this.props;
+    const response = await queryCountList({ orderId: id });
+    //console.log(response.data.list);
+    let arrayData = response.data.list.map((item)=>{
+        return item.order;
+    });
+    //[{1F:11,2F:22,classId:3....},{1F:11,2F,.....}]
+    let data=arrayData.map((item)=>{
+      let key;
+      let count=0;
+      for(key in item){
+        if(key!="name"&&key!="size"&&key!="remarks"&&key!="jputNum"&&key!="joutNum"&&key!="count"&&key!="classId"&&key!="installNum"&&key!="proNum"&&key!="dputNum"&&key!="doutNum"&&key!="uninstallNum"&&key!="unproNum"){
+          count+=Number(item[key]);
+        }
+      }
+      item.heji=count;
+      return item;
+    })
+    console.log(data);
+    //渲染导航条
+    let component=[];
+    let key;
+    component.push("name");
+    component.push("size");
+    for( key in data[0]){
+      if(key!="name"&&key!="jputNum"&&key!="joutNum"&&key!="dputNum"&&key!="doutNum"&&key!="heji"&&key!="proNum"&&key!="size"&&key!="remarks"&&key!="count"&&key!="classId"&&key!="installNum"&&key!="uninstallNum"&&key!="unproNum"){
+        component.push(key);
+      }
+    }
+    component.push('heji');
+    component.push('remarks');
+    this.setState({tableData: data,tableHead:component});
+
+  }
+
+  getTabelHeadName = (key) =>　{
+    if(key == "name"){
+      return "名称";
+    } else if (key == "size"){
+      return "规格";
+    } else if (key == "remarks"){
+       return "备注";
+    }else if (key == "heji"){
+       return "合计";
+    }else if (key == "count"){
+       return "开料数";
+    }else if (key == "unproNum"){
+       return "待生产";
+    }else if (key == "proNum"){
+       return "已生产";
+    }else if (key == "dputNum"){
+       return "入库数";
+    }else if (key == "doutNum"){
+       return "出库数";
+    }else if (key == "jputNum"){
+       return "入货数";
+    }else if (key == "joutNum"){
+       return "出货数";
+    }else if (key == "installNum"){
+       return "安装数";
+    }else if (key == "uninstallNum"){
+       return "待安装";
+    } else{
+      return key
+    }
   }
 
   //获取查询数据
@@ -116,13 +188,20 @@ export default class TabTable extends Component {
   };
 
   render() {
-    const { dataSource } = this.state;
+    const { dataSource, tableData, tableHead } = this.state;
     const { id, address } = this.props;
     return (
       <div className="tab-table">
         <IceContainer>
           <h1 style={{textAlign: 'center'}}>订单楼层概况</h1>
           <h2>订单ID：{id}，地址：{address}</h2>
+            <Table dataSource={tableData}>
+              {
+                tableHead.map((key,index)=>{
+                  return (<Table.Column title={this.getTabelHeadName(key)} key={index} dataIndex={key}/>)
+                })
+              }
+            </Table>
           <Tab onChange={this.handleTabChange}>
             {tabs.map((item) => {
               return (

@@ -4,34 +4,6 @@ import { Pagination, Loading } from '@icedesign/base';
 import axios from 'axios';
 import { API_URL } from '../../../../config';
 
-// const dataSource = [
-//   {
-//     title: '消息标题',
-//     message: '这里是消息的一些详细说明。',
-//     datetime: '07-07 18:36',
-//   },
-//   {
-//     title: '消息标题',
-//     message: '这里是消息的一些详细说明。',
-//     datetime: '07-07 18:36',
-//   },
-//   {
-//     title: '消息标题',
-//     message: '这里是消息的一些详细说明。',
-//     datetime: '07-07 18:36',
-//   },
-//   {
-//     title: '消息标题',
-//     message: '这里是消息的一些详细说明。',
-//     datetime: '07-07 18:36',
-//   },
-//   {
-//     title: '消息标题',
-//     message: '这里是消息的一些详细说明。',
-//     datetime: '07-07 18:36',
-//   },
-// ];
-
 export default class MessageList extends Component {
   static displayName = 'MessageList';
 

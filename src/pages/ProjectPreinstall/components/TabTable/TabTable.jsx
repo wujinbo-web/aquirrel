@@ -13,9 +13,6 @@ const Toast = Feedback.toast;
 
 const tabs = [
   { tab: '全部', key: 'all' },
-  // { tab: '已发布', key: 'inreview' },
-  // { tab: '审核中', key: 'released' },
-  // { tab: '已拒绝', key: 'rejected' },
 ];
 
 export default class TabTable extends Component {
@@ -35,12 +32,6 @@ export default class TabTable extends Component {
       visible: true,
     };
     this.columns = [
-      {
-        title: '订单id',
-        dataIndex: 'id',
-        key: 'id',
-        width: 70,
-      },
       {
         title: '客户',
         dataIndex: 'name',
@@ -69,12 +60,6 @@ export default class TabTable extends Component {
         title: '订单状态',
         dataIndex: 'status',
         key: 'status',
-        width: 90,
-      },
-      {
-        title: '财务状态',
-        dataIndex: 'status2',
-        key: 'status2',
         width: 90,
       },
       {

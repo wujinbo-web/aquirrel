@@ -5,6 +5,7 @@ import axios from 'axios';
 import CustomTable from './components/CustomTable';
 import DeleteBalloon from './components/DeleteBalloon';
 import { API_URL } from '../../../../config';
+import getStatusName from '@/tool/getStatusName';
 
 const TabPane = Tab.TabPane;
 const Toast = Feedback.toast;
@@ -30,12 +31,6 @@ export default class TabTable extends Component {
       visible: true,
     };
     this.columns = [
-      {
-        title: '订单id',
-        dataIndex: 'id',
-        key: 'id',
-        width: 70,
-      },
       {
         title: '客户',
         dataIndex: 'name',
@@ -64,12 +59,6 @@ export default class TabTable extends Component {
         dataIndex: 'status',
         key: 'status',
         width: 120,
-      },
-      {
-        title: '财务状态',
-        dataIndex: 'status2',
-        key: 'status2',
-        width: 100,
       },
       {
         title: '操作',

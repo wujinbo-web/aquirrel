@@ -134,9 +134,7 @@ export default class EditDialog extends Component {
             </FormItem>
             <FormItem label="备注：" {...formItemLayout}>
               <Input
-                {...init('remark', {
-                  rules: [{ required: true, message: '必填选项' }],
-                })}
+                {...init('remark')}
               />
             </FormItem>
             <hr/>

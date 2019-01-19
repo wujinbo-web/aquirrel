@@ -183,6 +183,7 @@ export default class EditDialog extends Component {
                   />
                 </Col>
                 <Col>
+                  <Button size="small" type='primary' style={{"marginRight": '5px'}} onClick={this.addItem.bind(this,index)}>+</Button>
                   <Button size="small" shape="warning" onClick={this.reduceItem.bind(this,index)}>—</Button>
                 </Col>
               </Row>

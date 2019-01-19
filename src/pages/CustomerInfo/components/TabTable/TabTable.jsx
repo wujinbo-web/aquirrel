@@ -41,16 +41,6 @@ export default class TabTable extends Component {
         key: 'name',
       },
       {
-        title: '公司名称',
-        dataIndex: 'companyName',    //数据的字段名
-        key: 'companyName',
-      },
-      {
-        title: '税号',
-        dataIndex: 'TFN',    //数据的字段名
-        key: 'TFN',
-      },
-      {
         title: '性别',
         dataIndex: 'sex',
         key: 'sex',
@@ -92,18 +82,6 @@ export default class TabTable extends Component {
   }
   //挂载之后请求接口数据
   componentDidMount() {
-    //虚拟接口
-    // axios
-    //   .get('/mock/tab-table.json')
-    //   .then((response) => {
-    //     console.log(response.data.data);
-    //     this.setState({
-    //       dataSource: response.data.data,
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
     //接口
     this.getDataSource({name:this.state.name,phone:this.state.phone,pageIndex: 1});
   }
@@ -122,8 +100,8 @@ export default class TabTable extends Component {
             adress: item.customer.address,
             listnum: item.ordersCount,
             id: item.customer.id,
-            companyName: item.companyName,
-            TFN: item.TFN
+            companyName: item.customer.companyName,
+            TFN: item.customer.TFN
           }
         });
         this.setState({

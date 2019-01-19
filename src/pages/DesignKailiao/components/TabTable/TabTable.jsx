@@ -203,7 +203,7 @@ export default class TabTable extends Component {
       "OrderMaterialsRecord.unproNum": values.number,
       "OrderMaterialsRecord.uninstallNum": 0,
       "OrderMaterialsRecord.orderId": this.props.id,
-      "OrderMaterialsRecord.remark": values.remark,
+      "OrderMaterialsRecord.remark": values.remark?values.remark:"",
       "OrderMaterialsRecord.factoryId": values.factoryId,
       names:partsData.join(','),
     };
@@ -211,7 +211,7 @@ export default class TabTable extends Component {
     //{"msg":"成功","state":"success","id":"084db49728e3461abbc65b0dbb269e77"}
     if(data.data.state=="success"){
       Toast.success(data.data.msg);
-      this.props.redirct(data.data.id,name,values.size,values.number,values.remark,0);
+      this.props.redirct(data.data.id,name,values.size,values.number,values.remark?values.remark:"",0);
     }
   };
 

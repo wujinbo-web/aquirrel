@@ -24,3 +24,16 @@ export const invoiceDelete = "deleteInvoice.do";
 export const invoiceUpdate = "updateInvoice.do";
 //查询客户开票公司名、税号
 export const customsQuery = "findCustomerList.do";
+
+//查询进货统计金额
+export const materialsTotal = "queryMaterialsClassTotalPrice.do";
+
+//查询进货统计金额
+export const leavingMessageQuery = "queryLeaveWord.do";
+//查询进货统计金额
+export const leavingMessageType = "updateLeaveWord.do";
+//查询进货统计金额
+export const leavingMessageDelete = "deleteLeaveWord.do";
+
+//查看订单详情
+export const orderQuery = "findOrder.do";

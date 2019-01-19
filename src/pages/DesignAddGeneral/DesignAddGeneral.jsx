@@ -129,6 +129,15 @@ export default class DesignAddGeneral extends Component {
           onChange={this.changeData.bind(this, index, record, valueKey)}
         />
       )
+    }else if(valueKey=="size"){
+      return (
+        <Input
+          style={{ width:"120px"}}
+          placeholder={valueKey=="remarks"? "": "0"}
+          value={this.state.dataSource[index][valueKey]}
+          onChange={this.changeData.bind(this, index, record, valueKey)}
+        />
+      )
     }else{
       return (
         <Input
