@@ -9,7 +9,7 @@ import {
   FormError as IceFormError,
 } from '@icedesign/form-binder';
 import './SettingsForm.scss';
-import { API_URL } from '../../../../config';
+import { API_URL } from '@/config';
 
 const { Row, Col } = Grid;
 const { Group: RadioGroup } = Radio;

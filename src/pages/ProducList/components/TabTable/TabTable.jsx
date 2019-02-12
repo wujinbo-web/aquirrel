@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
-import { Tab, Button, Feedback } from '@icedesign/base';
+import { Tab, Button, Feedback, Select, Grid, Pagination  } from '@icedesign/base';
 import axios from 'axios';
 import CustomTable from './components/CustomTable';
 import EditDialog from './components/EditDialog';
 import EditDialog2 from './components/EditDialog2';
 import DeleteBalloon from './components/DeleteBalloon';
-import { postkaiLiaojilu, getGoodsType, postAddMaterialsRecord, postUpdateState, postUpdataMaterialsRecord, updateOrderState } from './../../../../api';
+import { postkaiLiaojilu, getGoodsType, postAddMaterialsRecord, postUpdateState, postUpdataMaterialsRecord, updateOrderState,postUrl } from '@/api';
+import { templateQuery } from '@/api/apiUrl';
+import {API_URL} from '@/config';
 
 const Toast = Feedback.toast;
 const TabPane = Tab.TabPane;
@@ -14,6 +16,7 @@ const TabPane = Tab.TabPane;
 const tabs = [
   { tab: '全部', key: 'all' },
 ];
+const { Row, Col } = Grid;
 
 export default class TabTable extends Component {
   static displayName = 'TabTable';
@@ -28,6 +31,9 @@ export default class TabTable extends Component {
       dataSource: {},
       goodsType: [],
       tabKey: 'all',
+      current: 1,
+      total:1,
+      templateList: [],  //模板列表
     };
     this.columns = [
       {
@@ -37,10 +43,16 @@ export default class TabTable extends Component {
         width: 100,
       },
       {
+        title: '开料模板',
+        dataIndex:'templateName',
+        key:'templateName',
+        width:80,
+      },
+      {
         title: '规格',
         dataIndex: 'size',
         key: 'size',
-        width: 70,
+        width: 100,
       },
       {
         title: '开料数',
@@ -70,6 +82,7 @@ export default class TabTable extends Component {
         title: '最后操作时间',
         dataIndex: 'time',
         key: 'time',
+        width: 100,
       },
       {
         title: '状态',
@@ -96,36 +109,52 @@ export default class TabTable extends Component {
   }
 
   componentDidMount() {
+    this.getTemplateList();
+  }
+
+  //改变模板 查询数据
+  changeTemplate = (value) => {
+    this.getIndexData(value);
+  }
+  //批量下载表格
+  intallExcel = () => {
+    let { dataSource } = this.state;
+    let recordIds = dataSource['all'].map(item=>item.id).join(',');
+    window.location.href=`${API_URL}/materialsExcel.do?recordIds=${recordIds}`;
+  }
+
+  getTemplateList = async () => {
+    let response = await postUrl(templateQuery);
+    let templateList = response.data.data.map(item=>{
+      return ({
+        label:item.name,
+        value:item.id
+      })
+    });
+    templateList.unshift({label:"全部模板", value:""});
+    this.setState({ templateList });
+    //获取完列表再获取首页数据
     this.getIndexData();
   }
 
+  templateIdToName = (id) => {
+    let { templateList } = this.state;
+    let name = "";
+    templateList.forEach(item=>{
+      if(item.value==id){
+        name=item.label;
+        return false;
+      }
+    })
+    return name;
+  }
+
   getFormValues = async (dataIndex, values) => {
-    //values.number 生产的数量
-    // let params={
-    //   "orderMaterialsRecord.id":values.id,
-    //   "orderMaterialsRecord.name":values.name,
-    //   "orderMaterialsRecord.nameColor":values.nameColor,
-    //   "orderMaterialsRecord.orderId":values.orderId,
-    //   "orderMaterialsRecord.outNum":values.outNum,
-    //   "orderMaterialsRecord.proNum":Number(values.proNum)+Number(values.number),
-    //   "orderMaterialsRecord.putNum":values.putNum,
-    //   "orderMaterialsRecord.size":values.size,
-    //   "orderMaterialsRecord.sizeColor":values.sizeColor,
-    //   "orderMaterialsRecord.count":values.count,
-    //   "orderMaterialsRecord.countColor":values.countColor,
-    //   "orderMaterialsRecord.installNum":values.installNum,
-    //   "orderMaterialsRecord.state":values.state,
-    //   "orderMaterialsRecord.time":values.time,
-    //   "orderMaterialsRecord.remark":values.remark,
-    //   "orderMaterialsRecord.remarkColor":values.remarkColor,
-    //   "orderMaterialsRecord.unproNum":Number(values.unproNum)-Number(values.number),
-    //   "orderMaterialsRecord.uninstallNum":values.uninstallNum,
-    // };
     let params={
       "orderMaterialsRecord.id":values.id,
       "orderMaterialsRecord.proNum":Number(values.proNum)+Number(values.number),
       "orderMaterialsRecord.unproNum":Number(values.unproNum)-Number(values.number)
-    }
+    };
     const data = await updateOrderState(params);
     if(data.data.state="success"){
       Toast.success("成功");
@@ -135,9 +164,9 @@ export default class TabTable extends Component {
     }
   }
 
-  getIndexData = async () => {
-    const data = await postkaiLiaojilu({orderId: this.props.id});
-    let dataSource=data.data.list.map((item)=>{
+  getIndexData = async (id="") => {
+    const data = await postkaiLiaojilu({orderId: this.props.id, templateId: id});
+    let dataSource=data.data.data.map((item)=>{
       return({
         id: item.id,
         name: item.name,
@@ -146,8 +175,13 @@ export default class TabTable extends Component {
         outNum: item.outNum,
         proNum: item.proNum,
         putNum: item.putNum,
-        size: item.size,
-        sizeColor: item.sizeColor,
+        size: item.length+"*"+item.width+'*'+item.height,
+        length: item.length,
+        lengthColor: item.lengthColor,
+        width: item.width,
+        widthColor: item.widthColor,
+        height: item.height,
+        heightColor: item.heightColor,
         count: item.count,
         countColor: item.countColor,
         installNum: item.installNum,
@@ -158,12 +192,15 @@ export default class TabTable extends Component {
         stateName: item.state==2?"已作废":"生效单",
         unproNum: item.unproNum,
         uninstallNum: item.uninstallNum,
+        templateName: this.templateIdToName(item.templateId),
+        img: item.img==null?"":item.img,
       });
     })
-    this.setState({ dataSource:{ all: dataSource.filter(item=>item.state !=0) } });
+    this.setState({
+      dataSource:{ all: dataSource.filter(item=>item.state !=0) },
+      total: data.data.total
+    });
   }
-
-
 
   handleTabChange = (key) => {
     this.setState({
@@ -171,13 +208,35 @@ export default class TabTable extends Component {
     });
   };
 
+  //翻页
+  handleChange(current) {
+        this.setState({
+            current
+        });
+  }
+
   render() {
-    const { dataSource, goodsType } = this.state;
+    const { dataSource, goodsType, templateList } = this.state;
     const { id } = this.props;
     return (
       <div className="tab-table">
         <IceContainer>
           <h2 style={{ textAlign: "center" }}>订单{id}生产单</h2>
+          <Row>
+            <Col span="3" style={{lineHeight:"28px"}} >选择下载类别：</Col>
+            <Col span="7" style={{lineHeight:"32px"}}>
+              <Select
+                style={{ width:"200px"}}
+                dataSource={templateList}
+                onChange={this.changeTemplate}
+              />
+            </Col>
+            <Col>
+              <Button type="primary" onClick={this.intallExcel}>下载</Button>
+            </Col>
+          </Row>
+        </IceContainer>
+        <IceContainer>
           <Tab onChange={this.handleTabChange}>
             {tabs.map((item) => {
               return (
@@ -191,6 +250,12 @@ export default class TabTable extends Component {
               );
             })}
           </Tab>
+          <Pagination
+            style={{float: "right"}}
+            current={this.state.current}
+            total={this.state.total}
+            onChange={this.handleChange}
+          />
           <Button onClick={this.props.goBack}>返回</Button>
         </IceContainer>
       </div>

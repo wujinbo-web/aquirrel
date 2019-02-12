@@ -37,3 +37,33 @@ export const leavingMessageDelete = "deleteLeaveWord.do";
 
 //查看订单详情
 export const orderQuery = "findOrder.do";
+
+//智能开料 添加模板
+export const templateAdd = "saveTemplate.do";
+//智能开料 删除模板
+export const templateDelete = "deleteTemplate.do";
+//智能开料 查询模板其他规格
+export const otherSizeQuery = "querySpecByTid.do";
+//智能开料 查询模板部件详情
+export const partDetailQuery = "queryPartsByTid.do";
+//智能开料 修改模板其他规格
+export const otherSizeUpdate = "updateSpec.do";
+//智能开料 修改模板部件
+export const templatePartUpdate = "updateParts.do";
+//智能开料 新增模板规格
+export const otherSizeAdd = "saveSpec.do";
+//智能开料 新增模板部件
+export const templatePartAdd = "saveParts.do";
+
+//智能开料 删除模板部件
+export const templatePartDelete = "deleteParts.do";
+//智能开料 删除模板规格
+export const otherSizeDelete = "deleteSpec.do";
+//智能开料 查询模板
+export const templateQuery = "queryTemplateById.do";
+//智能开料 查询模板 分页
+export const templateListQuery = "queryTemplateBy.do";
+//智能开料 修改部件属性
+export const departUpdate = "updateOrderMaterials.do";
+//智能开料 修改模板名称
+export const templateNameUpdate = "updateTemplate.do";

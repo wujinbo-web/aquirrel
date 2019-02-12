@@ -73,6 +73,11 @@ import PurchaseTotall from './pages/PurchaseTotall';
 import LeavingMessage from './pages/LeavingMessage';
 import InvoicingManage from './pages/InvoicingManage';
 
+/*2019-1-26新增*/
+import KailiaoTemplate from './pages/KailiaoTemplate';
+import KailiaoTemplateEdit from './pages/KailiaoTemplateEdit';
+import KailiaoTemplateEditDetail from './pages/KailiaoTemplateEditDetail';
+
 const routerConfig = [
   {
     path: '/message/add',
@@ -98,6 +103,22 @@ const routerConfig = [
     path: '/user/login',
     component: UserLogin,
     layout: UserLayout,
+  },
+  /*2019-1-26新增*/
+  {
+    path: '/desgin/tempalte',
+    component: KailiaoTemplate,
+    layout: BasicLayout,
+  },
+  {
+    path: '/desgin/tempalteedit',
+    component: KailiaoTemplateEdit,
+    layout: BasicLayout,
+  },
+  {
+    path: '/desgin/tempalteeditdetail',
+    component: KailiaoTemplateEditDetail,
+    layout: BasicLayout,
   },
   //自己新增的
   //首页

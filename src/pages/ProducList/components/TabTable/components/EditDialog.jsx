@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Dialog, Button, Form, Input, Field, Table } from '@icedesign/base';
+import { Dialog, Button, Form, Input, Field, Table, Grid } from '@icedesign/base';
 import { postQueryKailiao } from './../../../../../api';
 import {API_URL} from './../../../../../config';
 
 const FormItem = Form.Item;
+const { Row, Col } = Grid;
+const aliOssUrl = "https://songshu-image.oss-cn-shanghai.aliyuncs.com/";
 
 export default class EditDialog extends Component {
   static displayName = 'EditDialog';
@@ -28,13 +30,17 @@ export default class EditDialog extends Component {
       return({
         index:index+1,
         name:item.name,
-        size:item.size,
+        length: item.length,
+        lengthColor: item.lengthColor,
+        width: item.width,
+        widthColor: item.widthColor,
+        height:item.height,
+        heightColor:item.heightColor,
         count:item.count,
         materials: item.materials,
         demand: item.demand,
         id: item.id,
         nameColor: item.nameColor,
-        sizeColor: item.sizeColor,
         materialsColor: item.materialsColor,
         demandColor: item.demandColor,
         countColor: item.countColor,
@@ -59,7 +65,7 @@ export default class EditDialog extends Component {
   //下载excel表格
   installExcel = async () => {
     const { record,orderId } = this.props;
-    window.location.href=`${API_URL}/materialsExcel.do?orderId=${orderId}&recordId=${record.id}`;
+    window.location.href=`${API_URL}/materialsExcel.do?recordIds=${record.id}`;
   }
 
   render() {
@@ -110,13 +116,36 @@ export default class EditDialog extends Component {
             <Table.Column title="序号" dataIndex="index" width={60}/>
             <Table.Column title="部件名称" dataIndex="name" width={90} cell={render.bind(this,"nameColor")}/>
 
-            <Table.Column title="材料规格" dataIndex="size" cell={render.bind(this,"sizeColor")} />
+            <Table.Column title="规格a" dataIndex="length" cell={render.bind(this,"lengthColor")} />
+            <Table.Column title="规格b" dataIndex="width" cell={render.bind(this,"widthColor")} />
+            <Table.Column title="规格c" dataIndex="height" cell={render.bind(this,"heightColor")} />
             <Table.Column title="数量" dataIndex="count" width={60} cell={render.bind(this,"countColor")} />
             <Table.Column title="材料" dataIndex="materials" cell={render.bind(this,"materialsColor")} />
             <Table.Column title="工艺要求" dataIndex="demand" cell={render.bind(this,"demandColor")} />
 
           </Table>
-          <Button style={{ marginTop:"5px" }}  onClick={this.installExcel} >下载表格</Button>
+          <Row style={styles.installRow}>
+            下载excel表格:
+            <Button
+              style={{marginLeft:"5px"}}
+              size="small"
+              onClick={this.installExcel}
+            >
+              下载表格
+            </Button>
+          </Row>
+
+          <Row style={styles.installRow}>
+          下载图纸：
+          {
+            record.img.split(',').filter(item=>item==""?false:true).map((item,index)=>{
+              return(
+                <a href={aliOssUrl + item} style={{marginRight:"5px"}}>图纸{index+1}</a>
+              )
+            })
+          }
+          </Row>
+
         </Dialog>
       </div>
     );
@@ -124,6 +153,10 @@ export default class EditDialog extends Component {
 }
 
 const styles = {
+  installRow:{
+    marginTop:"5px",
+    lineHeight: "28px"
+  },
   editDialog: {
     display: 'inline-block',
     marginRight: '5px',

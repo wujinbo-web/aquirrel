@@ -153,6 +153,14 @@ const design={
       name: '待开料列表',
       path: '/design/info2',
     },
+    {
+      name:'添加模板',
+      path: '/desgin/tempalte',
+    },
+    {
+      name:'编辑模板',
+      path: '/desgin/tempalteedit',
+    },
   ],
 };
 

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Dialog, Button, Form, Input, Field, Select, Grid, Feedback  } from '@icedesign/base';
+import { otherSizeQuery, otherSizeUpdate } from '@/api/apiUrl';
+import { postUrl } from '@/api';
 
 const Toast = Feedback.toast;
 const FormItem = Form.Item;
@@ -14,12 +16,13 @@ export default class EditDialog extends Component {
     super(props);
     this.state = {
       visible: false,
-      partsData:[""],  //["部件1","部件2"]
       factoryList: [
         {label:"南京厂",value:1},
         {label:"滁州厂",value:2},
         {label:"山东厂",value:3},
       ],
+      otherSize: [], //参数配置
+      templateId: "",
     };
     this.field = new Field(this);
   }
@@ -30,22 +33,50 @@ export default class EditDialog extends Component {
         console.log('Errors in form!!!');
         return;
       }
-      let err=false;
-      let partsData = this.state.partsData;
-      partsData.forEach((item)=>{
-        if(item==""){err=true;return;}
-      });
-      if(err){
-        Toast.error("部件名不能为空");
-        return;
-      }
-      this.props.getFormValues(values,partsData);
+      /*处理部件数据*/
+      // let err=false;
+      // let partsData = this.state.partsData;
+      // partsData.forEach((item)=>{
+      //   if(item==""){err=true;return;}
+      // });
+      // if(err){
+      //   Toast.error("部件名不能为空");
+      //   return;
+      // }
+      this.props.getFormValues(values, this.state.templateId);
       this.setState({
-        partsData: [""],
         visible: false,
       });
     });
   };
+
+  //获取模板的其他规格列表
+  getOtherSize = async (value) => {
+    let { templateId } = this.state;
+    templateId = value;
+    let response = await postUrl(otherSizeQuery,{templateId: value});
+    let otherSize = response.data.data;
+    this.setState({ otherSize, templateId });
+  }
+  //输入修改值
+  changeOtherSize = (index, value) => {
+    let { otherSize } = this.state;
+    otherSize[index].size = value;
+    this.setState({});
+  }
+  //失焦保存数据
+  upDateOtherSize = async(value) => {
+    let response = await postUrl(otherSizeUpdate, {
+      "spec.name":value.name,
+      "spec.size":value.size,
+      "spec.templateId":value.templateId,
+      "spec.id":value.id,
+      "spec.vbname":value.vbname,
+    });
+    if(response.data.state!="success"){
+      Toast.error(response.data.msg);
+    }
+  }
 
   onOpen = () => {
     this.setState({
@@ -59,25 +90,10 @@ export default class EditDialog extends Component {
     });
   };
 
-  addParts = () => {
-    this.state.partsData.push("");
-    this.setState({});
-  }
-
-  reduceParts = (index) => {
-    this.state.partsData.splice(index, 1);
-    this.setState({});
-  }
-
-  changeValue = (index,value) => {
-    this.state.partsData[index]=value;
-    this.setState({});
-  }
-
   render() {
     const init = this.field.init;
-    const { partsData, factoryList } = this.state;
-    const { goodsType } = this.props;
+    const { factoryList, otherSize } = this.state;
+    const { goodsType, templateList } = this.props;
     return (
       <div style={styles.editDialog}>
         <Button
@@ -109,7 +125,7 @@ export default class EditDialog extends Component {
             </FormItem>
             <FormItem label="产品：" {...formItemLayout}>
               <Select
-                style={{width:"200px"}}
+                style={{width:"100%"}}
                 size="large"
                 placeholder="请选择..."
                 dataSource={goodsType}
@@ -118,13 +134,56 @@ export default class EditDialog extends Component {
                 })}
               />
             </FormItem>
+            <FormItem label="选择开料模板：" {...formItemLayout} >
+              <Select
+                style={{width:"100%"}}
+                size="large"
+                placeholder="请选择..."
+                dataSource={templateList}
+                onChange={this.getOtherSize}
+              />
+            </FormItem>
             <FormItem label="规格：" {...formItemLayout}>
               <Input
-                {...init('size', {
+                style={{ width:"120px", marginRight:"5px" }}
+                placeholder="规格a"
+                {...init('length', {
+                  rules: [{ required: true, message: '必填选项' }],
+                })}
+              />
+              <Input
+                style={{ width:"120px", marginRight:"5px" }}
+                placeholder="规格b"
+                {...init('width', {
+                  rules: [{ required: true, message: '必填选项' }],
+                })}
+              />
+              <Input
+                style={{ width:"120px" }}
+                placeholder="规格c"
+                {...init('height', {
                   rules: [{ required: true, message: '必填选项' }],
                 })}
               />
             </FormItem>
+
+            <FormItem label="其他规格：" {...formItemLayout}>
+              {
+                otherSize.map((item,index)=>{
+                  return(
+                    <Input
+                      key={index}
+                      style={{ width:"120px", marginRight:"5px" }}
+                      placeholder={item.name}
+                      onChange={this.changeOtherSize.bind(this,index)}
+                      onBlur={this.upDateOtherSize.bind(this,item)}
+                    />
+                  )
+                })
+              }
+
+            </FormItem>
+
             <FormItem label="开料数：" {...formItemLayout}>
               <Input
                 {...init('number', {
@@ -137,27 +196,7 @@ export default class EditDialog extends Component {
                 {...init('remark')}
               />
             </FormItem>
-            <hr/>
-            <Row style={{ marginBottom:"5px" }} align="center">
-              <Col span="4" type="primary" style={{ textAlign: "right" }} >部件：</Col>
-              <Col><Button size="small" onClick={this.addParts}>+</Button></Col>
-            </Row>
-            <Row style={styles.addRow}>
-              <Col style={styles.addCol}>
-                {
-                  partsData.map((item,index)=>{
-                    return (<span style={styles.addSpan} key={index}>
-                      <Input
-                        style={styles.addInput}
-                        value={item}
-                        onChange={this.changeValue.bind(this, index)}
-                      />
-                      <Button size="small" shape="warning" onClick={()=>{this.reduceParts(index)}}>—</Button>
-                    </span>);
-                  })
-                }
-              </Col>
-            </Row>
+
 
           </Form>
         </Dialog>
@@ -171,7 +210,7 @@ const formItemLayout = {
     fixedSpan: 6,
   },
   wrapperCol: {
-    span: 14,
+    span: 16,
   },
 };
 
@@ -196,3 +235,40 @@ const styles = {
     marginRight:"5px",
   }
 };
+
+/*添加部件名*/
+// <hr/>
+// <Row style={{ marginBottom:"5px" }} align="center">
+//   <Col span="4" type="primary" style={{ textAlign: "right" }} >部件：</Col>
+//   <Col><Button size="small" onClick={this.addParts}>+</Button></Col>
+// </Row>
+// <Row style={styles.addRow}>
+//   <Col style={styles.addCol}>
+//     {
+//       partsData.map((item,index)=>{
+//         return (<span style={styles.addSpan} key={index}>
+//           <Input
+//             style={styles.addInput}
+//             value={item}
+//             onChange={this.changeValue.bind(this, index)}
+//           />
+//           <Button size="small" shape="warning" onClick={()=>{this.reduceParts(index)}}>—</Button>
+//         </span>);
+//       })
+//     }
+//   </Col>
+// </Row>
+
+/*添加部件功能实现*/
+// addParts = () => {
+//   this.state.partsData.push("");
+//   this.setState({});
+// }
+// changeValue = (index,value) => {
+//   this.state.partsData[index]=value;
+//   this.setState({});
+// }
+// reduceParts = (index) => {
+//   this.state.partsData.splice(index, 1);
+//   this.setState({});
+// }
