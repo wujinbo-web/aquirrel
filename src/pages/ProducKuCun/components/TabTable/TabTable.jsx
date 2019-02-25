@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
-import { Tab, Feedback, Loading, Pagination, Select  } from '@icedesign/base';
+import { Tab, Feedback, Loading, Pagination, Select, Grid  } from '@icedesign/base';
 import axios from 'axios';
 import CustomTable from './components/CustomTable';
 import EditDialog from './components/EditDialog';
 import DeleteBalloon from './components/DeleteBalloon';
-import { postQueryMaterials, postAddMaterials, postDeleteMaterials, postUpdateMaterials, queryMaterialsTypeList } from './../../../../api';
+import { postQueryMaterials, postAddMaterials, postDeleteMaterials, postUpdateMaterials, queryMaterialsTypeList } from '@/api';
+import { factoryList } from '@/tool/factoryList';
 
 const Toast = Feedback.toast;
 const TabPane = Tab.TabPane;
@@ -13,6 +14,7 @@ const TabPane = Tab.TabPane;
 const tabs = [
   { tab: '全部', key: 'all' }
 ];
+const { Row, Col } = Grid;
 
 export default class TabTable extends Component {
   static displayName = 'TabTable';
@@ -31,6 +33,7 @@ export default class TabTable extends Component {
       visible: false,
       customData: [],
       classId: "",
+      factory: 1
     };
     this.columns = [
       {
@@ -75,13 +78,13 @@ export default class TabTable extends Component {
     this.state.current=current;
      this.setState({});
      //请求数据
-     this.getIndexData(this.state.current,this.state.classId);
+     this.getIndexData(this.state.current,this.state.classId,this.state.factory);
   }
 
   //获取查询数据
-  getIndexData = async (pageIndex,classId) => {
+  getIndexData = async (pageIndex,classId,factoryId=1) => {
     this.setState({visible:true});
-    const data = await postQueryMaterials({pageIndex,classId});
+    const data = await postQueryMaterials({pageIndex,classId,factoryId});
     if(data.data.state="success"){
       //data.data.total  总数  data.data.pageIndex 页码
       let dataSource = data.data.data.map((item)=>{
@@ -112,7 +115,7 @@ export default class TabTable extends Component {
       visible:false,
       customData,
     });
-    this.getIndexData(this.state.current,this.state.classId);
+    this.getIndexData(this.state.current,this.state.classId, this.state.factory);
   }
 
 
@@ -123,10 +126,14 @@ export default class TabTable extends Component {
     });
   };
 
-  changeSearch = (value) => {
-    this.state.classId=value;
+  changeSearch = (name, value) => {
+    if(name=="type"){
+      this.state.classId=value
+    }else if (name="factory"){
+      this.state.factory=value
+    }
     this.setState({});
-    this.getIndexData(this.state.current,value);
+    this.getIndexData(this.state.current,this.state.classId,this.state.factory);
   }
 
   render() {
@@ -136,16 +143,33 @@ export default class TabTable extends Component {
         <Loading visible={this.state.visible} style={{display: 'block'}} shape="fusion-reactor">
         <IceContainer>
           <h2 style={{textAlign:"center"}}>查看库存</h2>
-            <div style={{ position: "relative" }}>
-              <Select
+            <Row>
+              <Col span="2" style={{lineHeight:"32px", textAlign: "center"}}>
+                类别：
+              </Col>
+              <Col span="4">
+                <Select
                   size="large"
                   placeholder="请选择..."
-                  style={{width:"200px"}}
                   dataSource={customData}
-                  onChange={this.changeSearch}
-                  style={{ position: "absolute" , bottom: "10px", width: "300px" }}
-              />
-            </div>
+                  onChange={this.changeSearch.bind(this,"type")}
+                  style={{ width:"100%" }}
+                />
+              </Col>
+              <Col span="2" style={{lineHeight:"32px", textAlign: "center"}}>
+                工厂：
+              </Col>
+              <Col span="4">
+                <Select
+                  size="large"
+                  placeholder="请选择..."
+                  dataSource={ factoryList }
+                  style={{ width:"100%" }}
+                  defaultValue={[{label:"南京厂", value: 1}]}
+                  onChange={this.changeSearch.bind(this,"factory")}
+                />
+              </Col>
+            </Row>
           <Tab onChange={this.handleTabChange}>
             {tabs.map((item) => {
               return (

@@ -190,7 +190,7 @@ const produc={
     {
       name: '查看库存',
       path: '/produc/kucun',
-    },
+    }
   ],
 };
 
@@ -264,9 +264,15 @@ const message={
   ],
 };
 
+const orderDetail = {
+  name: '订单基础信息',
+  path: '/orderDetail',
+  icon: 'copy',
+}
+
 
 //const asideMenuConfig = [home, goods, goods2, customer,customer2, personnel,personnel2, department,department2, order, finance,finance2, design,design2, produc,produc2, project,project2, purchase,purchase2, message ];
-const asideMenuConfig = [home, goods, customer, personnel, department, order, finance, design, produc, project, purchase, message ];
+const asideMenuConfig = [home,order,orderDetail, customer,  finance, design, purchase, produc, project, goods, department, personnel,message,  ];
 
 // function editMenu(authority){
 //   if(authority=="admin"){

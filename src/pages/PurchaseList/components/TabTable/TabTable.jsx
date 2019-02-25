@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
-import { Tab, Feedback, Loading, Pagination, Select  } from '@icedesign/base';
+import { Tab, Feedback, Loading, Pagination, Select, Grid, Input, Button  } from '@icedesign/base';
 import axios from 'axios';
 import CustomTable from './components/CustomTable';
 import EditDialog from './components/EditDialog';
 import AddGoods from './components/AddGoods';
 import DeleteBalloon from './components/DeleteBalloon';
-import { postQueryMaterials, postAddMaterials, postDeleteMaterials, postUpdateMaterials, queryMaterialsTypeList } from './../../../../api';
+import { postQueryMaterials, postAddMaterials, postDeleteMaterials, postUpdateMaterials, queryMaterialsTypeList } from '@/api';
+import { factoryList } from '@/tool/factoryList';
 
 const Toast = Feedback.toast;
 const TabPane = Tab.TabPane;
@@ -14,6 +15,7 @@ const TabPane = Tab.TabPane;
 const tabs = [
   { tab: '全部', key: 'all' }
 ];
+const { Row, Col } = Grid;
 
 export default class TabTable extends Component {
   static displayName = 'TabTable';
@@ -32,6 +34,8 @@ export default class TabTable extends Component {
       visible: false,
       customData: [],
       classId: "",
+      factory: 1,  //工厂id
+      name: "",  //模糊搜索的名字
     };
     this.columns = [
       {
@@ -68,7 +72,13 @@ export default class TabTable extends Component {
         title: '单价',
         dataIndex: 'price',
         key: 'price',
-        width: 100,
+        width: 80,
+      },
+      {
+        title: '单位',
+        dataIndex: 'unit',
+        key: 'unit',
+        width: 80,
       },
       {
         title: '合计',
@@ -103,16 +113,17 @@ export default class TabTable extends Component {
 
   //修改页码
   handleChange = (current) => {
+    let { classId, factory, name } = this.state;
     this.state.current=current;
      this.setState({});
      //请求数据
-     this.getIndexData(this.state.current,this.state.classId);
+     this.getIndexData(this.state.current,classId, factory, name);
   }
 
   //获取查询数据
-  getIndexData = async (pageIndex,classId) => {
+  getIndexData = async (pageIndex,classId,factoryId=1,name) => {
     this.setState({visible:true});
-    const data = await postQueryMaterials({pageIndex,classId});
+    const data = await postQueryMaterials({pageIndex,classId,factoryId,name});
     if(data.data.state="success"){
       //data.data.total  总数  data.data.pageIndex 页码
       let dataSource = data.data.data.map((item)=>{
@@ -126,6 +137,7 @@ export default class TabTable extends Component {
           price:item[0].price,
           priceCount: Number(item[0].price) * Number(item[0].putNum),
           classId: item[0].classId,
+          unit: item[0].unit,
         });
       });
       this.setState({ dataSource:{all:dataSource},total: data.data.total,visible:false, });
@@ -134,6 +146,7 @@ export default class TabTable extends Component {
 
   //获取列别
   getTypeData = async () =>{
+    let { current, classId, factory, name } = this.state;
     this.setState({ visible: true });
     const response = await queryMaterialsTypeList({ pageSize: 50 });
     console.log(response);
@@ -145,11 +158,13 @@ export default class TabTable extends Component {
       visible:false,
       customData,
     });
-    this.getIndexData(this.state.current,this.state.classId);
+    this.getIndexData(current,classId,factory,name);
   }
 
   //修改入库数出库数
   getFormValues = async (dataIndex, values) => {
+    let { factory } = this.state;
+    console.log(factory,"？？");
     //id: 17,name: "钢铁直男2",nowNum: 0,outNum: "3",putNum: "3"
     this.setState({visible:true});
     let params = {
@@ -157,9 +172,11 @@ export default class TabTable extends Component {
       "materialsMain.name":values.name,
       "materialsMain.putNum":values.putNum,
       "materialsMain.outNum":values.outNum,
-      "materialsMain.nowNum":values.nowNum,
+      "materialsMain.nowNum":Number(values.putNum) - Number(values.outNum),
       "materialsMain.price":values.price,
       "materialsMain.classId":values.classId,
+      "materialsMain.factoryId":factory,
+      "materialsMain.unit":values.unit,
     };
     const response = await postUpdateMaterials(params);
     if(response.data.msg=="200"){
@@ -168,6 +185,7 @@ export default class TabTable extends Component {
 
       dataSource[tabKey][dataIndex] = values;
       dataSource[tabKey][dataIndex].priceCount=Number(values.price) * Number(values.putNum);
+      dataSource[tabKey][dataIndex].nowNum = Number(values.putNum) - Number(values.outNum);
       this.setState({
         dataSource,
       });
@@ -215,17 +233,21 @@ export default class TabTable extends Component {
     if(response.data.msg=="200"){
       Toast.success("添加成功");
       //查询一遍
-      this.getIndexData(this.state.current,this.state.classId);
+      this.getIndexData(this.state.current,this.state.classId,this.state.factory);
     }else {
       Toast.error(response.data.msg);
     }
     this.setState({visible:false});
   }
 
-  changeSearch = (value) => {
-    this.state.classId=value;
+  changeSearch = (type, value) => {
+    if(type=="type"){
+      this.state.classId=value;
+    }else if (type=="factory"){
+      this.state.factory=value;
+    }
     this.setState({});
-    this.getIndexData(this.state.current,value);
+    this.getIndexData(this.state.current,this.state.classId, this.state.factory, this.state.name);
   }
 
   render() {
@@ -235,16 +257,49 @@ export default class TabTable extends Component {
         <Loading visible={this.state.visible} style={{display: 'block'}} shape="fusion-reactor">
         <IceContainer>
           <h2 style={{textAlign:"center"}}>材料库</h2>
-          <div style={{ position: "relative" }}>
-            <Select
+          <Row style={{ marginBottom: "10px" }}>
+            <Col span="2" style={{lineHeight:"32px", textAlign: "center"}}>
+              类别：
+            </Col>
+            <Col span="4">
+              <Select
                 size="large"
                 placeholder="请选择..."
-                style={{width:"200px"}}
                 dataSource={customData}
-                onChange={this.changeSearch}
-                style={{ position: "position" , bottom: "-20px", width: "300px" }}
-            />
-          </div>
+                onChange={this.changeSearch.bind(this,"type")}
+                style={{ width:"100%" }}
+              />
+            </Col>
+            <Col span="2" style={{lineHeight:"32px", textAlign: "center"}}>
+              工厂：
+            </Col>
+            <Col span="4">
+              <Select
+                size="large"
+                placeholder="请选择..."
+                dataSource={ factoryList }
+                style={{ width:"100%" }}
+                defaultValue={[{label:"南京厂", value: 1}]}
+                onChange={this.changeSearch.bind(this,"factory")}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span="2" style={{lineHeight:"32px", textAlign: "center"}}>
+              名称：
+            </Col>
+            <Col span="4">
+              <Input
+                placeholder="请输入商品名称"
+                onChange={(value)=>{this.setState({name: value})}}
+                style={{ width: "100%", marginRight: "10px" }}
+              />
+            </Col>
+            <Col>
+              <Button type="primary" onClick={this.changeSearch}>模糊搜索</Button>
+            </Col>
+          </Row>
+
           <AddGoods addMaterialName={this.addMaterialName} />
           <Tab onChange={this.handleTabChange}>
             {tabs.map((item) => {

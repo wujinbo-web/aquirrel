@@ -43,6 +43,7 @@ import ProjectList3 from './pages/ProjectList3';
 import MessageInfo from './pages/MessageInfo';
 import FinanceList from './pages/FinanceList';
 import OrderDetail from './pages/OrderDetail';
+import OrderDetail2 from './pages/OrderDetail2';
 import ProducMaterialManage from './pages/ProducMaterialManage';
 import DesignAddList from './pages/DesignAddList';
 import DesignAddDetail from './pages/DesignAddDetail';
@@ -72,6 +73,7 @@ import FinanceInvoicingList from './pages/FinanceInvoicingList';
 import PurchaseTotall from './pages/PurchaseTotall';
 import LeavingMessage from './pages/LeavingMessage';
 import InvoicingManage from './pages/InvoicingManage';
+import OrderInfoDetail from './pages/OrderInfoDetail';
 
 /*2019-1-26新增*/
 import KailiaoTemplate from './pages/KailiaoTemplate';
@@ -126,6 +128,11 @@ const routerConfig = [
     path: '/home',
     layout: BasicLayout,
     component: Home,
+  },
+  {
+    path: '/orderinfo/detail',
+    layout: BasicLayout,
+    component: OrderInfoDetail,
   },
 
   //人员添加
@@ -371,6 +378,11 @@ const routerConfig = [
     path: '/order/detail',
     layout: BasicLayout,
     component: OrderDetail,
+  },
+  {
+    path: '/orderDetail',
+    layout: BasicLayout,
+    component: OrderDetail2,
   },
   {
     path: '/produc/materialmanage',

@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Dialog, Button, Form, Input, Field, Select } from '@icedesign/base';
-import { queryMaterialsTypeList } from '@/api';
+import { Dialog, Button, Form, Input, Field } from '@icedesign/base';
 
 const FormItem = Form.Item;
 
-export default class AddGoods extends Component {
-  static displayName = 'AddGoods';
+export default class EditDialog extends Component {
+  static displayName = 'EditDialog';
 
   static defaultProps = {};
 
@@ -13,9 +12,9 @@ export default class AddGoods extends Component {
     super(props);
     this.state = {
       visible: false,
-      customData: [],
+      dataIndex: null,
     };
-    this.field = new Field(this,{autoUnmount: true});
+    this.field = new Field(this);
   }
 
   handleSubmit = () => {
@@ -26,21 +25,18 @@ export default class AddGoods extends Component {
       }
 
       const { dataIndex } = this.state;
-      this.props.addMaterialName(values);
+      this.props.getFormValues(dataIndex, values);
       this.setState({
         visible: false,
       });
     });
   };
 
-  onOpen = async () => {
-    const response = await queryMaterialsTypeList({ pageSize: 50 });
-    let customData=response.data.data.map((item)=>{
-      return({ label: item.name, value: item.id });
-    })
+  onOpen = (index, record) => {
+    this.field.setValues({ ...record });
     this.setState({
       visible: true,
-      customData,
+      dataIndex: index,
     });
   };
 
@@ -52,7 +48,7 @@ export default class AddGoods extends Component {
 
   render() {
     const init = this.field.init;
-    const { customData } = this.state;
+    const { index, record } = this.props;
     const formItemLayout = {
       labelCol: {
         fixedSpan: 6,
@@ -67,9 +63,9 @@ export default class AddGoods extends Component {
         <Button
           size="small"
           type="primary"
-          onClick={() => this.onOpen()}
+          onClick={() => this.onOpen(index, record)}
         >
-          添加材料
+          编辑
         </Button>
         <Dialog
           style={{ width: 640 }}
@@ -81,32 +77,35 @@ export default class AddGoods extends Component {
           title="编辑"
         >
           <Form direction="ver" field={this.field}>
-            <FormItem label="材料名称：" {...formItemLayout}>
+            <FormItem label="标题：" {...formItemLayout}>
               <Input
-                {...init('name', {
+                {...init('title', {
                   rules: [{ required: true, message: '必填选项' }],
                 })}
               />
             </FormItem>
-            <FormItem label="材料类别：" {...formItemLayout}>
-              <Select
-                  size="large"
-                  placeholder="请选择..."
-                  style={{width:"200px"}}
-                  dataSource={customData}
-                  {...init("type",{rules:[{required: true, message: '必填选项'}]})}
-              />
-            </FormItem>
-            <FormItem label="价格：" {...formItemLayout}>
+
+            <FormItem label="作者：" {...formItemLayout}>
               <Input
-                {...init('price', {
-                  rules: [{ required: true, message: '必填选项' },{ pattern:/^\d{1,8}([\.]\d{0,2})?$/, message: '请输入八位数字，小数点后面两位'}],
+                {...init('author', {
+                  rules: [{ required: true, message: '必填选项' }],
                 })}
               />
             </FormItem>
-            <FormItem label="单位：" {...formItemLayout}>
+
+            <FormItem label="状态：" {...formItemLayout}>
               <Input
-                {...init('unit')}
+                {...init('status', {
+                  rules: [{ required: true, message: '必填选项' }],
+                })}
+              />
+            </FormItem>
+
+            <FormItem label="发布时间：" {...formItemLayout}>
+              <Input
+                {...init('date', {
+                  rules: [{ required: true, message: '必填选项' }],
+                })}
               />
             </FormItem>
           </Form>
@@ -118,7 +117,7 @@ export default class AddGoods extends Component {
 
 const styles = {
   editDialog: {
-    display: 'block',
-    textAlign:"right",
+    display: 'inline-block',
+    marginRight: '5px',
   },
 };

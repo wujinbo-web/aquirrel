@@ -135,8 +135,13 @@ export default class EditDialog extends Component {
                 listType="text-image"
                 action={`${API_URL}/uploadFile.do`}
                 name="file"
-                accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp"
-                data={ { dir: 'design' } }
+                accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp, .doc, .ppt, .dwt, .dwg, .dws, .dxf"
+                data={(file)=>{
+                  return ({
+                    dir: `design`,
+                    fileFileName: file.name
+                  });
+                }}
                 beforeUpload={beforeUpload}
                 onChange={onChange}
                 onSuccess={onSuccess}

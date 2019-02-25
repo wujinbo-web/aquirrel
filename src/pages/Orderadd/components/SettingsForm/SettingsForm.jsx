@@ -53,7 +53,7 @@ export default class SettingsForm extends Component {
     super(props);
     this.state = {
       value: {
-        custonId: '',
+        custonId: null,
         order: '',
         contractDate: "",
         address: "",
@@ -73,7 +73,6 @@ export default class SettingsForm extends Component {
       .post(`${API_URL}/findCustomerList.do?pageSize=100&pageIndex=1`)
       .then((response)=>{
         this.setState({ visible: false });
-        console.log(response,"客户接口");
         let customData=response.data.data.map((item)=>{
           return { label: item.customer.name, value: item.customer.id  }
         });
@@ -95,8 +94,6 @@ export default class SettingsForm extends Component {
   };
 
   formChange = (value) => {
-    console.log('value', value);
-
     this.setState({
       value,
     });
@@ -134,7 +131,6 @@ export default class SettingsForm extends Component {
       axios
         .get(`${API_URL}/saveOrder.do?${query}`)
         .then((response)=>{
-          console.log(response.data,"提交数据");
           if(response.data.state=="success"){
             Toast.success(response.data.msg);
             this.redirct()
@@ -153,7 +149,7 @@ export default class SettingsForm extends Component {
 
 
   render() {
-    const data = new Date();
+    const now = new Date();
     return (
       <div className="settings-form">
         <IceContainer>
@@ -245,7 +241,13 @@ export default class SettingsForm extends Component {
                         action={`${API_URL}/uploadFile.do`}
                         name="file"
                         accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp"
-                        data={ { dir: `order/${data.getFullYear()}_${data.getMonth()+1}_${data.getDate()}`, type:1 } }
+                        data={(file)=>{
+                          return ({
+                            dir: `order/${now.getFullYear()}_${now.getMonth()+1}_${now.getDate()}`,
+                            type:1,
+                            fileFileName: file.name
+                          });
+                        }}
                         beforeUpload={beforeUpload}
                         onChange={onChange}
                         onSuccess={onSuccess}
@@ -267,13 +269,19 @@ export default class SettingsForm extends Component {
                     上传设计图纸：
                   </Col>
                   <Col s="12" l="10" align="center">
-                    <IceFormBinder name="drawing_address" required message="必填">
+                    <IceFormBinder name="drawing_address" >
                       <Upload
                         listType="text-image"
                         action={`${API_URL}/uploadFile.do`}
                         name="file"
-                        accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp"
-                        data={ { dir: `design/${data.getFullYear()}_${data.getMonth()+1}_${data.getDate()}`,type:2 } }
+                        accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp, .doc, .ppt, .dwt, .dwg, .dws, .dxf"
+                        data={(file)=>{
+                          return ({
+                            dir: `design/${now.getFullYear()}_${now.getMonth()+1}_${now.getDate()}`,
+                            type:2,
+                            fileFileName: file.name
+                          });
+                        }}
                         beforeUpload={beforeUpload}
                         onChange={onChange}
                         onSuccess={onSuccess}

@@ -96,8 +96,14 @@ export default class EditDialog extends Component {
             <FormItem label="单价：" {...formItemLayout}>
               <Input
                 {...init('price', {
-                  rules: [{ required: true, message: '必填选项' },{ pattern:/^[0-9]*$/, message: '请输入数字'}],
+                  rules: [{ required: true, message: '必填选项' },{ pattern:/^\d{1,8}([\.]\d{0,2})?$/, message: '请输入数字'}],
                 })}
+              />
+            </FormItem>
+
+            <FormItem label="单位：" {...formItemLayout}>
+              <Input
+                {...init('unit')}
               />
             </FormItem>
 

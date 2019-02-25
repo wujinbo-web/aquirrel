@@ -8,7 +8,8 @@ import DeleteBalloon from './components/DeleteBalloon';
 import FindDetail from './components/FindDetail';
 import AddPutIn from './components/AddPutIn';
 import WriteList from './components/WriteList';
-import { postQueryMaterials, postAddRecord, queryInOutMaterials, upDateInOutMaterialsState, deleteInOutList } from './../../../../api';
+import { postQueryMaterials, postAddRecord, queryInOutMaterials, upDateInOutMaterialsState, deleteInOutList } from '@/api';
+import { factoryList } from '@/tool/factoryList';
 
 const Toast = Feedback.toast;
 const TabPane = Tab.TabPane;
@@ -35,6 +36,11 @@ export default class TabTable extends Component {
       visible: false,
     };
     this.columns = [
+      {
+        title: '工厂',
+        dataIndex: 'factoryName',
+        key: 'factoryName',
+      },
       {
         title: '创建时间',
         dataIndex: 'createTime',
@@ -130,6 +136,15 @@ export default class TabTable extends Component {
     return name;
   }
 
+  factoryIdToName = (id) => {
+    let name = "";
+    factoryList.forEach((item)=>{
+      if(item.value == id ){
+        name = item.label;
+      }
+    })
+    return name;
+  }
 
   //获取首页数据
   getIndexData = async (current) => {
@@ -144,7 +159,8 @@ export default class TabTable extends Component {
         type:item.type,
         typeName:this.typeToName(item.type),
         remark: item.remark,
-        file: item.file
+        file: item.file,
+        factoryName: this.factoryIdToName(item.factoryId)
       });
     });
     this.setState({
@@ -182,7 +198,7 @@ export default class TabTable extends Component {
   };
 
   //添加进货记录单
-  getFormValues = async (json,remark,file) => {
+  getFormValues = async (json,remark,file, factory) => {
     this.setState({ visible: true });
     let dataJson = json.map((item)=>{
       return JSON.stringify(item);
@@ -194,6 +210,7 @@ export default class TabTable extends Component {
       json: `[${data}]`,
       remark  ,
       file,
+      factoryId: factory
     });
     if(response.data.state=="success"){
       Toast.success(response.data.msg);

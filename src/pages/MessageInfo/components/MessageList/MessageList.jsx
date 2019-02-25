@@ -31,12 +31,12 @@ export default class MessageList extends Component {
   getMsgData = (pageIndex) => {
     this.setState({ visible: true });
     axios
-      .get(`${API_URL}/findMessage.do?pageIndex=${pageIndex}`)
+      .get(`${API_URL}/findMessage.do?pageIndex=${pageIndex}&id=${sessionStorage.id}`)
       .then((response)=>{
         console.log(response.data.data);
         this.state.total=response.data.data.total;
         this.state.dataSource=response.data.data.list.map((item)=>{
-          return ({title: item[1].messageHeader, message: item[1].messageContent, datetime: item[1].createTime });
+          return ({ name:item[2].name, title: item[1].messageHeader, message: item[1].messageContent, datetime: item[1].createTime });
         });
         this.setState({visible: false});
       })
@@ -48,7 +48,7 @@ export default class MessageList extends Component {
     return (
       <div style={styles.item} key={idx}>
         <div style={styles.title}>
-          {item.title}
+          <strong style={{fontSize:"16px", color:"black"}}>{item.name +":"}</strong> {item.title}
           <span style={styles.datetime}>{item.datetime}</span>
         </div>
         <div style={styles.message}>{item.message}</div>

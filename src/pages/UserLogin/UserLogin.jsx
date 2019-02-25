@@ -35,6 +35,17 @@ class UserLogin extends Component {
     };
   }
 
+  componentDidMount(){
+    if(localStorage.checkbox=="true"){
+      let value = {
+        username:localStorage.username,
+        password:localStorage.password,
+        checkbox:true
+      };
+      this.setState({ value });
+    }
+  }
+
   formChange = (value) => {
     this.setState({
       value,
@@ -93,7 +104,7 @@ class UserLogin extends Component {
               <Row className="formItem">
                 <Col>
                   <IceFormBinder name="checkbox">
-                    <Checkbox className="checkbox">记住账号</Checkbox>
+                    <Checkbox className="checkbox" checked={this.state.value.checkbox}>记住账号</Checkbox>
                   </IceFormBinder>
                 </Col>
               </Row>

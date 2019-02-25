@@ -234,7 +234,7 @@ export default class DesignKailiaoList extends Component {
   }
 
   render() {
-    const data = new Date();
+    const now = new Date();
     const {
       dataSource,orderId, kailiaoId, kailiaoName,
       kailiaoLength, kailiaoWidth, kailiaoHeight,
@@ -330,8 +330,14 @@ export default class DesignKailiaoList extends Component {
                   listType="text-image"
                   action={`${API_URL}/uploadFile.do`}
                   name="file"
-                  accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp"
-                  data={ { dir: `kailiao/${data.getFullYear()}_${data.getMonth()+1}_${data.getDate()}`, type:1 } }
+                  accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp, .doc, .ppt, .dwt, .dwg, .dws, .dxf"
+                  data={(file)=>{
+                    return ({
+                      dir: `kailiao/${now.getFullYear()}_${now.getMonth()+1}_${now.getDate()}`,
+                      type:1,
+                      fileFileName: file.name
+                    });
+                  }}
                   beforeUpload={beforeUpload}
                   onChange={onChange}
                   onSuccess={onSuccess}

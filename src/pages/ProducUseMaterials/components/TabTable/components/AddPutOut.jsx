@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Dialog, Button, Form, Input, Field, Select, Grid, Feedback } from '@icedesign/base';
-import { getUuid, queryMaterialsTypeList, postQueryMaterials } from './../../../../../api';
+import { getUuid, queryMaterialsTypeList, postQueryMaterials } from '@/api';
+import { factoryList } from '@/tool/factoryList';
 
 const { Row, Col } = Grid;
 const FormItem = Form.Item;
@@ -19,11 +20,13 @@ export default class EditDialog extends Component {
       uuid:"",
       customData: [],
       materialsList: [],
+      classId: '',
+      factory: 1,
     };
   }
 
   handleSubmit = () => {
-    const { uuid, json } = this.state;
+    const { uuid, json, factory } = this.state;
     //做空校验证
     let error=false;
     json.forEach((item)=>{
@@ -38,7 +41,7 @@ export default class EditDialog extends Component {
       return false;
     }
     //做空校验证 end
-    this.props.getFormValues(json);
+    this.props.getFormValues(json, factory);
     this.setState({
       visible: false,
     });
@@ -53,7 +56,7 @@ export default class EditDialog extends Component {
       json:[{name:"",materialsRecordId:response.data.uuid,materialsMainId:"",count:""}]
     });
     //获取分类列表
-    const response2 = await queryMaterialsTypeList({ pageSize: 50 });
+    const response2 = await queryMaterialsTypeList({ pageSize: 500 });
     let customData=response2.data.data.map((item)=>{
       return({ label: item.name, value: item.id });
     })
@@ -64,8 +67,14 @@ export default class EditDialog extends Component {
   };
 
   //改变类别获取材料列表
-  getMaterialsList = async (value) => {
-    const response = await postQueryMaterials({pageSize:50,classId:value});
+  getMaterialsList = (value) => {
+    this.state.classId=value;
+    this.setState({});
+    this.updateList();
+  }
+  //更新列表
+  updateList = async () => {
+    const response = await postQueryMaterials({pageSize:500,classId:this.state.classId,factoryId:this.state.factory});
     let materialsList = response.data.data.map((item)=>{
       return ({label:item[0].name,value:item[0].id});
     })
@@ -117,6 +126,14 @@ export default class EditDialog extends Component {
     this.setState({});
   }
 
+  getFactory = (value) => {
+    this.state.factory = value;
+    this.setState({});
+    if(this.state.classId == "")return false;
+    this.updateList();
+  }
+
+
   render() {
     const { json, customData, materialsList } = this.state;
     const formItemLayout = {
@@ -146,12 +163,25 @@ export default class EditDialog extends Component {
           onClose={this.onClose}
           title="添加出货单"
         >
+        <Row>
+          <Col span="3" style={{ lineHeight:"32px", textAlign:"center" }}>工厂:</Col>
+          <Col span="18">
+            <Select
+              size="large"
+              placeholder="请选择工厂"
+              style={{width:"200px"}}
+              defaultValue={[ { label:"南京厂", value: 1 } ]}
+              dataSource={factoryList}
+              onChange={this.getFactory}
+            />
+          </Col>
+        </Row>
         <Button
           size="small"
           type="primary"
           style={{ marginBottom: "5px" }}
           onClick={this.addItem}
-        >添加</Button>
+        >添加货物</Button>
         {
           json.map((item,index)=>{
             return (
@@ -183,7 +213,7 @@ export default class EditDialog extends Component {
                   />
                 </Col>
                 <Col>
-                  <Button size="small" type='primary' style={{"marginRight": '5px'}} onClick={this.addItem.bind(this,index)}>+</Button>
+
                   <Button size="small" shape="warning" onClick={this.reduceItem.bind(this,index)}>—</Button>
                 </Col>
               </Row>
@@ -205,3 +235,5 @@ const styles = {
     textAlign:"right",
   },
 };
+
+// <Button size="small" type='primary' style={{"marginRight": '5px'}} onClick={this.addItem.bind(this,index)}>+</Button>

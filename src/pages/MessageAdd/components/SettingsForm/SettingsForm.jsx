@@ -43,16 +43,13 @@ export default class SettingsForm extends Component {
       .post(`${API_URL}/findCmsUserBySearch.do?&pageIndex=1`)
       .then((response)=>{
         if(response.data.state=="success"){
-          console.log(response.data);
           let data=response.data.data.map((item)=>{
             return ({label: item.name, value: item.id});
           })
-          console.log(data,"看看");
           this.setState({ person: data });
         }else{
           Toast.error(response.data.msg);
         }
-        console.log(response.data,"客户接口");
 
       })
       .catch((error) => {
@@ -69,7 +66,6 @@ export default class SettingsForm extends Component {
   };
 
   formChange = (value) => {
-    console.log('value', value);
     this.setState({
       value,
     });
@@ -77,7 +73,6 @@ export default class SettingsForm extends Component {
 
   validateAllFormField = () => {
     this.refs.form.validateAll((errors, values) => {
-      console.log('errors', errors, 'values', values);
       let targetId; //目标Id
       if(values.msgType=="system"){//判断为系统消息
         let data=this.state.person.map((item)=>{   //[4,5,6]
@@ -106,7 +101,6 @@ export default class SettingsForm extends Component {
   //修改消息类型
   changeMsg = (value) => {
     this.setState({ msgType: value });
-    console.log(value);
   }
 
   getValue = (value) => {
@@ -167,8 +161,8 @@ export default class SettingsForm extends Component {
                   标题：
                 </Col>
                 <Col s="12" l="10">
-                  <IceFormBinder name="title" required max={10} message="必填">
-                    <Input size="large" placeholder="于江水" />
+                  <IceFormBinder name="title" required message="必填">
+                    <Input size="large" placeholder="标题" />
                   </IceFormBinder>
                   <IceFormError name="title" />
                 </Col>

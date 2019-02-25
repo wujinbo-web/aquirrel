@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
-import { Tab, Feedback, Loading } from '@icedesign/base';
+import { Tab, Feedback, Loading, Pagination } from '@icedesign/base';
 import axios from 'axios';
 import CustomTable from './components/CustomTable';
 import EditDialog from './components/EditDialog';
@@ -26,7 +26,9 @@ export default class TabTable extends Component {
     this.state = {
       dataSource: {},
       tabKey: 'all',
+      current: 1, //当前页码
       visible: true,
+      total: 1,  //总数
     };
     this.columns = [
       {
@@ -61,9 +63,13 @@ export default class TabTable extends Component {
   }
 
   componentDidMount() {
+    this.getIndexData(this.state.current);
+  }
+
+  getIndexData = async (current) => {
     this.setState({ visible: true });
     axios
-      .get(`${API_URL}/findProductClassByName.do?pageSize=20`)
+      .get(`${API_URL}/findProductClassByName.do?pageIndex=${current}`)
       .then((response) => {
         // createTime: "2018-11-08 06:07:28"
         // description: "qqqq"
@@ -75,6 +81,7 @@ export default class TabTable extends Component {
         this.setState({
           dataSource: {all: data},
           visible: false,
+          total: response.data.total
         });
       })
       .catch((error) => {
@@ -119,6 +126,11 @@ export default class TabTable extends Component {
       })
   };
 
+  handleChange = (current) => {
+      this.setState({ current });
+      this.getIndexData(current);
+  }
+
   handleTabChange = (key) => {
     this.setState({
       tabKey: key,
@@ -144,6 +156,7 @@ export default class TabTable extends Component {
               );
             })}
           </Tab>
+          <Pagination current={this.state.current} total={this.state.total} onChange={this.handleChange} />
         </IceContainer>
         </Loading>
       </div>

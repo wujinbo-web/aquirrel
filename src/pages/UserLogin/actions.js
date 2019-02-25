@@ -62,13 +62,22 @@ const userLoginFailure = (payload) => {
 
 export const userLogin = (params) => {
   return async (dispatch) => {
+    if(params.checkbox == true){
+      localStorage.checkbox=params.checkbox;
+      localStorage.username=params.username;
+      localStorage.password=params.password;
+    }else{
+      delete localStorage.checkbox;
+      delete localStorage.username
+      delete localStorage.password
+    }
+
     //派发状态 请求接口
     dispatch(userLoginRequest());
     try {
       //请求接口
       // const response = await login(params);  虚拟接口
       const response = await axios.get(`${API_URL}/webLogin.do?account=${params.username}&password=${params.password}`)
-      console.log(response,"看看登陆的状态");
       //派发状态 请求成功
       dispatch(userLoginSuccess(response.data));
 
@@ -82,6 +91,7 @@ export const userLogin = (params) => {
         //保存个人信息
         sessionStorage.departmentName=response.data.departmentName;  //部门
         sessionStorage.name=response.data.user.name;
+        sessionStorage.id=response.data.user.id;
 
         dispatch(push('/'));
       } else {

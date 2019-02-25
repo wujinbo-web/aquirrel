@@ -34,7 +34,7 @@ export default class TabTable extends Component {
     };
     this.columns = [
       {
-        title: '订单id',
+        title: 'ID',
         dataIndex: 'id',
         key: 'id',
         width: 70,

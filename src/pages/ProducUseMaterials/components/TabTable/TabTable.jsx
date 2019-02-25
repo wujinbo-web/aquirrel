@@ -7,7 +7,8 @@ import EditDialog from './components/EditDialog';
 import DeleteBalloon from './components/DeleteBalloon';
 import FindDetail from './components/FindDetail';
 import AddPutOut from './components/AddPutOut';
-import { postQueryMaterials, postAddRecord, queryInOutMaterials, deleteInOutList } from './../../../../api';
+import { postQueryMaterials, postAddRecord, queryInOutMaterials, deleteInOutList } from '@/api';
+import { factoryList } from '@/tool/factoryList';
 
 const Toast = Feedback.toast;
 const TabPane = Tab.TabPane;
@@ -33,6 +34,11 @@ export default class TabTable extends Component {
       visible: false,
     };
     this.columns = [
+      {
+        title: '工厂',
+        dataIndex: 'factoryName',
+        key: 'factoryName',
+      },
       {
         title: '创建时间',
         dataIndex: 'createTime',
@@ -90,12 +96,29 @@ export default class TabTable extends Component {
     return name;
   }
 
+  factoryIdToName = (id) => {
+    let name = "";
+    factoryList.forEach(item=>{
+      if(item.value==id){
+        name = item.label;
+      }
+    })
+    return name;
+  }
+
   //获取首页数据
   getIndexData = async (current) => {
     this.setState({ visible: true });
     const response = await queryInOutMaterials({ type: 3,pageIndex: current });
     let dataSource = response.data.data.map((item)=>{
-      return ({id:item.id,createTime:item.createTime,checkTime:item.checkTime,name:item.name,typeName:this.typeToName(item.type)});
+      return ({
+        id:item.id,
+        createTime:item.createTime,
+        checkTime:item.checkTime,
+        name:item.name,
+        typeName:this.typeToName(item.type),
+        factoryName: this.factoryIdToName(item.factoryId),
+      });
     });
     this.setState({
       dataSource: { all: dataSource },
@@ -132,13 +155,13 @@ export default class TabTable extends Component {
   };
 
   //添加出货记录单
-  getFormValues = async (json) => {
+  getFormValues = async (json, factory) => {
     this.setState({ visible: true });
     let dataJson = json.map((item)=>{
       return JSON.stringify(item);
     })
     let data = dataJson.join(',');
-    const response = await postAddRecord({ uuid:json[0].materialsRecordId,  type:3, json: `[${data}]` });
+    const response = await postAddRecord({ uuid:json[0].materialsRecordId,  type:3, json: `[${data}]`, factoryId: factory });
     if(response.data.state=="success"){
       Toast.success(response.data.msg);
       this.getIndexData(this.state.current);
