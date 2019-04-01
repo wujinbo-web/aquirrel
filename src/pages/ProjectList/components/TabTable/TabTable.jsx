@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
-import { Tab, Button, Feedback } from '@icedesign/base';
+import { Tab, Button, Feedback, Pagination } from '@icedesign/base';
 import axios from 'axios';
 import CustomTable from './components/CustomTable';
 import EditDialog from './components/EditDialog';
 import DeleteBalloon from './components/DeleteBalloon';
-import { postkaiLiaojilu, getGoodsType, postAddMaterialsRecord, postUpdateState, postUpdataMaterialsRecord, updateOrderState } from './../../../../api';
+import { postkaiLiaojilu, getGoodsType, postAddMaterialsRecord, postUpdateState, updateOrderState } from './../../../../api';
 
 const Toast = Feedback.toast;
 const TabPane = Tab.TabPane;
@@ -27,6 +27,8 @@ export default class TabTable extends Component {
       dataSource: {},
       goodsType: [],
       tabKey: 'all',
+      current: 1,
+      total: 1,
     };
     this.columns = [
       {
@@ -92,27 +94,6 @@ export default class TabTable extends Component {
   }
 
   getFormValues = async (dataIndex, values) => {
-    //values.number 生产的数量
-    // let params={
-    //   "orderMaterialsRecord.id":values.id,
-    //   "orderMaterialsRecord.name":values.name,
-    //   "orderMaterialsRecord.nameColor":values.nameColor,
-    //   "orderMaterialsRecord.orderId":values.orderId,
-    //   "orderMaterialsRecord.outNum":values.outNum,
-    //   "orderMaterialsRecord.proNum":values.proNum,
-    //   "orderMaterialsRecord.putNum":Number(values.putNum)+Number(values.number),
-    //   "orderMaterialsRecord.size":values.size,
-    //   "orderMaterialsRecord.sizeColor":values.sizeColor,
-    //   "orderMaterialsRecord.count":values.count,
-    //   "orderMaterialsRecord.countColor":values.countColor,
-    //   "orderMaterialsRecord.installNum":values.installNum,
-    //   "orderMaterialsRecord.state":values.state,
-    //   "orderMaterialsRecord.time":values.time,
-    //   "orderMaterialsRecord.remark":values.remark,
-    //   "orderMaterialsRecord.remarkColor":values.remarkColor,
-    //   "orderMaterialsRecord.unproNum":values.unproNum,
-    //   "orderMaterialsRecord.uninstallNum":values.uninstallNum,
-    // };
     let params={
       "orderMaterialsRecord.id":values.id,
       "orderMaterialsRecord.jputNum":Number(values.jputNum)+Number(values.number),
@@ -127,8 +108,9 @@ export default class TabTable extends Component {
   }
 
   getIndexData = async () => {
-    const data = await postkaiLiaojilu({orderId: this.props.id});
-    let dataSource=data.data.list.map((item)=>{
+    const data = await postkaiLiaojilu({orderId: this.props.id, pageIndex: this.state.current});
+    this.state.total = data.data.total;
+    let dataSource=data.data.data.map((item)=>{
       return({
         id: item.id,
         name: item.name,
@@ -162,6 +144,13 @@ export default class TabTable extends Component {
     });
   };
 
+  //翻页
+  handleChange = (current) => {
+    this.state.current=current;
+    this.setState({});
+    this.getIndexData();
+  }
+
   render() {
     const { dataSource, goodsType } = this.state;
     const { id } = this.props;
@@ -182,6 +171,12 @@ export default class TabTable extends Component {
               );
             })}
           </Tab>
+          <Pagination
+            style={{float: "right"}}
+            current={this.state.current}
+            total={this.state.total}
+            onChange={this.handleChange}
+          />
           <Button onClick={this.props.goBack}>返回</Button>
         </IceContainer>
       </div>

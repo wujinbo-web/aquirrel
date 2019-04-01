@@ -228,6 +228,7 @@ export default class TabTable extends Component {
         "materialsMain.name":values.name,
         "materialsMain.classId": values.type,
         "materialsMain.price": values.price,
+        "materialsMain.unit": values.unit,
       }
     );
     if(response.data.msg=="200"){

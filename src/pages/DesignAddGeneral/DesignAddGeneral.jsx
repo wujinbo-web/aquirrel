@@ -125,6 +125,7 @@ export default class DesignAddGeneral extends Component {
     if(valueKey=="classId"){
       return (
         <Select
+          style={{ width:"100%" }}
           dataSource={this.state.goodsData}
           onChange={this.changeData.bind(this, index, record, valueKey)}
         />

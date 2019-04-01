@@ -1,7 +1,19 @@
 import React, { Component } from 'react';
-import { Dialog, Button, Form, Input, Field } from '@icedesign/base';
+import { Dialog, Button, Form, Input, Field, Feedback, Upload  } from '@icedesign/base';
+import { API_URL } from '@/config';
 
 const FormItem = Form.Item;
+const Toast = Feedback.toast;
+
+function formatter(res) {
+  return {
+    code: res == '上传失败' ? '1' : '0',   //0代表成功
+    imgURL: res,
+    downloadURL:`https://songshu-image.oss-cn-shanghai.aliyuncs.com/${res}`,
+    fileURL:`https://songshu-image.oss-cn-shanghai.aliyuncs.com/${res}`,
+    imgURL:`https://songshu-image.oss-cn-shanghai.aliyuncs.com/${res}`
+  };
+}
 
 export default class EditDialog extends Component {
   static displayName = 'EditDialog';
@@ -23,9 +35,9 @@ export default class EditDialog extends Component {
         console.log('Errors in form!!!');
         return;
       }
-
+      let address = values.address.fileList.map(item=>item.downloadURL).join(',');
       const { dataIndex } = this.state;
-      this.props.getFormValues(dataIndex, values);
+      this.props.getFormValues(address);
       this.setState({
         visible: false,
       });
@@ -57,7 +69,14 @@ export default class EditDialog extends Component {
         span: 14,
       },
     };
-
+    let data = (file)=>{
+      let now = new Date();
+      return ({
+        dir: `order/${now.getFullYear()}_${now.getMonth()+1}_${now.getDate()}`,
+        type:1,
+        fileFileName: file.name
+      });
+    }
     return (
       <div style={styles.editDialog}>
         <Button
@@ -65,7 +84,7 @@ export default class EditDialog extends Component {
           type="primary"
           onClick={() => this.onOpen(index, record)}
         >
-          编辑
+          提交申请
         </Button>
         <Dialog
           style={{ width: 640 }}
@@ -77,36 +96,24 @@ export default class EditDialog extends Component {
           title="编辑"
         >
           <Form direction="ver" field={this.field}>
-            <FormItem label="总入库数：" {...formItemLayout}>
-              <Input
-                {...init('putNum', {
-                  rules: [{ required: true, message: '必填选项' },{ pattern:/^[0-9]*$/, message: '请输入数字'}],
+            <FormItem label="上传订货单：" {...formItemLayout}>
+              <Upload
+                listType="text"
+                action={`${API_URL}/uploadFile.do`}
+                name="file"
+                accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp"
+                data={data}
+                multiple
+                formatter = {formatter}
+                {...init('address', {
+                  rules: [{ required: true, message: '必填选项' }],
                 })}
-              />
+              >
+                <Button type="primary" style={{ margin: "0 0 10px" }}>
+                  上传
+                </Button>
+              </Upload>
             </FormItem>
-
-            <FormItem label="总出库数：" {...formItemLayout}>
-              <Input
-                {...init('outNum', {
-                  rules: [{ required: true, message: '必填选项' },{ pattern:/^[0-9]*$/, message: '请输入数字'}],
-                })}
-              />
-            </FormItem>
-
-            <FormItem label="单价：" {...formItemLayout}>
-              <Input
-                {...init('price', {
-                  rules: [{ required: true, message: '必填选项' },{ pattern:/^\d{1,8}([\.]\d{0,3})?$/, message: '请输入数字'}],
-                })}
-              />
-            </FormItem>
-
-            <FormItem label="单位：" {...formItemLayout}>
-              <Input
-                {...init('unit')}
-              />
-            </FormItem>
-
           </Form>
         </Dialog>
       </div>
@@ -116,7 +123,7 @@ export default class EditDialog extends Component {
 
 const styles = {
   editDialog: {
-    display: 'inline-block',
     marginRight: '5px',
+    textAlign: 'right',
   },
 };

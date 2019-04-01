@@ -12,7 +12,7 @@ import Logo from '../Logo';
 
 export default class Header extends PureComponent {
   render() {
-    const { profile, isMobile, theme, width, className, style } = this.props;
+    const { profile, isMobile, theme, width, className, style, unReadNum } = this.props;
     return (
       <Layout.Header
         theme={theme}
@@ -54,6 +54,10 @@ export default class Header extends PureComponent {
                         {!isMobile ? nav.name : null}
                       </a>
                     )}
+                    {
+                      unReadNum==""?"":<div style={styles.message}>{unReadNum}</div>
+                    }
+
                   </Menu.Item>
                 );
               })}
@@ -62,7 +66,6 @@ export default class Header extends PureComponent {
           {/* Header 菜单项 end */}
 
           {/* Header 右侧内容块 */}
-
           <Balloon
             trigger={
               <div
@@ -123,4 +126,19 @@ export default class Header extends PureComponent {
       </Layout.Header>
     );
   }
+}
+let styles={
+  message:{
+    position: "absolute",
+    fontSize:'12px',
+    top: '20px',
+    right: 0,
+    background: 'red',
+    width:"18px",
+    height:'18px',
+    lineHeight:'18px',
+    textAlign:'center',
+    borderRadius: "50%",
+    color: 'white',
+  },
 }

@@ -45,7 +45,7 @@ export default class SettingsForm extends Component {
         if(response.data.state=="success"){
           let data=response.data.data.map((item)=>{
             return ({label: item.name, value: item.id});
-          })
+          }).filter(item=>item.id!=sessionStorage.id)
           this.setState({ person: data });
         }else{
           Toast.error(response.data.msg);
@@ -77,13 +77,13 @@ export default class SettingsForm extends Component {
       if(values.msgType=="system"){//判断为系统消息
         let data=this.state.person.map((item)=>{   //[4,5,6]
           return item.value;
-        })
+        }).filter(item=>item!=sessionStorage.id);
         targetId=data.join(',');  //4,5,6
       }else{
         targetId=values.name;   // 4
       }
       axios
-        .get(`${API_URL}/saveMessage.do?targetId=${targetId}&messageParent.messageHeader=${values.title}&messageParent.messageContent=${values.description}`)
+        .get(`${API_URL}/saveMessage.do?targetId=${targetId}&messageParent.messageHeader=${values.title}&messageParent.messageContent=${values.description}&messageParent.cmsUserId=${sessionStorage.id}`)
         .then((response)=>{
           if(response.data.state=="success"){
             Toast.success(response.data.msg);

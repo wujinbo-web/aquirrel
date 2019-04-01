@@ -54,7 +54,7 @@ export default class EditDialog extends Component {
   renderName = (blank,index,record) => {
     // record {name: "黄色石头", count: 100, trueNum: null}
     return (
-      <Input style={{ width: "100%" }} onChange={ this.setTrueNum.bind(this,index) }  />
+      <Input style={{ width: "100%" }} onChange={ this.setTrueNum.bind(this,index) } htmlType="number"  />
     )
   }
 

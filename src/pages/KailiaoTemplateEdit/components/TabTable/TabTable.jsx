@@ -94,7 +94,7 @@ export default class TabTable extends Component {
     this.state.current=current;
     this.setState({});
      //请求数据
-
+     this.getIndexData(current);
   }
 
   render() {

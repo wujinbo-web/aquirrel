@@ -75,10 +75,15 @@ import LeavingMessage from './pages/LeavingMessage';
 import InvoicingManage from './pages/InvoicingManage';
 import OrderInfoDetail from './pages/OrderInfoDetail';
 
+
 /*2019-1-26新增*/
 import KailiaoTemplate from './pages/KailiaoTemplate';
 import KailiaoTemplateEdit from './pages/KailiaoTemplateEdit';
 import KailiaoTemplateEditDetail from './pages/KailiaoTemplateEditDetail';
+
+/*2019-2-28新增*/
+import ApplicationLackGoods from './pages/ApplicationLackGoods';
+import DealLackGoods from './pages/DealLackGoods';
 
 const routerConfig = [
   {
@@ -105,6 +110,17 @@ const routerConfig = [
     path: '/user/login',
     component: UserLogin,
     layout: UserLayout,
+  },
+  /*2019-2-28新增*/
+  {
+    path:'/application/lackgoods',
+    component: ApplicationLackGoods,
+    layout:BasicLayout,
+  },
+  {
+    path:'/deal/lackgoods',
+    component: DealLackGoods,
+    layout:BasicLayout,
   },
   /*2019-1-26新增*/
   {

@@ -67,3 +67,24 @@ export const templateListQuery = "queryTemplateBy.do";
 export const departUpdate = "updateOrderMaterials.do";
 //智能开料 修改模板名称
 export const templateNameUpdate = "updateTemplate.do";
+
+//消息模块  未读改已读
+export const updateUnread = 'updateUnread.do';
+//消息模块  删除消息
+export const deleteMessage = 'deleteOneMessage.do';
+//消息模块 查询发送的消息
+export const querySendMessage = 'fingSendMessage.do';
+//消息模块 查询未读的消息
+export const queryUnreadMessage = 'fingUnreadMessage.do';
+
+
+//添加缺货申请
+export const addLackGoods = 'saveUrgentService.do';
+//查询缺货申请
+export const queryLackGoods = 'findUrgentServiceBySearch.do';
+//删除申请
+export const deleteAplication = 'deleteUrgentService.do';
+//处理申请
+export const dealAplication = 'updateUrgentService.do';
+
+export const deleteKaiLiao = 'updateOrderMaterialsRecord.do';

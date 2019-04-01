@@ -6,7 +6,7 @@ import CustomTable from './components/CustomTable';
 import EditDialog from './components/EditDialog';
 import EditDialog2 from './components/EditDialog2';
 import DeleteBalloon from './components/DeleteBalloon';
-import { postkaiLiaojilu, getGoodsType, postAddMaterialsRecord, postUpdateState, postUpdataMaterialsRecord, updateOrderState,postUrl } from '@/api';
+import { postkaiLiaojilu, getGoodsType, postAddMaterialsRecord, postUpdateState, updateOrderState,postUrl } from '@/api';
 import { templateQuery } from '@/api/apiUrl';
 import {API_URL} from '@/config';
 
@@ -165,7 +165,7 @@ export default class TabTable extends Component {
   }
 
   getIndexData = async (id="") => {
-    const data = await postkaiLiaojilu({orderId: this.props.id, templateId: id});
+    const data = await postkaiLiaojilu({orderId: this.props.id, templateId: id, pageIndex: this.state.current});
     let dataSource=data.data.data.map((item)=>{
       return({
         id: item.id,
@@ -209,10 +209,10 @@ export default class TabTable extends Component {
   };
 
   //翻页
-  handleChange(current) {
-        this.setState({
-            current
-        });
+  handleChange = (current) => {
+    this.state.current=current;
+    this.setState({});
+    this.getIndexData();
   }
 
   render() {

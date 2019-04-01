@@ -276,7 +276,7 @@ export default class TabTable extends Component {
                     key={item.index}
                     title={item.title}
                     dataIndex={item.index}
-                    width={90}
+                    width={150}
                     cell={this.renderName.bind(this,item.index)}
                     />)
                 })

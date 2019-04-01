@@ -5,9 +5,10 @@ import axios from 'axios';
 import CustomTable from './components/CustomTable';
 import EditDialog from './components/EditDialog';
 import DeleteBalloon from './components/DeleteBalloon';
+import Delete from './components/Delete';
 import FindNote from './components/FindNote';
 import { postkaiLiaojilu, getGoodsType, postAddMaterialsRecord, postUpdateState, postUrl } from '@/api';
-import { templateQuery } from '@/api/apiUrl';
+import { templateQuery, deleteKaiLiao } from '@/api/apiUrl';
 
 const Toast = Feedback.toast;
 const TabPane = Tab.TabPane;
@@ -90,6 +91,11 @@ export default class TabTable extends Component {
                 >
                   编辑
                 </Button>
+              }
+              {
+                record.state==0?<Delete
+                  handleRemove={() => this.handleRemove2(index, record)}
+                /> : ""
               }
               {
                 record.state==1?<DeleteBalloon
@@ -268,6 +274,15 @@ export default class TabTable extends Component {
       this.setState({});
     }
   };
+
+  handleRemove2 = async (index, record) => {
+    const response = await postUrl(deleteKaiLiao,{"OrderMaterialsRecord.id": record.id, "OrderMaterialsRecord.deleteFlag": 1});
+    if(response.data.state=="success"){
+      Toast.success("删除成功");
+      this.state.dataSource['all'].splice(index,1);
+      this.setState({});
+    }
+  }
 
   handleTabChange = (key) => {
     this.setState({

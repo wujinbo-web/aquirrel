@@ -65,7 +65,8 @@ export default class DesignEditGeneral extends Component {
   }
 
   stringToArray = (str) => {
-    let arr = str.split('_').map((item)=>{
+    let arr = str.split('_').map((item,index)=>{
+      console.log(item);
       return JSON.parse(item);
     })
     return arr;
@@ -160,6 +161,7 @@ export default class DesignEditGeneral extends Component {
     if(valueKey=="classId"){
       return (
         <Select
+          style={{ width: "100%" }}
           dataSource={this.state.goodsData}
           value={this.state.dataSource[index][valueKey]}
           onChange={this.changeData.bind(this, index, record, valueKey)}

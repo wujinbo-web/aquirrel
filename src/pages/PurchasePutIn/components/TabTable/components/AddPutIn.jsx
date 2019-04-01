@@ -248,6 +248,7 @@ export default class EditDialog extends Component {
                     placeholder="请输入进货数"
                     style={{ height:"30px",lineHeight:"30px" }}
                     value={item.count}
+                    htmlType="number"
                     onChange={this.setPutInCount.bind(this,index,"count")}
                   />
                 </Col>

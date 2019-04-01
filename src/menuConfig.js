@@ -161,6 +161,10 @@ const design={
       name:'编辑模板',
       path: '/desgin/tempalteedit',
     },
+    {
+      name:'缺货申请',
+      path: '/application/lackgoods',
+    },
   ],
 };
 
@@ -190,7 +194,11 @@ const produc={
     {
       name: '查看库存',
       path: '/produc/kucun',
-    }
+    },
+    {
+      name:'缺货申请',
+      path: '/application/lackgoods',
+    },
   ],
 };
 
@@ -238,6 +246,10 @@ const purchase={
     {
       name: '进货统计', //进货管理
       path: '/purchase/totall',
+    },
+    {
+      name: '缺货处理', //进货管理
+      path: '/deal/lackgoods',
     },
   ],
 };

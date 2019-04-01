@@ -235,7 +235,7 @@ export default class SettingsForm extends Component {
                     上传合同：
                   </Col>
                   <Col s="12" l="10" align="center">
-                    <IceFormBinder name="order" required message="必填">
+                    <IceFormBinder name="order">
                       <Upload
                         listType="text-image"
                         action={`${API_URL}/uploadFile.do`}

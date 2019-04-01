@@ -23,6 +23,8 @@ import { asideMenuConfig } from './../../menuConfig';
 import { routerData } from '../../routerConfig';
 import './scss/light.scss';
 import './scss/dark.scss';
+import { postUrl } from '@/api';
+import { queryUnreadMessage } from '@/api/apiUrl';
 
 const { AuthorizedRoute } = Authorized;
 /**
@@ -59,12 +61,20 @@ class BasicLayout extends Component {
     this.state = {
       openDrawer: false,
       isScreen: undefined,
+      num:'',
     };
   }
 
   componentDidMount() {
     this.enquireScreenRegister();
     this.props.userProfile();
+    this.getUnreadNum();
+  }
+
+  //獲取未讀消息數量
+  getUnreadNum = async () => {
+    let response = await postUrl(queryUnreadMessage,{id:sessionStorage.id, state:1, pageSize: 100});
+    this.setState({ num:response.data.data.total });
   }
 
   /**
@@ -220,6 +230,7 @@ class BasicLayout extends Component {
 
   render() {
     const { location, profile = {} } = this.props;
+    const { num } = this.state;
     const { pathname } = location;
 
     return (
@@ -234,6 +245,7 @@ class BasicLayout extends Component {
           history={this.props.history}
           isMobile={this.state.isScreen !== 'isDesktop'}
           profile={profile}
+          unReadNum={num}
           handleLogout={this.props.userLogout}
         />
         <Layout.Section className="ice-design-layout-body">
