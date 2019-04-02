@@ -4,8 +4,10 @@ import { Button, Table, Dialog, Input, Select, Feedback } from '@icedesign/base'
 import IceTitle from '@icedesign/title';
 import axios from 'axios';
 import { API_URL } from '../../config';
-import DeleteBalloon from './component/DeleteBalloon';
+import DeleteBalloon from './components/DeleteBalloon';
 import { postAddGeneral  } from './../../api';
+import EditDialog from './components/EditDialog';
+import addSeries from './components/addSeries';
 
 const Toast = Feedback.toast;
 
@@ -104,6 +106,14 @@ export default class DesignAddGeneral extends Component {
 
   }
 
+  //修改商品名
+  editData = (index, values) => {
+    this.state.dataSource[index].name=values.name;
+    this.state.dataSource[index].classId=values.id;
+    console.log(this.state.dataSource);
+    this.setState({});
+  }
+
   //记录改变的数据
   changeData = (index,record,valueKey,value) => {
     let { dataSource, goodsData } = this.state;
@@ -124,16 +134,12 @@ export default class DesignAddGeneral extends Component {
   renderName = (valueKey, value, index, record) => {
     if(valueKey=="classId"){
       return (
-        <Select
-          style={{ width:"100%" }}
-          dataSource={this.state.goodsData}
-          onChange={this.changeData.bind(this, index, record, valueKey)}
-        />
+        <span> {this.state.dataSource[index].name} <EditDialog  getFormValues={this.editData} index={index} /></span>
       )
     }else if(valueKey=="size"){
       return (
         <Input
-          style={{ width:"120px"}}
+          style={{ width:"100%"}}
           placeholder={valueKey=="remarks"? "": "0"}
           value={this.state.dataSource[index][valueKey]}
           onChange={this.changeData.bind(this, index, record, valueKey)}
@@ -142,7 +148,7 @@ export default class DesignAddGeneral extends Component {
     }else{
       return (
         <Input
-          style={{ width:"80px"}}
+          style={{ width:"100%"}}
           placeholder={valueKey=="remarks"? "": "0"}
           value={this.state.dataSource[index][valueKey]}
           onChange={this.changeData.bind(this, index, record, valueKey)}
@@ -207,8 +213,8 @@ export default class DesignAddGeneral extends Component {
     const { dataSource } = this.state;
     return (<div className="design-add-general-page" >
     <IceContainer>
-      <h2 style={{textAlign:"center", borderBottom:"1px solid black"}}>订单{design_order_id}</h2>
-      <IceTitle text="下载合同" />
+        <h2 style={{textAlign:"center", borderBottom:"1px solid black"}}>订单{design_order_id}</h2>
+        <IceTitle text="下载合同" />
         {
           fileAddress.split(',').map((item,index)=>{
             return (
@@ -235,16 +241,34 @@ export default class DesignAddGeneral extends Component {
           })
         }
 
-
         <h2 style={{ textAlign: "center" }}>填写初步货单</h2>
         <Table dataSource={ dataSource }>
-            <Table.Column title="名称" dataIndex="classId" cell={this.renderName.bind(this,"classId")}/>
-            <Table.Column title="规格" dataIndex="size" cell={this.renderName.bind(this,"size")}/>
-            <Table.Column title="备注" dataIndex="remarks" cell={this.renderName.bind(this,"remarks")} />
+            <Table.Column
+              lock="left"
+              width={350}
+              title="名称"
+              dataIndex="classId"
+              cell={this.renderName.bind(this,"classId")}
+            />
+            <Table.Column
+              lock="left"
+              width={180}
+              title="规格"
+              dataIndex="size"
+              cell={this.renderName.bind(this,"size")}
+            />
+            <Table.Column
+              lock="left"
+              width={150}
+              title="备注"
+              dataIndex="remarks"
+              cell={this.renderName.bind(this,"remarks")}
+            />
               {
                 this.state.columns.map((item,index)=>{
                   return (<Table.Column
                     title={this.renderHeader.bind(this, item.title)}
+                    width={100}
                     key={index}
                     dataIndex={(index+1)+"F" }
                     cell={this.renderName.bind(this,item.title)}
@@ -254,9 +278,18 @@ export default class DesignAddGeneral extends Component {
 
         </Table>
 
-        <Button onClick={this.addItem} style={styles.button}>新增</Button>
+        <Button
+          onClick={this.addItem}
+          type="primary"
+          size="small"
+          style={styles.button}
+        >
+          新增商品
+        </Button>
 
-        <Button onClick={this.onOpen} style={styles.button}>添加楼层</Button>
+        <addSeries  />
+
+        <Button onClick={this.onOpen} size="small" style={styles.button}>添加楼层</Button>
 
         <Dialog
           visible={this.state.addFloorVisible}
@@ -294,7 +327,7 @@ const styles = {
     borderBottom: '1px solid #eee',
   },
   button: {
-    marginTop: "5px",
+    marginTop: "10px",
     marginRight: "5px"
   }
 };

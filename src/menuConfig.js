@@ -32,6 +32,14 @@ const goods={
       name: '商品列表',
       path: '/goods/typeinfo',
     },
+    {
+      name: '类别管理',
+      path: '/goodtype/manage',
+    },
+    {
+      name: '系列管理',
+      path: '/goodsseried/manage',
+    },
   ],
 };
 

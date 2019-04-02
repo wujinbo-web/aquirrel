@@ -75,7 +75,6 @@ import LeavingMessage from './pages/LeavingMessage';
 import InvoicingManage from './pages/InvoicingManage';
 import OrderInfoDetail from './pages/OrderInfoDetail';
 
-
 /*2019-1-26新增*/
 import KailiaoTemplate from './pages/KailiaoTemplate';
 import KailiaoTemplateEdit from './pages/KailiaoTemplateEdit';
@@ -85,7 +84,22 @@ import KailiaoTemplateEditDetail from './pages/KailiaoTemplateEditDetail';
 import ApplicationLackGoods from './pages/ApplicationLackGoods';
 import DealLackGoods from './pages/DealLackGoods';
 
+/*2019-4-1新增*/
+import GoodsTypeManage from './pages/GoodsTypeManage';
+import GoodsSeriesMangage from './pages/GoodsSeriesMangage';
+
 const routerConfig = [
+  //2019.4.2
+  {
+    path: '/goodsseried/manage',
+    layout: BasicLayout,
+    component: GoodsSeriesMangage,
+  },
+  {
+    path: '/goodtype/manage',
+    layout: BasicLayout,
+    component: GoodsTypeManage,
+  },
   {
     path: '/message/add',
     layout: BasicLayout,
@@ -113,14 +127,14 @@ const routerConfig = [
   },
   /*2019-2-28新增*/
   {
-    path:'/application/lackgoods',
+    path: '/application/lackgoods',
     component: ApplicationLackGoods,
-    layout:BasicLayout,
+    layout: BasicLayout,
   },
   {
-    path:'/deal/lackgoods',
+    path: '/deal/lackgoods',
     component: DealLackGoods,
-    layout:BasicLayout,
+    layout: BasicLayout,
   },
   /*2019-1-26新增*/
   {

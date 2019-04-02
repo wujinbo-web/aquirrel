@@ -7,8 +7,10 @@ import {
   FormBinder as IceFormBinder,
   FormError as IceFormError,
 } from '@icedesign/form-binder';
-import { API_URL } from '../../../../config';
+import { API_URL } from '@/config';
 import axios from 'axios';
+import { postUrl } from '@/api';
+import { addGoods, queryGoodsSeries, queryGoodsType } from '@/api/apiUrl';
 
 const { Row, Col } = Grid;
 const Toast=Feedback.toast;
@@ -23,59 +25,63 @@ export default class UserForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      typeList: [],
+      seriesList: [],
       value: {
         name: '',
+        type: null,
+        series: null,
         description: '',
       },
     };
   }
 
-  // checkPasswd = (rule, values, callback) => {
-  //   if (!values) {
-  //     callback('请输入新密码');
-  //   } else if (values.length < 8) {
-  //     callback('密码必须大于8位');
-  //   } else if (values.length > 16) {
-  //     callback('密码必须小于16位');
-  //   } else {
-  //     callback();
-  //   }
-  // };
-  //
-  // checkPasswd2 = (rule, values, callback, stateValues) => {
-  //   console.log('stateValues:', stateValues);
-  //   if (values && values !== stateValues.passwd) {
-  //     callback('两次输入密码不一致');
-  //   } else {
-  //     callback();
-  //   }
-  // };
-
+  //改变的时候修改值
   formChange = (value) => {
     this.setState({
       value,
     });
   };
 
+  //提交表单
   validateAllFormField = () => {
-    this.refs.form.validateAll((errors, values) => {
-      axios
-        .get(`${API_URL}/saveProductClass.do?productClass.name=${values.name}&productClass.description=${values.description}`)
-        .then((response)=>{
-          if(response.data.state=="success"){
-            Toast.success(response.data.msg);
-            this.props.redirectUrl();
-          }else{
-            Toast.error(response.data.msg);
-          }
-        })
-        .catch((error)=>{
-          console.log(error);
-        })
+    this.refs.form.validateAll(async (errors, values) => {
+      let response = await postUrl(addGoods, {
+        "productClass.name": values.name,
+        "productClass.classId": values.type,   //待定
+        "productClass.depId": values.series,   //待定
+        "productClass.description": value.description,
+      });
+      console.log(response.data);
     });
   };
 
+  //获取类别列表
+  getTypeData = async () => {
+    let response = await postUrl(queryGoodsType,{pageIndex: 1, pageSize: 9999});
+    this.state.typeList = response.data.data.map(item=>{
+      return({
+        label: item.name,
+        value: item.id,
+      })
+    });
+    this.setState({});
+  }
+
+  //获取系列列表
+  getSeriesData = async () => {
+    let response = await postUrl(queryGoodsSeries,{pageIndex: 1, pageSize: 9999});
+    this.state.seriesList = response.data.data.map(item=>{
+      return({
+        label: item.name,
+        value: item.id,
+      })
+    });
+    this.setState({});
+  }
+
   render() {
+    let { typeList, seriesList } = this.state;
     return (
       <div className="user-form">
         <IceContainer>
@@ -100,6 +106,30 @@ export default class UserForm extends Component {
                     />
                   </IceFormBinder>
                   <IceFormError name="name" />
+                </Col>
+              </Row>
+
+              <Row style={styles.formItem}>
+                <Col xxs="6" s="3" l="3" style={styles.formLabel}>
+                  类别：
+                </Col>
+                <Col s="12" l="10">
+                  <IceFormBinder name="type" required message="必填">
+                    <Select dataSource={typeList} placeholder="请选择商品类别" style={{ width: '100%' }} />
+                  </IceFormBinder>
+                  <IceFormError name="type" />
+                </Col>
+              </Row>
+
+              <Row style={styles.formItem}>
+                <Col xxs="6" s="3" l="3" style={styles.formLabel}>
+                  系列：
+                </Col>
+                <Col s="12" l="10">
+                  <IceFormBinder name="series" required message="必填">
+                    <Select dataSource={seriesList} placeholder="请选择商品系列" style={{ width: '100%' }} />
+                  </IceFormBinder>
+                  <IceFormError name="series" />
                 </Col>
               </Row>
 

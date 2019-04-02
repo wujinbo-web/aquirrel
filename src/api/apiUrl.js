@@ -88,3 +88,32 @@ export const deleteAplication = 'deleteUrgentService.do';
 export const dealAplication = 'updateUrgentService.do';
 
 export const deleteKaiLiao = 'updateOrderMaterialsRecord.do';
+
+
+//商品管理 添加商品
+export const addGoods = 'saveProductClass.do';
+//商品管理 查询商品
+export const queryGoods = 'findProductClassByName.do';
+//商品管理 删除商品
+export const deleteGoods = 'deleteProductClass.do';
+//商品管理 更新商品
+export const updateGoods = 'updateProductClass.do';
+
+
+//类别管理 查询
+export const queryGoodsType = 'queryPcClassBy.do';
+//类别管理 添加
+export const addGoodsType = 'savePcClass.do';
+//类别管理 修改
+export const updateGoodsType = 'updatePcClass.do';
+//类别管理 删除
+export const deleteGoodsType = 'deletePcClass.do';
+
+//系列管理 查询
+export const queryGoodsSeries = 'queryPcDeptBy.do';
+//系列管理 添加
+export const addGoodsSeries = 'savePcDept.do';
+//系列管理 修改
+export const updateGoodsSeries = 'updatePcDept.do';
+//系列管理 删除
+export const deleteGoodsSeries = 'deletePcDept.do';
