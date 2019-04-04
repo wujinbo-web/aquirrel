@@ -4,9 +4,11 @@ import { Button, Table, Dialog, Input, Select, Feedback } from '@icedesign/base'
 import IceTitle from '@icedesign/title';
 import axios from 'axios';
 import { API_URL } from '../../config';
-import DeleteBalloon from './component/DeleteBalloon';
+import DeleteBalloon from './components/DeleteBalloon';
 import { postAddGeneral, postUrl  } from '@/api';
 import { orderQuery } from '@/api/apiUrl';
+import EditDialog from './components/EditDialog';
+import AddSeries from './components/AddSeries';
 
 const Toast = Feedback.toast;
 
@@ -127,7 +129,12 @@ export default class DesignEditGeneral extends Component {
   //添加商品项
   addItem = () => {
     let key;
-    let data={};
+    let data={
+      name: "",
+      classId: "",
+      size: "",
+      remarks: "",
+    };
     for( key in this.state.dataSource[0] ){
       if(key=="name"||key=="size"||key=="remarks"){
         data[key]="";
@@ -137,7 +144,27 @@ export default class DesignEditGeneral extends Component {
     }
     this.state.dataSource.push(data);
     this.setState({})
+  }
 
+  //添加系列  [{name:'商品名', id: '1'}]
+  addBigItem = (selectGoods) => {
+    selectGoods.forEach(item=>{
+      let data={
+        name: item.name,
+        classId: item.id,
+        size: "",
+        remarks: ""
+      }
+      this.state.dataSource.push(data);
+    })
+    this.setState({})
+  }
+
+  //修改商品名
+  editData = (index, values) => {
+    this.state.dataSource[index].name=values.name;
+    this.state.dataSource[index].classId=values.id;
+    this.setState({});
   }
 
   //记录改变的数据
@@ -157,15 +184,22 @@ export default class DesignEditGeneral extends Component {
     this.setState({});
   }
 
+  //删除行
+  deleteRow = (index) => {
+    this.state.dataSource.splice(index, 1);
+    this.setState({});
+  }
+
   renderName = (valueKey, value, index, record) => {
     if(valueKey=="classId"){
       return (
-        <Select
-          style={{ width: "100%" }}
-          dataSource={this.state.goodsData}
-          value={this.state.dataSource[index][valueKey]}
-          onChange={this.changeData.bind(this, index, record, valueKey)}
-        />
+        <span>
+          {
+            this.state.dataSource[index].name
+          }
+          <EditDialog  getFormValues={this.editData} index={index} />
+          <Button shape="warning" size="small" onClick={this.deleteRow.bind(this,index)}>删除</Button>
+        </span>
       )
     }else if(valueKey=="size"){
       return (
@@ -271,24 +305,52 @@ export default class DesignEditGeneral extends Component {
 
 
         <h2 style={{ textAlign: "center" }}>编辑总单</h2>
-        <Table dataSource={ dataSource }>
-            <Table.Column title="名称" dataIndex="classId" cell={this.renderName.bind(this,"classId")}/>
-            <Table.Column title="规格" dataIndex="size" cell={this.renderName.bind(this,"size")}/>
-            <Table.Column title="备注" dataIndex="remarks" cell={this.renderName.bind(this,"remarks")} />
-              {
-                this.state.columns.map((item,index)=>{
-                  return (<Table.Column
-                    title={this.renderHeader.bind(this, item.title)}
-                    key={index}
-                    dataIndex={(index+1)+"F" }
-                    cell={this.renderName.bind(this,item.title)}
-                    />);
-                })
-              }
+          <Table dataSource={ dataSource }>
+              <Table.Column
+                lock="left"
+                width={350}
+                title="名称"
+                dataIndex="classId"
+                cell={this.renderName.bind(this,"classId")}
+              />
+              <Table.Column
+                lock="left"
+                width={180}
+                title="规格"
+                dataIndex="size"
+                cell={this.renderName.bind(this,"size")}
+              />
+              <Table.Column
+                lock="left"
+                width={150}
+                title="备注"
+                dataIndex="remarks"
+                cell={this.renderName.bind(this,"remarks")}
+              />
+                {
+                  this.state.columns.map((item,index)=>{
+                    return (<Table.Column
+                      title={this.renderHeader.bind(this, item.title)}
+                      width={100}
+                      key={index}
+                      dataIndex={(index+1)+"F" }
+                      cell={this.renderName.bind(this,item.title)}
+                      />);
+                  })
+                }
 
-        </Table>
+          </Table>
 
-        <Button onClick={this.addItem} style={styles.button}>新增</Button>
+          <Button
+            onClick={this.addItem}
+            type="primary"
+            size="small"
+            style={styles.button}
+          >
+            新增商品
+          </Button>
+
+          <AddSeries getFormValues={this.addBigItem} />
 
         <Button onClick={this.onOpen} style={styles.button}>添加楼层</Button>
 

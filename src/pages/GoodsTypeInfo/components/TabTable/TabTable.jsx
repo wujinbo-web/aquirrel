@@ -94,7 +94,7 @@ export default class TabTable extends Component {
       pageIndex: this.state.current,
       pageSize: 10,
       classId: shaixuan.typeId,
-      depId: shaixuan.seriesId,
+      deptId: shaixuan.seriesId,
     });
     if(response.data.state=="success"){
       let data = response.data.data.map(item=>{

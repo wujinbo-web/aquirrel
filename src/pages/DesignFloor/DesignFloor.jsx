@@ -27,7 +27,7 @@ export default class DesignFloor extends Component {
     sessionStorage.design_floorNumId=value.id;
     sessionStorage.design_floorRemark=value.remark;
     sessionStorage.design_floorNum=value.floorNum;
-    this.props.history.push('/design/floormeasure');
+    this.props.history.push(`/design/floormeasure`);
   }
   direction = () => {
     this.props.history.push('/design/info');

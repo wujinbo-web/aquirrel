@@ -4,8 +4,11 @@ import { Tab, Input, Table, Button, Dialog, Form, Field, Feedback } from '@icede
 import axios from 'axios';
 import EditDialog from './components/EditDialog';
 import DeleteBalloon from './components/DeleteBalloon';
-import { getDesignQueryByOrderIdFloor, getDesignAddRoom, getDesignUpdateRoom, getDesignDeleteRoom, getDesignFindFloor, postMeasureExcel } from './../../../../api';
-import { API_URL } from './../../../../config'
+import { getDesignQueryByOrderIdFloor, getDesignAddRoom, getDesignUpdateRoom, getDesignDeleteRoom, getDesignFindFloor, postMeasureExcel } from '@/api';
+import { API_URL } from '@/config'
+import { postUrl } from '@/api';
+import { deleteColumn, addColumn } from '@/api/apiUrl';
+import AddGoods from './components/AddGoods';
 
 
 const FormItem = Form.Item;
@@ -29,9 +32,9 @@ export default class TabTable extends Component {
     this.getIndexData();
   }
 
+  //获取首页数据
   getIndexData = async () => {
     const data = await getDesignQueryByOrderIdFloor(this.props.id, this.props.floorNumId);
-    console.log(data.data,"看看");
 
     //获取导航头数据
     let headData=data.data.room.map((item1)=>{   //101,102
@@ -208,6 +211,52 @@ export default class TabTable extends Component {
     window.location.href=`${API_URL}/measureExcel.do?orderId=${id}&floor=${floorNumId}&floorNum=${floorNum}`;
   }
 
+  //渲染表头
+  renderTitle = (title, index) => {
+    return(
+      <span>
+        {title}
+        <DeleteBalloon handleRemove={()=>this.handleDeleteColumn(title,index)} />
+      </span>
+    )
+  }
+
+  //添加产品
+  addGoodsName = async (id,name) => {
+    //商品IDid  商品名 name
+    //this.props.id 订单id    this.props.floorNumId 楼层id  this.props.floorNum 楼层数
+    let params = {
+      "measure.orderId": this.props.id ,
+      "measure.orderFloorId": this.props.floorNumId,
+      "measure.classId": id,
+      "measure.name": name,
+      "measure.floor": this.props.floorNum,
+    };
+    let response = await postUrl(addColumn,params);
+    if(response.data.state=="success"){
+      Toast.success("添加成功")
+      this.getIndexData();
+    }else{
+      Toast.error(response.data.msg);
+    }
+  }
+
+  //删除列
+  handleDeleteColumn = async (title, index) => {
+    //this.props.id  订单ID  this.props.floorNumId 楼层号ID  title  列明
+    let response = await postUrl(deleteColumn,{
+      orderId: this.props.id,
+      floor: this.props.floorNumId,
+      name: title,
+    });
+    if(response.data.state=="success"){
+      this.state.headData.splice(index,1);
+      this.setState({});
+    }else{
+      Toast.error(response.data.msg);
+    }
+  }
+
   render() {
     const { dataSource, headData, dataRmarks } = this.state;
     const { id, floorNumId, floorNum } = this.props;
@@ -233,7 +282,10 @@ export default class TabTable extends Component {
           <h1 style={{ textAlign: "center" }}>{floorNum}楼测量单</h1>
           <h2 style={{ fontSize: "14px", color: "rgb(32, 119, 255)" }}>
             当前订单ID: {id}
-            <Button size='small' type='primary' style={{ float: "right" }} onClick={this.onOpen}>添加房间</Button>
+            <span style={{ float: "right" }}>
+              <Button size='small' type='primary' onClick={this.onOpen}>添加房间</Button>
+            </span>
+            <AddGoods getFormValues={this.addGoodsName} />
           </h2>
 
           <Dialog
@@ -271,10 +323,10 @@ export default class TabTable extends Component {
           <Table dataSource={dataSource}>
               <Table.Column title="房号" dataIndex="roomNum" width={70} lock />
               {
-                headData.map((item)=>{
+                headData.map((item, index)=>{
                   return(<Table.Column
                     key={item.index}
-                    title={item.title}
+                    title={this.renderTitle.bind(this,item.title, index)}
                     dataIndex={item.index}
                     width={150}
                     cell={this.renderName.bind(this,item.index)}

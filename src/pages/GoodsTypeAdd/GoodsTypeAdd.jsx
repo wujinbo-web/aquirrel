@@ -12,11 +12,11 @@ export default class GoodsTypeAdd extends Component {
   render() {
     return (
       <div className="goods-type-add-page" >
-        <UserForm redirectUrl={this.redirectUrl} />
+        <UserForm go={this.go} />
       </div>
     );
   }
-  redirectUrl = () => {
-    this.props.history.push("/goods/typeinfo");
+  go = (url) => {
+    this.props.history.push(url);
   }
 }

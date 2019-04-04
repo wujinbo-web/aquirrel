@@ -117,3 +117,12 @@ export const addGoodsSeries = 'savePcDept.do';
 export const updateGoodsSeries = 'updatePcDept.do';
 //系列管理 删除
 export const deleteGoodsSeries = 'deletePcDept.do';
+
+//测量 删除列
+export const deleteColumn = 'deleteByName.do';
+//测量 新增列
+export const addColumn = 'saveByName.do';
+
+
+//消息 用户列表
+export const userList = 'findCmsUserBySearch.do';

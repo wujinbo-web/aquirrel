@@ -8,7 +8,7 @@ import { asideMenuConfig } from './menuConfig';
 import BasicLayout from './layouts/BasicLayout';
 import UserLayout from './layouts/UserLayout';
 import UserLogin from './pages/UserLogin';
-import Dashboard from './pages/Dashboard';
+// import Dashboard from './pages/Dashboard';
 import ServerError from './pages/ServerError';
 import Forbidden from './pages/Forbidden';
 import Empty from './pages/Empty';
@@ -87,8 +87,15 @@ import DealLackGoods from './pages/DealLackGoods';
 /*2019-4-1新增*/
 import GoodsTypeManage from './pages/GoodsTypeManage';
 import GoodsSeriesMangage from './pages/GoodsSeriesMangage';
+import Wysiwyg from './pages/Wysiwyg';
+import MessageInfoSend from './pages/MessageInfoSend';
 
 const routerConfig = [
+  {
+    path: '/goods2/typeinfo',
+    layout: BasicLayout,
+    component: GoodsTypeInfo,
+  },
   //2019.4.2
   {
     path: '/goodsseried/manage',
@@ -359,9 +366,9 @@ const routerConfig = [
     component: GoodsTypeInfo,
   },
   {
-    path: '/goods2/typeinfo',
+    path: '/messageinfo/send',
     layout: BasicLayout,
-    component: GoodsTypeInfo,
+    component: MessageInfoSend,
   },
   /*公共页面*/
   {
@@ -603,6 +610,11 @@ const routerConfig = [
     path: '/leaving/message',
     layout: BasicLayout,
     component: LeavingMessage,
+  },
+  {
+    path: '/wysiwyg',
+    layout: BasicLayout,
+    component: Wysiwyg,
   },
 ];
 

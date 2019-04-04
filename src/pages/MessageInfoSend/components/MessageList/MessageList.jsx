@@ -3,7 +3,7 @@ import IceContainer from '@icedesign/container';
 import { Pagination, Loading, Select, Feedback, Button } from '@icedesign/base';
 import IceTitle from '@icedesign/title';
 import { postUrl } from '@/api';
-import { updateUnread, deleteMessage, querySendMessage, queryUnreadMessage } from '@/api/apiUrl';
+import { updateUnread, deleteMessage, querySendMessage } from '@/api/apiUrl';
 
 const Toast = Feedback.toast;
 
@@ -37,10 +37,9 @@ export default class MessageList extends Component {
   //获取全部消息消息
   getMsgData = async () => {
     this.setState({ visible: true });
-    let response = await postUrl(queryUnreadMessage,{
+    let response = await postUrl(querySendMessage,{
       id:sessionStorage.id,
       pageIndex:this.state.current,
-      state: this.state.type,
     })
     if(response.data.state=="success"){
       this.state.total=response.data.data.total;
@@ -62,27 +61,6 @@ export default class MessageList extends Component {
     }
   }
 
-  //筛选列表
-  changeSelect = (value) => {
-    this.state.type=value;
-    this.getMsgData();
-    this.setState({});
-  }
-
-  //标记已读
-  changeUnread = async (item,idx) => {
-    if(this.state.type == 3)return false;
-    let response = await postUrl(updateUnread, {id:item.id});
-    let { dataSource } = this.state;
-    if(response.data.state=="success"){
-      dataSource[idx].status=0;
-      this.setState({dataSource});
-      Toast.success('标记成功');
-    }else{
-      Toast.error(response.msg);
-    }
-  }
-
   //删除消息
   deleteItem = async (item,idx) =>{
     let response = await postUrl(deleteMessage,{
@@ -101,22 +79,15 @@ export default class MessageList extends Component {
     }
   }
 
+  //渲染组件
   renderItem = (item, idx) => {
     return (
       <div style={styles.item} key={idx}>
         <div style={styles.title}>
           <strong style={{fontSize:"18px", color:"black",marginRight:'10px'}}>
-            {item.name +"(发件人):"}
+            {item.name +"(收件人):"}
           </strong>
           <span style={{ fontSize:"18px", color: 'black',  }}>{item.title}</span>
-          {
-            item.status==1?
-            <a
-              href="javascript:;"
-              style={{marginLeft:"10px", padding:"0 5px", fontSize:"14px", color:"white" ,background:"red"}}
-              onClick={this.changeUnread.bind(this,item,idx)}
-            >未读</a>:""
-          }
           <span style={styles.datetime}>
             {item.datetime}
             <Button
@@ -143,20 +114,10 @@ export default class MessageList extends Component {
     return (
       <div className="message-list" style={styles.messageList}>
         <Loading visible={this.state.visible} style={{display: 'block'}} shape="fusion-reactor">
-        <IceContainer>
-          <div style={{lineHeight:"32px", width:"110px", float:"left"}}>
-            消息筛选:
-          </div>
-          <Select
-            dataSource={selectItem}
-            style={{ width:"200px" }}
-            placeholder="请选择筛选类型"
-            onChange={this.changeSelect}
-          />
-        </IceContainer>
+
         <IceContainer>
           <IceTitle>
-            收件箱：
+            发件箱：
           </IceTitle>
           {dataSource.map(this.renderItem)}
           <div style={styles.paginationWarp}>

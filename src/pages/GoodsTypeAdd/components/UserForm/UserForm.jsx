@@ -36,6 +36,14 @@ export default class UserForm extends Component {
     };
   }
 
+  //钩子
+  componentDidMount(){
+    //获取类别
+    this.getTypeData();
+    //获取系列
+    this.getSeriesData();
+  }
+
   //改变的时候修改值
   formChange = (value) => {
     this.setState({
@@ -49,10 +57,14 @@ export default class UserForm extends Component {
       let response = await postUrl(addGoods, {
         "productClass.name": values.name,
         "productClass.classId": values.type,   //待定
-        "productClass.depId": values.series,   //待定
-        "productClass.description": value.description,
+        "productClass.deptId": values.series,   //待定
+        "productClass.description": values.description,
       });
       console.log(response.data);
+      if(response.data.state=="success"){
+        Toast.success("添加成功");
+        this.props.go('/goods/typeinfo');
+      }
     });
   };
 
@@ -115,7 +127,11 @@ export default class UserForm extends Component {
                 </Col>
                 <Col s="12" l="10">
                   <IceFormBinder name="type" required message="必填">
-                    <Select dataSource={typeList} placeholder="请选择商品类别" style={{ width: '100%' }} />
+                    <Select
+                      dataSource={typeList}
+                      placeholder="请选择商品类别"
+                      style={{ width: '100%' }}
+                    />
                   </IceFormBinder>
                   <IceFormError name="type" />
                 </Col>

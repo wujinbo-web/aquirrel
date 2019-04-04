@@ -278,8 +278,12 @@ const message={
       path: '/message/add',
     },
     {
-      name: '消息中心',
+      name: '收件箱',
       path: '/message/info',
+    },
+    {
+      name: '发件箱',
+      path: '/messageinfo/send',
     },
   ],
 };

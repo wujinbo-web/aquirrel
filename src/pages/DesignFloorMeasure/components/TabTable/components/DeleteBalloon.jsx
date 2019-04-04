@@ -46,7 +46,7 @@ export default class DeleteBalloon extends Component {
           size="small"
           type="normal"
           shape="warning"
-          style={{ marginRight: '5px' }}
+          style={{ marginRight: '5px', marginLeft: '10px' }}
           onClick={(visible) => this.handleHide(visible, 1)}
         >
           确认

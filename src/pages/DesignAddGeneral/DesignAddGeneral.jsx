@@ -7,7 +7,7 @@ import { API_URL } from '../../config';
 import DeleteBalloon from './components/DeleteBalloon';
 import { postAddGeneral  } from './../../api';
 import EditDialog from './components/EditDialog';
-import addSeries from './components/addSeries';
+import AddSeries from './components/AddSeries';
 
 const Toast = Feedback.toast;
 
@@ -93,7 +93,12 @@ export default class DesignAddGeneral extends Component {
   //添加商品项
   addItem = () => {
     let key;
-    let data={};
+    let data={
+      name: "",
+      classId: "",
+      size: "",
+      remarks: "",
+    };
     for( key in this.state.dataSource[0] ){
       if(key=="name"||key=="size"||key=="remarks"){
         data[key]="";
@@ -103,14 +108,26 @@ export default class DesignAddGeneral extends Component {
     }
     this.state.dataSource.push(data);
     this.setState({})
+  }
 
+  //添加系列  [{name:'商品名', id: '1'}]
+  addBigItem = (selectGoods) => {
+    selectGoods.forEach(item=>{
+      let data={
+        name: item.name,
+        classId: item.id,
+        size: "",
+        remarks: ""
+      }
+      this.state.dataSource.push(data);
+    })
+    this.setState({})
   }
 
   //修改商品名
   editData = (index, values) => {
     this.state.dataSource[index].name=values.name;
     this.state.dataSource[index].classId=values.id;
-    console.log(this.state.dataSource);
     this.setState({});
   }
 
@@ -131,10 +148,23 @@ export default class DesignAddGeneral extends Component {
     this.setState({});
   }
 
+  //删除行
+  deleteRow = (index) => {
+    this.state.dataSource.splice(index, 1);
+    this.setState({});
+  }
+
+  //渲染表格自定义组件
   renderName = (valueKey, value, index, record) => {
     if(valueKey=="classId"){
       return (
-        <span> {this.state.dataSource[index].name} <EditDialog  getFormValues={this.editData} index={index} /></span>
+        <span>
+          {
+            this.state.dataSource[index].name
+          }
+          <EditDialog  getFormValues={this.editData} index={index} />
+          <Button shape="warning" size="small" onClick={this.deleteRow.bind(this,index)}>删除</Button>
+        </span>
       )
     }else if(valueKey=="size"){
       return (
@@ -287,7 +317,7 @@ export default class DesignAddGeneral extends Component {
           新增商品
         </Button>
 
-        <addSeries  />
+        <AddSeries getFormValues={this.addBigItem} />
 
         <Button onClick={this.onOpen} size="small" style={styles.button}>添加楼层</Button>
 
