@@ -86,7 +86,7 @@ export default class TabTable extends Component {
       item.heji=count;
       return item;
     })
-    console.log(data);
+    console.log(data,"???");
     //渲染导航条
     let component=[];
     let key;

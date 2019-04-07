@@ -12,7 +12,7 @@ import {
 import './SettingsForm.scss';
 import { postUrl } from '@/api'
 import { userList } from '@/api/apiUrl'
-// import WysiwygEditor from '@/components/WysiwygEditor'
+import BraftEditor from '@/components/BraftEditor'
 
 
 const Toast = Feedback.toast;
@@ -211,9 +211,9 @@ export default class SettingsForm extends Component {
                 :
                 <Row style={styles.formItem}>
                   <Col xxs="6" s="3" l="3" style={styles.label}>
-
+                    正文：
                   </Col>
-                  <Col s="12" l="10">
+                  <Col s="12" l="16" style={{border:"1px solid #ccc"}}>
                     <IceFormBinder name="description" required message="必填">
                       <BraftEditor />
                     </IceFormBinder>

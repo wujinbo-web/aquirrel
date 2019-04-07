@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
 import BraftEditor from 'braft-editor';
-import 'braft-editor/dist/braft.css';
+import 'braft-editor/dist/index.css';
 
 export default class CustomBraftEditor extends Component {
   static displayName = 'CustomBraftEditor';
@@ -12,7 +12,9 @@ export default class CustomBraftEditor extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      editorState: BraftEditor.createEditorState("你好世界")
+    };
   }
 
   handleRawChange = (content) => {
@@ -20,16 +22,17 @@ export default class CustomBraftEditor extends Component {
   };
 
   handleChange = (rawContent) => {
-    console.log(rawContent);
+    console.log(rawContent, "????");
   };
 
   render() {
     const editorProps = {
-      height: 500,
+      height: 300,
       contentFormat: 'html',
       initialContent: '<p></p>',
       onChange: this.handleChange,
       onRawChange: this.handleRawChange,
+      value: this.state.editorState,
     };
 
     return (
