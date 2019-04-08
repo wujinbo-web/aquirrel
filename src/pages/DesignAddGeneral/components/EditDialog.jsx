@@ -105,7 +105,7 @@ export default class EditDialog extends Component {
       pageIndex: 1,
       pageSize: 9999,
       classId: shaixuan.typeId,
-      depId: shaixuan.seriesId,
+      deptId: shaixuan.seriesId,
     });
     if(response.data.state=="success"){
       let dataSource = response.data.data.map(item=>{

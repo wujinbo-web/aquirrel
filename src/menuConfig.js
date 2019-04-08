@@ -285,6 +285,10 @@ const message={
       name: '发件箱',
       path: '/messageinfo/send',
     },
+    {
+      name: '消息主体',
+      path: '/message/item',
+    },
   ],
 };
 
@@ -294,29 +298,7 @@ const orderDetail = {
   icon: 'copy',
 }
 
-
-//const asideMenuConfig = [home, goods, goods2, customer,customer2, personnel,personnel2, department,department2, order, finance,finance2, design,design2, produc,produc2, project,project2, purchase,purchase2, message ];
 const asideMenuConfig = [home,order,orderDetail, customer,  finance, design, purchase, produc, project, goods, department, personnel,message,  ];
-
-// function editMenu(authority){
-//   if(authority=="admin"){
-//     return [home, goods, customer, personnel, department, order, finance, design, produc, project, purchase, message ];
-//   }else if(authority=='finance'){
-//     return [home, personnel, department, finance, message ];
-//   }else if(authority=='measure'){
-//     return [home, goods, design, message ];
-//   }else if(authority=='product'){
-//     return [home, produc, message ];
-//   }else if(authority=='project'){
-//     return [home, project, message ];
-//   }else if(authority=='purchase'){
-//     return [home, purchase, message ];
-//   }else if(authority=='firm'){
-//     return [home, customer, message ];
-//   }else{
-//     return [home];
-//   }
-// }
 
 
 

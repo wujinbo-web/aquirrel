@@ -12,8 +12,11 @@ export default class MessageInfo extends Component {
   render() {
     return (
       <div className="message-info-page">
-        <MessageList />
+        <MessageList go={this.go} />
       </div>
     );
+  }
+  go = (url) => {
+    this.props.history.push(url);
   }
 }

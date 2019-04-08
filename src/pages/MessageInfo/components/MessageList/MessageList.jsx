@@ -54,6 +54,7 @@ export default class MessageList extends Component {
           id: item[0].id,
           cmsUserId:item[1].cmsUserId,
           targetId:item[0].targetId,
+          type: item[1].type,
         });
       });
       this.setState({visible: false});
@@ -97,7 +98,7 @@ export default class MessageList extends Component {
       this.setState({dataSource});
       Toast.success('删除成功');
     }else{
-      Toast.error(response.msg);
+      Toast.error(response.data.msg);
     }
   }
 
@@ -106,7 +107,9 @@ export default class MessageList extends Component {
       <div style={styles.item} key={idx}>
         <div style={styles.title}>
           <strong style={{fontSize:"18px", color:"black",marginRight:'10px'}}>
-            {item.name +"(发件人):"}
+            {
+              item.type==3?"系统消息:":item.name +"(发件人):"
+            }
           </strong>
           <span style={{ fontSize:"18px", color: 'black',  }}>{item.title}</span>
           {
@@ -128,7 +131,8 @@ export default class MessageList extends Component {
           </span>
 
         </div>
-        <div style={styles.message}>{item.message}</div>
+        <div style={styles.message} dangerouslySetInnerHTML={{__html:item.message}}></div>
+        <Button style={styles.back} type="primary" size="small" onClick={this.props.go('/message/item')}>回复</Button>
       </div>
     );
   };
@@ -170,7 +174,13 @@ export default class MessageList extends Component {
 }
 
 const styles = {
+  back:{
+    position: 'absolute',
+    right: '20px',
+    bottom: '10px',
+  },
   item: {
+    position: 'relative',
     borderBottom: '1px solid #eee',
     margin: '0 0 20px',
   },

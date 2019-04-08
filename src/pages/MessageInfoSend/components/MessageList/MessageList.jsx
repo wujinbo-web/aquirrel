@@ -53,6 +53,7 @@ export default class MessageList extends Component {
           id: item[0].id,
           cmsUserId:item[1].cmsUserId,
           targetId:item[0].targetId,
+          type: item[1].type,
         });
       });
       this.setState({visible: false});
@@ -75,7 +76,7 @@ export default class MessageList extends Component {
       this.setState({dataSource});
       Toast.success('删除成功');
     }else{
-      Toast.error(response.msg);
+      Toast.error(response.data.msg);
     }
   }
 
@@ -85,7 +86,9 @@ export default class MessageList extends Component {
       <div style={styles.item} key={idx}>
         <div style={styles.title}>
           <strong style={{fontSize:"18px", color:"black",marginRight:'10px'}}>
-            {item.name +"(收件人):"}
+            {
+              item.type==3?"系统消息:":item.name +"(收件人):"
+            }
           </strong>
           <span style={{ fontSize:"18px", color: 'black',  }}>{item.title}</span>
           <span style={styles.datetime}>
@@ -99,7 +102,7 @@ export default class MessageList extends Component {
           </span>
 
         </div>
-        <div style={styles.message}>{item.message}</div>
+        <div style={styles.message} dangerouslySetInnerHTML={{__html:item.message}}></div>
       </div>
     );
   };

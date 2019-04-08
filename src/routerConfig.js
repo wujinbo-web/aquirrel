@@ -88,19 +88,19 @@ import DealLackGoods from './pages/DealLackGoods';
 import GoodsTypeManage from './pages/GoodsTypeManage';
 import GoodsSeriesMangage from './pages/GoodsSeriesMangage';
 import Wysiwyg from './pages/Wysiwyg';
+import MessageItem from './pages/MessageItem';
 import MessageInfoSend from './pages/MessageInfoSend';
 
 const routerConfig = [
   {
+    path: '/messageinfo/send',
+    layout: BasicLayout,
+    component: MessageInfoSend,
+  },
+  {
     path: '/goods2/typeinfo',
     layout: BasicLayout,
     component: GoodsTypeInfo,
-  },
-  //2019.4.2
-  {
-    path: '/goodsseried/manage',
-    layout: BasicLayout,
-    component: GoodsSeriesMangage,
   },
   {
     path: '/goodtype/manage',
@@ -365,10 +365,11 @@ const routerConfig = [
     layout: BasicLayout,
     component: GoodsTypeInfo,
   },
+  //2019.4.2
   {
-    path: '/messageinfo/send',
+    path: '/goodsseried/manage',
     layout: BasicLayout,
-    component: MessageInfoSend,
+    component: GoodsSeriesMangage,
   },
   /*公共页面*/
   {
@@ -615,6 +616,11 @@ const routerConfig = [
     path: '/wysiwyg',
     layout: BasicLayout,
     component: Wysiwyg,
+  },
+  {
+    path: '/message/item',
+    layout: BasicLayout,
+    component: MessageItem,
   },
 ];
 

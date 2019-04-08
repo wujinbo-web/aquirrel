@@ -18,11 +18,16 @@ export default class CustomBraftEditor extends Component {
   }
 
   handleRawChange = (content) => {
-    console.log(content);
+    console.log("没事");
   };
 
   handleChange = (rawContent) => {
-    console.log(rawContent, "????");
+    this.state.editorState=rawContent;
+    this.setState({});
+    // 如果上层有传递 onChange 回调，则应该传递上去
+    if (this.props.onChange && typeof this.props.onChange === 'function') {
+      this.props.onChange(rawContent.toHTML());
+    }
   };
 
   render() {

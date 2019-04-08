@@ -55,14 +55,17 @@ export default class SettingsForm extends Component {
     if(response.data.state=="success"){
       let data=response.data.data.map((item)=>{
         return ({label: item.name, value: item.id});
-      }).filter(item=>item.id!=sessionStorage.id)
+      }).filter(item=>item.value!=sessionStorage.id)
       this.setState({ person: data });
+      console.log(data,"看看");
     }else{
       Toast.error(response.data.msg);
     }
   }
 
+  //修改表单数据
   formChange = (value) => {
+    console.log(value);
     this.setState({
       value,
     });
@@ -86,7 +89,7 @@ export default class SettingsForm extends Component {
         targetId=values.name.join(',');
       }
       axios
-        .get(`${API_URL}/saveMessage.do?targetId=${targetId}&messageParent.messageHeader=${values.title}&messageParent.messageContent=${values.description}&messageParent.cmsUserId=${sessionStorage.id}`)
+        .get(`${API_URL}/saveMessage.do?${values.msgType=="system"?`messageParent.type=3`:""}&targetId=${targetId}&messageParent.messageHeader=${values.title}&messageParent.messageContent=${values.description}&messageParent.cmsUserId=${sessionStorage.id}`)
         .then((response)=>{
           if(response.data.state=="success"){
             Toast.success(response.data.msg);
@@ -109,6 +112,7 @@ export default class SettingsForm extends Component {
     this.setState({ msgType: value });
   }
 
+  //修改样式类型
   changeStyle = (value) => {
     this.setState({ styleType: value });
   }
