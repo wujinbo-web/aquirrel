@@ -3,7 +3,7 @@ import IceContainer from '@icedesign/container';
 import { Pagination, Loading, Select, Feedback, Button } from '@icedesign/base';
 import IceTitle from '@icedesign/title';
 import { postUrl } from '@/api';
-import { updateUnread, deleteMessage, querySendMessage } from '@/api/apiUrl';
+import { updateUnread, deleteMessage, querySendMessage, userList } from '@/api/apiUrl';
 
 const Toast = Feedback.toast;
 
@@ -18,11 +18,29 @@ export default class MessageList extends Component {
       current: 1,
       visible: true,
       type: "",
+      userList:[],
     };
   }
 
   componentDidMount = () => {
+    this.getUserList();
     this.getMsgData();
+  }
+
+  //获取用户列表
+  getUserList = async () => {
+    let response = await postUrl(userList,{pageSize:999});
+    this.state.userList = response.data.data.map(item=>{return{label:item.name, value:item.id}});
+  }
+
+  //转化用户id
+  userIdToName = (id) => {
+    let { userList } = this.state;
+    if(userList.length>0){
+      return userList.filter(item=>item.value==id)[0].label;
+    }else{
+      return "";
+    }
   }
 
   //翻页
@@ -87,7 +105,7 @@ export default class MessageList extends Component {
         <div style={styles.title}>
           <strong style={{fontSize:"18px", color:"black",marginRight:'10px'}}>
             {
-              item.type==3?"系统消息:":item.name +"(收件人):"
+              item.type==3?"系统消息:":this.userIdToName(item.targetId) +"(收件人):"
             }
           </strong>
           <span style={{ fontSize:"18px", color: 'black',  }}>{item.title}</span>

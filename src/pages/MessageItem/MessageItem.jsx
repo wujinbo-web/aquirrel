@@ -1,19 +1,36 @@
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
-import { Button, Input } from '@icedesign/base';
+import { Button, Input, Feedback } from '@icedesign/base';
+
+const Toast = Feedback.toast;
 
 export default class MessageItem extends Component {
   static displayName = 'MessageItem';
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      content: '',
+    };
   }
 
   componentDidMount(){
 
   }
 
+  //输入值
+  changContent = (value) => {
+    this.setState({ content: value });
+  }
+
+  //提交消息
+  submitMessage = () => {
+    if(this.state.content==""){
+      Toast.error("回复消息不能为空");
+      return;
+    }
+    console.log(this.state.content,"看看输入");
+  }
 
   render() {
     let message="aaa";
@@ -21,14 +38,12 @@ export default class MessageItem extends Component {
       <IceContainer>
         <div style={styles.item}>
           <div style={styles.title}>
-            Hello
+            <strong style={{fontSize:"18px", color:"black",marginRight:'10px'}}>
+              Hello(发件人)
+            </strong>
+
             <span style={styles.datetime}>
               2019-4-8
-              <Button
-                size="small"
-                shape="warning"
-                style={{marginLeft:"10px"}}
-              >删除</Button>
             </span>
           </div>
           <div style={styles.message} dangerouslySetInnerHTML={{__html:message}}></div>
@@ -36,7 +51,7 @@ export default class MessageItem extends Component {
 
         <div style={styles.item}>
           <div style={styles.title}>
-            我的回复:
+            我:
             <span style={styles.datetime}>
               2019-4-8
             </span>
@@ -45,9 +60,19 @@ export default class MessageItem extends Component {
         </div>
 
         <div style={styles.item}>
-          <Input style={styles.content} placeholder="请输入回复内容" />
+          <div style={styles.title}>
+            回复:
+            <span style={styles.datetime}>
+              2019-4-8
+            </span>
+          </div>
+          <div style={styles.message} dangerouslySetInnerHTML={{__html:message}}></div>
+        </div>
+
+        <div style={styles.item}>
+          <Input style={styles.content} placeholder="请输入回复内容" onChange={this.changContent} />
           <p style={styles.wrap}>
-            <Button type="primary" size="small">提交</Button>
+            <Button type="primary" size="small" onClick={this.submitMessage}>提交</Button>
           </p>
         </div>
       </IceContainer>

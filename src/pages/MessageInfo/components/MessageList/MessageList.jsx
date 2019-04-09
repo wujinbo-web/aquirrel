@@ -132,7 +132,16 @@ export default class MessageList extends Component {
 
         </div>
         <div style={styles.message} dangerouslySetInnerHTML={{__html:item.message}}></div>
-        <Button style={styles.back} type="primary" size="small" onClick={this.props.go('/message/item')}>回复</Button>
+        {
+          item.type==3?"":
+          <Button
+            style={styles.back}
+            type="primary"
+            size="small"
+            onClick={this.props.go.bind(this,`/message/item?itemId=${1}&sendId=${1}&sendName=${1}&title=${1}&content=${1}`)}
+          >回复</Button>
+        }
+
       </div>
     );
   };
@@ -180,6 +189,7 @@ const styles = {
     bottom: '10px',
   },
   item: {
+    minWidth: '100px',
     position: 'relative',
     borderBottom: '1px solid #eee',
     margin: '0 0 20px',
