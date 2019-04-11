@@ -1,3 +1,5 @@
+//编辑客户财务信息
+export const updateUserInfo = "updateCustomer.do";
 //查询财务详情
 export const financeDetailQuery = "queryDmByPid.do";
 //删除财务详情
@@ -117,6 +119,15 @@ export const addGoodsSeries = 'savePcDept.do';
 export const updateGoodsSeries = 'updatePcDept.do';
 //系列管理 删除
 export const deleteGoodsSeries = 'deletePcDept.do';
+
+//材料-采购-类别 查询
+export const queryPurchaseType = 'queryMmDeptBy.do';
+// 添加
+export const addPurchaseType = 'saveMmDept.do';
+// 修改
+export const updatePurchaseType = 'updateMmDept.do';
+// 删除
+export const deletePurchaseType = 'deleteMmDept.do';
 
 //测量 删除列
 export const deleteColumn = 'deleteByName.do';

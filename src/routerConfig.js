@@ -91,7 +91,16 @@ import Wysiwyg from './pages/Wysiwyg';
 import MessageItem from './pages/MessageItem';
 import MessageInfoSend from './pages/MessageInfoSend';
 
+/*4.9新增 */
+import PurchaseType2 from './pages/PurchaseType2';
+
+
 const routerConfig = [
+  {
+    path: '/purchase/type2',
+    layout: BasicLayout,
+    component: PurchaseType2,
+  },
   {
     path: '/messageinfo/send',
     layout: BasicLayout,

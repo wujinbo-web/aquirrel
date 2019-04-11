@@ -111,7 +111,7 @@ export default class EditDialog extends Component {
 
             <FormItem label="用户地址：" {...formItemLayout}>
               <Input
-                {...init('adress', {
+                {...init('address', {
                   rules: [{ required: true, message: '必填选项' }],
                 })}
               />

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Dialog, Button, Form, Input, Field, Radio } from '@icedesign/base';
+import { Dialog, Button, Form, Input, Field } from '@icedesign/base';
 
-const { Group: RadioGroup } = Radio;
 const FormItem = Form.Item;
 
 export default class EditDialog extends Component {
@@ -78,37 +77,20 @@ export default class EditDialog extends Component {
           title="编辑"
         >
           <Form direction="ver" field={this.field}>
-          
-            <FormItem label="公司名称：" {...formItemLayout}>
+            <FormItem label="类别：" {...formItemLayout}>
               <Input
-                {...init('companyName')}
+                {...init('name', {
+                  rules: [{ required: true, message: '必填选项' }],
+                })}
               />
             </FormItem>
-            <FormItem label="税号：" {...formItemLayout}>
+
+            <FormItem label="备注：" {...formItemLayout}>
               <Input
-                {...init('TFN')}
+                {...init('remark')}
               />
             </FormItem>
-            <FormItem label="开户行：" {...formItemLayout}>
-              <Input
-                {...init('bank')}
-              />
-            </FormItem>
-            <FormItem label="账号：" {...formItemLayout}>
-              <Input
-                {...init('bankNum')}
-              />
-            </FormItem>
-            <FormItem label="地址：" {...formItemLayout}>
-              <Input
-                {...init('address')}
-              />
-            </FormItem>
-            <FormItem label="开票电话：" {...formItemLayout}>
-              <Input
-                {...init('telephone')}
-              />
-            </FormItem>
+
           </Form>
         </Dialog>
       </div>

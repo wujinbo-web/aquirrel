@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Dialog, Button, Form, Input, Field, Radio } from '@icedesign/base';
+import { Dialog, Button, Form, Input, Field } from '@icedesign/base';
 
-const { Group: RadioGroup } = Radio;
 const FormItem = Form.Item;
 
 export default class EditDialog extends Component {
@@ -13,7 +12,6 @@ export default class EditDialog extends Component {
     super(props);
     this.state = {
       visible: false,
-      dataIndex: null,
     };
     this.field = new Field(this);
   }
@@ -24,20 +22,17 @@ export default class EditDialog extends Component {
         console.log('Errors in form!!!');
         return;
       }
-
-      const { dataIndex } = this.state;
-      this.props.getFormValues(dataIndex, values);
+      this.props.getFormValues(values);
       this.setState({
         visible: false,
       });
     });
   };
 
-  onOpen = (index, record) => {
-    this.field.setValues({ ...record });
+  onOpen = () => {
+    this.field.setValues({ name: "", remark: "" });
     this.setState({
       visible: true,
-      dataIndex: index,
     });
   };
 
@@ -49,7 +44,6 @@ export default class EditDialog extends Component {
 
   render() {
     const init = this.field.init;
-    const { index, record } = this.props;
     const formItemLayout = {
       labelCol: {
         fixedSpan: 6,
@@ -64,9 +58,10 @@ export default class EditDialog extends Component {
         <Button
           size="small"
           type="primary"
-          onClick={() => this.onOpen(index, record)}
+          style={{ marginBottom: "10px" }}
+          onClick={() => this.onOpen()}
         >
-          编辑
+          新增
         </Button>
         <Dialog
           style={{ width: 640 }}
@@ -75,40 +70,25 @@ export default class EditDialog extends Component {
           closable="esc,mask,close"
           onCancel={this.onClose}
           onClose={this.onClose}
-          title="编辑"
+          title="新增"
         >
           <Form direction="ver" field={this.field}>
-          
-            <FormItem label="公司名称：" {...formItemLayout}>
+            <FormItem label="类别：" {...formItemLayout}>
               <Input
-                {...init('companyName')}
+                placeholder="请输入类别名"
+                {...init('name', {
+                  rules: [{ required: true, message: '必填选项' }],
+                })}
               />
             </FormItem>
-            <FormItem label="税号：" {...formItemLayout}>
+
+            <FormItem label="备注：" {...formItemLayout}>
               <Input
-                {...init('TFN')}
+                placeholder="请输入备注名"
+                {...init('remark')}
               />
             </FormItem>
-            <FormItem label="开户行：" {...formItemLayout}>
-              <Input
-                {...init('bank')}
-              />
-            </FormItem>
-            <FormItem label="账号：" {...formItemLayout}>
-              <Input
-                {...init('bankNum')}
-              />
-            </FormItem>
-            <FormItem label="地址：" {...formItemLayout}>
-              <Input
-                {...init('address')}
-              />
-            </FormItem>
-            <FormItem label="开票电话：" {...formItemLayout}>
-              <Input
-                {...init('telephone')}
-              />
-            </FormItem>
+
           </Form>
         </Dialog>
       </div>

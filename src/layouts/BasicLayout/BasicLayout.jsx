@@ -68,7 +68,8 @@ class BasicLayout extends Component {
   componentDidMount() {
     this.enquireScreenRegister();
     this.props.userProfile();
-    this.getUnreadNum();
+    setInterval(this.getUnreadNum, 1000*10);
+    
   }
 
   //獲取未讀消息數量

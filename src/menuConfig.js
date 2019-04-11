@@ -244,6 +244,10 @@ const purchase={
       path: '/purchase/type',
     },
     {
+      name: '采购类别',
+      path: '/purchase/type2',
+    },
+    {
       name: '\u6750\u6599\u5E93', //材料库
       path: '/purchase/list',
     },
@@ -285,10 +289,10 @@ const message={
       name: '发件箱',
       path: '/messageinfo/send',
     },
-    {
-      name: '消息主体',
-      path: '/message/item',
-    },
+    // {
+    //   name: '消息主体',
+    //   path: '/message/item',
+    // },
   ],
 };
 

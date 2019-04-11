@@ -6,6 +6,8 @@ import CustomTable from './components/CustomTable';
 import EditDialog from './components/EditDialog';
 import DeleteBalloon from './components/DeleteBalloon';
 import { API_URL } from '../../../../config';
+import { postUrl } from '@/api';
+import { updateUserInfo } from '@/api/apiUrl';
 
 const TabPane = Tab.TabPane;
 const { Row, Col } = Grid;
@@ -52,8 +54,8 @@ export default class TabTable extends Component {
       },
       {
         title: '用户地址',
-        dataIndex: 'adress',
-        key: 'adress',
+        dataIndex: 'address',
+        key: 'address',
       },
       {
         title: '订单统计',
@@ -97,7 +99,7 @@ export default class TabTable extends Component {
             name: item.customer.name,
             sex: item.customer.sex == 1 ? "男" : "女",
             tel: item.customer.phone,
-            adress: item.customer.address,
+            address: item.customer.address,
             listnum: item.ordersCount,
             id: item.customer.id,
             companyName: item.customer.companyName,
@@ -116,36 +118,33 @@ export default class TabTable extends Component {
       });
   }
   //获取表单数据 ，提交修改
-  getFormValues = (dataIndex, values) => {
+  getFormValues = async (dataIndex, values) => {
     const { dataSource, tabKey } = this.state;
-    //tabKey：all 代表全部数据
-    console.log(values,"修改的数据");
-    // adress: "发士大夫阿道夫"
-    // id: 15
-    // listnum: 0
-    // name: "士大夫2"
-    // sex: "男"
-    // tel: "1231312"
     this.setState({ visible:true });
-    axios
-      .get(`${API_URL}/updateCustomer.do?customer.TFN=${values.TFN}&customer.companyName=${values.companyName}&customer.id=${values.id}&customer.name=${values.name}&customer.sex=${values.sex=="男"? 1 : 0}&customer.phone=${values.tel}&customer.address=${values.adress}`)
-      .then((response)=>{
-        this.setState({ visible: false });
-        if(response.data.state=="success"){
-          //成功修改数据
-          Toast.success("修改成功");
-          dataSource[tabKey][dataIndex] = values;
-          this.setState({
-            dataSource,
-          });
-        }else{
-          Toast.error(msg);
-        }
-      })
-      .catch((error)=>{
-        console.log(error);
-      })
 
+    let response = await postUrl(updateUserInfo,{
+      "customer.TFN": values.TFN,
+      "customer.name": values.name,
+      "customer.companyName": values.companyName,
+      "customer.id": values.id,
+      "customer.sex": values.sex=="男"? 1 : 0,
+      "customer.phone": values.tel,
+      "customer.address": values.address,
+      "customer.bank": values.bank,
+      "customer.bankNum": values.bankNum,
+      "customer.telephone": values.telephone,
+    })
+    if(response.data.state=="success"){
+      //成功修改数据
+      Toast.success("修改成功");
+      dataSource[tabKey][dataIndex] = values;
+      this.setState({
+        dataSource,
+      });
+    }else{
+      Toast.error(response.data.msg);
+    }
+    this.setState({ visible:false });
   };
 
   //当执行删除操作时

@@ -13,7 +13,7 @@ export default class CustomBraftEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorState: BraftEditor.createEditorState("你好世界")
+      editorState: BraftEditor.createEditorState("")
     };
   }
 
@@ -32,7 +32,7 @@ export default class CustomBraftEditor extends Component {
 
   render() {
     const editorProps = {
-      height: 300,
+      height: 200,
       contentFormat: 'html',
       initialContent: '<p></p>',
       onChange: this.handleChange,
