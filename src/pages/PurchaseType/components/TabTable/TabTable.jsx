@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
-import { Tab, Loading, Feedback, Pagination } from '@icedesign/base';
+import { Tab, Loading, Feedback, Pagination, Button } from '@icedesign/base';
 import axios from 'axios';
 import CustomTable from './components/CustomTable';
 import EditDialog from './components/EditDialog';
 import DeleteBalloon from './components/DeleteBalloon';
 import AddType from './components/AddType';
-import { queryMaterialsTypeList, saveMaterialsTypeList, deleteMaterialsTypeList, updateMaterialsTypeList } from './../../../../api';
+import { queryMaterialsTypeList, saveMaterialsTypeList, deleteMaterialsTypeList, updateMaterialsTypeList } from '@/api';
 
 const Toast = Feedback.toast;
 const TabPane = Tab.TabPane;
@@ -33,7 +33,7 @@ export default class TabTable extends Component {
     };
     this.columns = [
       {
-        title: '类别名称',
+        title: '材料厂家名',
         dataIndex: 'name',
         key: 'name',
       },
@@ -43,6 +43,12 @@ export default class TabTable extends Component {
         render: (value, index, record) => {
           return (
             <span>
+              <Button
+                type="primary"
+                size="small"
+                style={{marginRight: "5px"}}
+                onClick={this.props.go.bind(this,`/purchase/type2?id=${record.id}&name=${record.name}`)}
+              >查看二级分类</Button>
               <EditDialog
                 index={index}
                 record={record}

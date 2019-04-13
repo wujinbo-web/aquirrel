@@ -26,7 +26,7 @@ export default class TabTable extends Component {
     };
     this.columns=[
       {
-        title: '类别',
+        title: '品牌名',
         dataIndex: 'name',
       },
       {
@@ -38,13 +38,18 @@ export default class TabTable extends Component {
 
   //钩子
   componentDidMount(){
+    console.log(this.props.id);
     this.getIndexData();
   }
 
   //查询数据
   getIndexData = async () => {
     this.setState({visible: true});
-    let response = await postUrl(queryPurchaseType,{ pageIndex: this.state.current, pageSize: 10});
+    let response = await postUrl(queryPurchaseType,{
+      pageIndex: this.state.current,
+      pageSize: 10,
+      factoryId: this.props.id,
+    });
     if(response.data.state=="success"){
       this.state.total=response.data.total;
       this.state.dataSource=response.data.data.map(item=>{
@@ -74,8 +79,9 @@ export default class TabTable extends Component {
   addData = async (values) => {
     this.setState({visible:false});
     let response = await postUrl(addPurchaseType, {
-      "pcClass.name": values.name,
-      "pcClass.remark": values.remark,
+      "mmDept.factoryId": this.props.id,
+      "mmDept.name": values.name,
+      "mmDept.remark": values.remark,
     });
     if(response.data.state=="success"){
       Toast.success("添加成功");
@@ -88,9 +94,10 @@ export default class TabTable extends Component {
   //编辑数据
   editData = async (index, values) => {
     let response = await postUrl(updatePurchaseType,{
-      "MmDept.id": values.id,
-      "MmDept.name": values.name,
-      "MmDept.remark": values.remark,
+      "mmDept.id": values.id,
+      "mmDept.factoryId": this.props.id,
+      "mmDept.name": values.name,
+      "mmDept.remark": values.remark,
     });
     if(response.data.state=="success"){
       Toast.success("编辑成功");

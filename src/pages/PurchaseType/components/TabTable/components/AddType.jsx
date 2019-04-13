@@ -60,7 +60,7 @@ export default class EditDialog extends Component {
           type="primary"
           onClick={() => this.onOpen()}
         >
-          添加类别
+          添加厂家
         </Button>
         <Dialog
           style={{ width: 640 }}
@@ -72,7 +72,7 @@ export default class EditDialog extends Component {
           title="添加"
         >
           <Form direction="ver" field={this.field}>
-            <FormItem label="类别名：" {...formItemLayout}>
+            <FormItem label="厂家名：" {...formItemLayout}>
               <Input
                 {...init('name', {
                   rules: [{ required: true, message: '必填选项' }],

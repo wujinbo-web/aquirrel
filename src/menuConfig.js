@@ -240,12 +240,8 @@ const purchase={
   authority: ['admin','normAdmin','purchase'],
   children: [
     {
-      name: '材料类别',
+      name: '材料厂家',
       path: '/purchase/type',
-    },
-    {
-      name: '采购类别',
-      path: '/purchase/type2',
     },
     {
       name: '\u6750\u6599\u5E93', //材料库

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Dialog, Button, Form, Input, Field, Select } from '@icedesign/base';
-import { queryMaterialsTypeList } from '@/api';
+import { queryMaterialsTypeList, postUrl } from '@/api';
+import { queryPurchaseType } from '@/api/apiUrl';
 
 const FormItem = Form.Item;
 
@@ -14,6 +15,8 @@ export default class AddGoods extends Component {
     this.state = {
       visible: false,
       customData: [],
+      pinPaiNow: [],
+      classId: '',
     };
     this.field = new Field(this,{autoUnmount: true});
   }
@@ -25,13 +28,23 @@ export default class AddGoods extends Component {
         return;
       }
 
-      const { dataIndex } = this.state;
-      this.props.addMaterialName(values);
+      const { dataIndex, classId } = this.state;
+      this.props.addMaterialName(values, classId);
       this.setState({
         visible: false,
       });
     });
   };
+
+  //更改厂家
+  changeFactory = async (value) => {
+    this.state.classId = value;
+    let response = await postUrl(queryPurchaseType,{ pageSize: 999, factoryId: value })
+    this.state.pinPaiNow = response.data.data.map((item)=>{
+      return({ label: item.name, value: item.id });
+    });
+    this.setState({});
+  }
 
   onOpen = async () => {
     const response = await queryMaterialsTypeList({ pageSize: 50 });
@@ -52,7 +65,7 @@ export default class AddGoods extends Component {
 
   render() {
     const init = this.field.init;
-    const { customData } = this.state;
+    const { customData, pinPaiNow } = this.state;
     const formItemLayout = {
       labelCol: {
         fixedSpan: 6,
@@ -88,13 +101,22 @@ export default class AddGoods extends Component {
                 })}
               />
             </FormItem>
-            <FormItem label="材料类别：" {...formItemLayout}>
+            <FormItem label="生产厂家：" {...formItemLayout}>
               <Select
                   size="large"
                   placeholder="请选择..."
-                  style={{width:"200px"}}
+                  style={{width:"100%"}}
                   dataSource={customData}
-                  {...init("type",{rules:[{required: true, message: '必填选项'}]})}
+                  onChange={this.changeFactory}
+              />
+            </FormItem>
+            <FormItem label="厂家品牌：" {...formItemLayout}>
+              <Select
+                  size="large"
+                  placeholder="请选择..."
+                  style={{width:"100%"}}
+                  dataSource={pinPaiNow}
+                  {...init("deptId",{rules:[{required: true, message: '必填选项'}]})}
               />
             </FormItem>
             <FormItem label="价格：" {...formItemLayout}>

@@ -11,9 +11,12 @@ export default class PurchaseType extends Component {
 
   render() {
     return (
-      <div className="purchase-type-page">
-        <TabTable />
+      <div className="purchase-type-page" go={this.props.go}>
+        <TabTable go={this.go} />
       </div>
     );
+  }
+  go = (url) => {
+    this.props.history.push(url);
   }
 }
