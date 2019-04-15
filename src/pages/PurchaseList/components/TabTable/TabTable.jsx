@@ -141,9 +141,9 @@ export default class TabTable extends Component {
 
   //获取查询数据
   getIndexData = async () => {
-    let { pageIndex, classId, deptId, factory, name } = this.state;
+    let { current, classId, deptId, factory, name } = this.state;
     this.setState({visible:true});
-    const data = await postQueryMaterials({pageIndex ,classId, deptId, factoryId: factory,name});
+    const data = await postQueryMaterials({pageIndex: current ,classId, deptId, factoryId: factory,name});
     if(data.data.state="success"){
       //data.data.total  总数  data.data.pageIndex 页码
       let dataSource = data.data.data.map((item)=>{

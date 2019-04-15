@@ -77,7 +77,7 @@ export default class EditDialog extends Component {
           title="编辑"
         >
           <Form direction="ver" field={this.field}>
-            <FormItem label="类别：" {...formItemLayout}>
+            <FormItem label="品牌：" {...formItemLayout}>
               <Input
                 {...init('name', {
                   rules: [{ required: true, message: '必填选项' }],

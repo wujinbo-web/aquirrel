@@ -6,6 +6,8 @@ import CustomTable from './components/CustomTable';
 import EditDialog from './components/EditDialog';
 import DeleteBalloon from './components/DeleteBalloon';
 import { postQueryMaterials, postAddMaterials, postDeleteMaterials, postUpdateMaterials, queryMaterialsTypeList } from '@/api';
+import { queryPurchaseType } from '@/api/apiUrl';
+import { postUrl } from '@/api';
 import { factoryList } from '@/tool/factoryList';
 
 const Toast = Feedback.toast;
@@ -33,13 +35,22 @@ export default class TabTable extends Component {
       visible: false,
       customData: [],
       classId: "",
-      factory: 1
+      factory: 1,
+      pinPaiNow: [],
+      customData2: [],  //所有品牌列表
+      deptId: "",
     };
     this.columns = [
       {
-        title: '类别',
+        title: '生产厂家',
         dataIndex: 'typeName',
         key: 'typeName',
+        width: 80,
+      },
+      {
+        title: '厂家品牌',
+        dataIndex: 'deptName',
+        key: 'deptName',
         width: 80,
       },
       {
@@ -78,13 +89,33 @@ export default class TabTable extends Component {
     this.state.current=current;
      this.setState({});
      //请求数据
-     this.getIndexData(this.state.current,this.state.classId,this.state.factory);
+     this.getIndexData();
+  }
+
+  typeIdToName = (id) => {
+    if(id==null)return "";
+    let { customData2 } = this.state;
+    return customData2.filter(item=>item.value==id)[0].label;
+  }
+
+  //获取 全部品牌类别类别
+  getTypeData2 = async () =>{
+    this.setState({ visible: true });
+    const response = await postUrl(queryPurchaseType,{ pageSize: 999 });
+    let customData2=response.data.data.map((item)=>{
+      return({ label: item.name, value: item.id });
+    })
+    this.setState({
+      visible:false,
+      customData2,
+    });
   }
 
   //获取查询数据
-  getIndexData = async (pageIndex,classId,factoryId=1) => {
+  getIndexData = async () => {
     this.setState({visible:true});
-    const data = await postQueryMaterials({pageIndex,classId,factoryId});
+    let { current, classId, factory } = this.state;
+    const data = await postQueryMaterials({pageIndex: current,classId,factoryId:factory});
     if(data.data.state="success"){
       //data.data.total  总数  data.data.pageIndex 页码
       let dataSource = data.data.data.map((item)=>{
@@ -98,6 +129,8 @@ export default class TabTable extends Component {
           price:item[0].price,
           priceCount: Number(item[0].price) * Number(item[0].putNum),
           classId: item[0].classId,
+          deptId: item[0].deptId,
+          deptName: this.typeIdToName(item[0].deptId),
         });
       });
       this.setState({ dataSource:{all:dataSource},total: data.data.total,visible:false, });
@@ -115,7 +148,7 @@ export default class TabTable extends Component {
       visible:false,
       customData,
     });
-    this.getIndexData(this.state.current,this.state.classId, this.state.factory);
+    this.getIndexData();
   }
 
 
@@ -128,16 +161,33 @@ export default class TabTable extends Component {
 
   changeSearch = (name, value) => {
     if(name=="type"){
-      this.state.classId=value
+      //选择了厂家
+      this.state.deptId="";
+      this.getPinPaiNow(value);
+      this.state.classId=value;
+    }else if(name=="type2"){
+      this.state.deptId=value;
     }else if (name="factory"){
       this.state.factory=value
     }
     this.setState({});
-    this.getIndexData(this.state.current,this.state.classId,this.state.factory);
+    this.getIndexData();
+  }
+
+  getPinPaiNow = async (factoryId) => {
+    const response = await postUrl(queryPurchaseType,{ pageSize: 999, factoryId });
+    let pinPaiNow=response.data.data.map((item)=>{
+      return({ label: item.name, value: item.id });
+    })
+    pinPaiNow.splice(0,0,{label:'全部',value: ''});
+    this.setState({
+      visible:false,
+      pinPaiNow,
+    });
   }
 
   render() {
-    const { dataSource, customData } = this.state;
+    const { dataSource, customData, pinPaiNow, deptId } = this.state;
     return (
       <div className="tab-table">
         <Loading visible={this.state.visible} style={{display: 'block'}} shape="fusion-reactor">
@@ -145,7 +195,7 @@ export default class TabTable extends Component {
           <h2 style={{textAlign:"center"}}>查看库存</h2>
             <Row>
               <Col span="2" style={{lineHeight:"32px", textAlign: "center"}}>
-                类别：
+                材料厂家：
               </Col>
               <Col span="4">
                 <Select
@@ -153,6 +203,19 @@ export default class TabTable extends Component {
                   placeholder="请选择..."
                   dataSource={customData}
                   onChange={this.changeSearch.bind(this,"type")}
+                  style={{ width:"100%" }}
+                />
+              </Col>
+              <Col span="2" style={{lineHeight:"32px", textAlign: "center"}}>
+                厂家品牌：
+              </Col>
+              <Col span="4">
+                <Select
+                  size="large"
+                  placeholder="请选择..."
+                  dataSource={pinPaiNow}
+                  value={deptId}
+                  onChange={this.changeSearch.bind(this,"type2")}
                   style={{ width:"100%" }}
                 />
               </Col>

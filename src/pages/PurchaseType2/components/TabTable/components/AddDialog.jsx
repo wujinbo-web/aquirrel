@@ -73,7 +73,7 @@ export default class EditDialog extends Component {
           title="新增"
         >
           <Form direction="ver" field={this.field}>
-            <FormItem label="类别：" {...formItemLayout}>
+            <FormItem label="品牌：" {...formItemLayout}>
               <Input
                 placeholder="请输入类别名"
                 {...init('name', {
