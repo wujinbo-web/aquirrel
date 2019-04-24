@@ -56,6 +56,16 @@ export default class TabTable extends Component {
         key: 'address',
       },
       {
+        title: '对接人',
+        dataIndex: 'successor',
+        key: 'successor',
+      },
+      {
+        title: '对接电话',
+        dataIndex: 'successorPhone',
+        key: 'successorPhone',
+      },
+      {
         title: '签约时间',
         dataIndex: 'createTime',
         key: 'createTime',
@@ -94,7 +104,7 @@ export default class TabTable extends Component {
       .get(`${API_URL}/findOrder.do?pageIndex=${pageIndex}`)
       .then((response)=>{
         let id,customer,signer,address,createTime,status,status2,drawingAddress;
-        let fileAddress,orderState,financeState,installState,adminId,customerId;
+        let fileAddress,orderState,financeState,installState,adminId,customerId,successor,successorPhone;
 
         if(response.data.state == "success"){
           //设置分页
@@ -116,8 +126,26 @@ export default class TabTable extends Component {
             installState=item.order.installState;
             adminId=item.order.adminId;
             customerId=item.order.customerId;
-
-            return ({id,name,signer,address,createTime,status,status2,fileAddress,orderState,financeState,installState,adminId,customerId, drawingAddress});
+            successor=item.order.successor;
+            successorPhone=item.order.successorPhone;
+            return ({
+              id,
+              name,
+              signer,
+              address,
+              createTime,
+              status,
+              status2,
+              fileAddress,
+              orderState,
+              financeState,
+              installState,
+              adminId,
+              customerId,
+              drawingAddress,
+              successor,
+              successorPhone,
+            });
           })
           //渲染
           this.setState({

@@ -5,17 +5,16 @@ import axios from 'axios';
 import CustomTable from './components/CustomTable';
 import EditDialog from './components/EditDialog';
 import DeleteBalloon from './components/DeleteBalloon';
-import { API_URL } from '../../../../config';
+import { API_URL } from '@/config';
 import getStatusName from '@/tool/getStatusName';
+import { postUrl } from '@/api';
+import { updateOrderInfo } from '@/api/apiUrl';
 
 const TabPane = Tab.TabPane;
 const Toast = Feedback.toast;
 
 const tabs = [
   { tab: '全部', key: 'all' },
-  // { tab: '已发布', key: 'inreview' },
-  // { tab: '审核中', key: 'released' },
-  // { tab: '已拒绝', key: 'rejected' },
 ];
 
 export default class TabTable extends Component {
@@ -28,7 +27,7 @@ export default class TabTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataSource: {},
+      dataSource: { all: [] },
       tabKey: 'all',
       current: 1, //当前页码
       total: 0,  //项目总数
@@ -59,6 +58,16 @@ export default class TabTable extends Component {
         key: 'address',
       },
       {
+        title: '客户对接人',
+        dataIndex: 'successor',
+        width: 100,
+      },
+      {
+        title: '对接电话',
+        dataIndex: 'successorPhone',
+        width: 120,
+      },
+      {
         title: '签约时间',
         dataIndex: 'createTime',
         key: 'createTime',
@@ -86,6 +95,7 @@ export default class TabTable extends Component {
                 onClick={()=>{this.redirctDetail(record)}}
                 style={{ marginRight: "5px" }}
               >查看详情</Button>
+              <EditDialog record={record} index={index} getFormValues={this.submitEdit} />
               <DeleteBalloon
                 handleRemove={() => this.handleRemove(value, index, record)}
               />
@@ -99,39 +109,41 @@ export default class TabTable extends Component {
     this.props.redirctDetail(record.id);
   }
   //查找总订单接口
-  getOrderData = (pageIndex) => {
+  getOrderData = () => {
     this.setState({ visible: true });
     axios
-      .get(`${API_URL}/findOrder.do?pageIndex=${pageIndex}`)
+      .get(`${API_URL}/findOrder.do?pageIndex=${this.state.current}`)
       .then((response)=>{
-        let id,customer,signer,address,createTime,status,status2;
-        let fileAddress,orderState,financeState,installState,adminId,customerId,firstTime,secondTime,thirdTime,fourthTime,fifthTime;
-
         if(response.data.state == "success"){
           //设置分页
           this.setState({total: response.data.Count});
           //数据组装
           let data=response.data.data.map((item)=>{
-            status=getStatusName(item.order.orderState,item.order.installState); //订单状态（中文）
-            status2=item.order.financeState?"已结清":"未结清";
-            id=item.order.id;  //订单id
-            name=item.name; //客户名
-            signer=item.order.signer; //签约人
-            address=item.order.address;//地址
-            createTime=item.order.createTime.slice(0,11);//签约日期
-            //剩余参数
-            fileAddress=item.order.fileAddress;
-            orderState=item.order.orderState;
-            financeState=item.order.financeState;
-            installState=item.order.installState;
-            adminId=item.order.adminId;
-            customerId=item.order.customerId;
-            firstTime=item.order.firstTime;
-            secondTime=item.order.secondTime;
-            thirdTime=item.order.thirdTime;
-            fourthTime=item.order.fourthTime;
-            fifthTime=item.order.fifthTime;
-            return ({id,name,signer,address,createTime,status,status2,fileAddress,orderState,financeState,installState,adminId,customerId,firstTime,secondTime,thirdTime,fourthTime,fifthTime});
+            return ({
+              id: item.order.id,
+              name: item.name, //客户名,
+              signer: item.order.signer, //签约人,
+              address:item.order.address,//地址,
+              createTime: item.order.createTime.slice(0,11),//签约日期,
+              endTime: item.order.endTime,
+              status: getStatusName(item.order.orderState,item.order.installState), //订单状态（中文）,
+              status2: item.order.financeState?"已结清":"未结清",
+              fileAddress: item.order.fileAddress,
+              drawingAddress: item.order.drawingAddress,
+              orderState: item.order.orderState,
+              financeState: item.order.financeState,
+              installState: item.order.installState,
+              adminId: item.order.adminId,
+              incomeMoney: item.order.incomeMoney,
+              invoiceMoney: item.order.invoiceMoney,
+              customerId: item.order.customerId,
+              payMoney: item.order.payMoney,
+              append: item.order.append,
+              successor:item.order.successor,
+              successorPhone: item.order.successorPhone,
+              text: item.order.text,
+              pmoney: item.order.pmoney,
+            });
           })
           //渲染
           this.setState({
@@ -144,9 +156,45 @@ export default class TabTable extends Component {
         console.log(error);
       })
   }
+
+  //编辑订单
+  submitEdit = async (dataIndex,values) => {
+    const { dataSource, tabKey } = this.state;
+    dataSource[tabKey][dataIndex] = values;
+    this.setState({
+      dataSource,
+    });
+    let response = await postUrl(updateOrderInfo,{
+      "order.id":values.id,
+      "order.signer":values.signer,
+      "order.installState":values.installState,
+      "order.orderState":values.orderState,
+      "order.address":values.address,
+      "order.customerId":values.customerId,
+      "order.adminId":values.adminId==null?"":values.adminId,
+      "order.append":values.append==null?"":values.append,
+      "order.drawingAddress":values.drawingAddress,
+      "order.endTime":values.endTime==null?"":values.endTime,
+      "order.fileAddress":values.fileAddress,
+      "order.financeState":values.financeState,
+      "order.incomeMoney":values.incomeMoney,
+      "order.invoiceMoney":values.invoiceMoney,
+      "order.payMoney":values.payMoney,
+      "order.successor":values.successor,
+      "order.successorPhone":values.successorPhone,
+      "order.text":values.text,
+      "order.pmoney":values.pmoney,
+    });
+    if(response.data.state=="success"){
+      Toast.success("编辑成功");
+    }else{
+      Toast.error(response.data.msg);
+    }
+  }
+
   //加载数据
   componentDidMount() {
-    this.getOrderData(1);
+    this.getOrderData();
   }
   //编辑表格
   getFormValues = (dataIndex, values) => {
@@ -187,7 +235,7 @@ export default class TabTable extends Component {
     this.state.current=current;
     this.setState({});
      //请求数据
-    this.getOrderData(this.state.current);
+    this.getOrderData();
   }
 
   render() {
@@ -197,9 +245,9 @@ export default class TabTable extends Component {
         <IceContainer>
           <Loading visible={this.state.visible} style={{display: 'block'}} shape="fusion-reactor">
           <Tab onChange={this.handleTabChange}>
-            {tabs.map((item) => {
+            {tabs.map((item,index) => {
               return (
-                <TabPane tab={item.tab} key={item.key}>
+                <TabPane tab={item.tab} key={index}>
                   <CustomTable
                     dataSource={dataSource[this.state.tabKey]}
                     columns={this.columns}

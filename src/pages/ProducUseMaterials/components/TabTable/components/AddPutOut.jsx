@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Dialog, Button, Form, Input, Field, Select, Grid, Feedback } from '@icedesign/base';
 import { getUuid, queryMaterialsTypeList, postQueryMaterials, postUrl } from '@/api';
-import { queryPurchaseType } from '@/api/apiUrl';
+import { queryPurchaseType, queryfactoryList } from '@/api/apiUrl';
 import { factoryList } from '@/tool/factoryList';
 
 const { Row, Col } = Grid;
@@ -20,17 +20,19 @@ export default class EditDialog extends Component {
       json:[],
       uuid:"",
       customData: [],
-      materialsList: [],
-      classId: '',
-      factory: 1,
-      deptList: [],
+      materialsList: [],   //材料列表
+      classId: '',  //当前工厂id
+      deptId: '',   //当前品牌id
+      factory: 1,   //工厂
+      deptList: [],  //厂家-品牌列表
+      classList: [],  //厂家列表
     };
   }
 
   //获取商品数据
   getIndexData= async ()=>{
-    let { factory } = this.state;
-    const response = await postQueryMaterials({pageSize:999, factoryId:factory });
+    let { factory, classId, deptId } = this.state;
+    const response = await postQueryMaterials({pageSize:999, factoryId:factory, classId, deptId });
     this.state.materialsList = response.data.data.map(item=>{
       //deptId 品牌ID
       return({
@@ -42,18 +44,47 @@ export default class EditDialog extends Component {
     this.setState({});
   }
 
-  //获取品牌数据
-  getDeptData=async()=>{
-    let response = await postUrl(queryPurchaseType,{pageSize: 999});
-    this.state.deptList = response.data.data.map(item=>{
-      return({
-        label: item.name,
-        id: item.id,
-      })
-    })
+  //获取厂家列表
+  queryfactoryList = async () => {
+    let response = await postUrl(queryfactoryList,{pageSize: 999});
+    this.state.classList=response.data.data.map(item=>{return({
+      label: item.name,
+      value: item.id,
+    })})
+    this.state.classList.splice(0,0,{label:"全部",value:""});
     this.setState({});
   }
 
+  //获取品牌数据
+  getDeptData=async()=>{
+    let { classId } = this.state;
+    let response = await postUrl(queryPurchaseType,{pageSize: 999,factoryId:classId });
+    this.state.deptList = response.data.data.map(item=>{
+      return({
+        label: item.name,
+        value: item.id,
+      })
+    })
+    this.state.deptList.splice(0,0,{label: "全部", value:""});
+    this.setState({});
+  }
+
+  //修改下拉框
+  changeValue = (type, value) => {
+    if(type=="class"){
+      this.state.classId=value;
+      this.state.deptId="";
+      //重新回去品牌列表
+      this.getDeptData();
+    }else if(type=="dept"){
+      this.state.deptId=value;
+    }
+    //刷新数据
+    this.getIndexData();
+    this.setState({});
+  }
+
+  //提交表单
   handleSubmit = () => {
     const { uuid, json, factory } = this.state;
     //做空校验证
@@ -79,6 +110,7 @@ export default class EditDialog extends Component {
   onOpen = async () => {
     this.getIndexData();
     this.getDeptData();
+    this.queryfactoryList();
     //获取uuid
     const response = await getUuid();
     this.setState({
@@ -87,21 +119,6 @@ export default class EditDialog extends Component {
       json:[{name:"",materialsRecordId:response.data.uuid,materialsMainId:"",count:""}]
     });
   };
-
-  //改变类别获取材料列表
-  // getMaterialsList = (value) => {
-  //   this.state.classId=value;
-  //   this.setState({});
-  //   this.updateList();
-  // }
-  // //更新列表
-  // updateList = async () => {
-  //   const response = await postQueryMaterials({pageSize:500,classId:this.state.classId,factoryId:this.state.factory});
-  //   let materialsList = response.data.data.map((item)=>{
-  //     return ({label:item[0].name,value:item[0].id});
-  //   })
-  //   this.setState({ materialsList });
-  // }
 
   onClose = () => {
     this.setState({
@@ -123,13 +140,15 @@ export default class EditDialog extends Component {
 
   //品牌转化
   transformName2 = (id) => {
-    let name;
+    let name="";
     const { deptList } = this.state;
-    deptList.forEach((item)=>{
-      if(item.value==id){
-        name = item.label;
-      }
-    })
+    if(deptList.length>0){
+      deptList.forEach((item)=>{
+        if(item.value==id){
+          name = item.label;
+        }
+      })
+    }
     return name;
   }
 
@@ -160,16 +179,15 @@ export default class EditDialog extends Component {
     this.setState({});
   }
 
+  //修改工厂值
   getFactory = (value) => {
     this.state.factory = value;
     this.setState({});
-    if(this.state.classId == "")return false;
-    this.updateList();
   }
 
 
   render() {
-    const { json, customData, materialsList } = this.state;
+    const { json, customData, materialsList, classList, deptList, classId, deptId } = this.state;
     const formItemLayout = {
       labelCol: {
         fixedSpan: 6,
@@ -204,7 +222,7 @@ export default class EditDialog extends Component {
               size="large"
               placeholder="请选择工厂"
               style={{width:"200px"}}
-              defaultValue={[ { label:"南京厂", value: 1 } ]}
+              defaultValue={"1"}
               dataSource={factoryList}
               onChange={this.getFactory}
             />
@@ -216,6 +234,30 @@ export default class EditDialog extends Component {
           style={{ marginBottom: "5px" }}
           onClick={this.addItem}
         >添加货物</Button>
+        <Row style={{marginBottom:"10px"}}>
+          <Col span="3" style={{ lineHeight:"32px", textAlign:"center" }}>厂家:</Col>
+          <Col span="7">
+            <Select
+              size="large"
+              placeholder="请选择厂家"
+              style={{width:"200px"}}
+              dataSource={classList}
+              value={classId}
+              onChange={this.changeValue.bind(this,'class')}
+            />
+          </Col>
+          <Col span="3" style={{ lineHeight:"32px", textAlign:"center" }}>品牌:</Col>
+          <Col span="9">
+            <Select
+              size="large"
+              placeholder="请选择品牌"
+              style={{width:"200px"}}
+              dataSource={deptList}
+              value={deptId}
+              onChange={this.changeValue.bind(this,'dept')}
+            />
+          </Col>
+        </Row>
         {
           json.map((item,index)=>{
             return (
@@ -224,7 +266,7 @@ export default class EditDialog extends Component {
                   <Select
                     showSearch
                     size="large"
-                    style={{width: "100%"}}
+                    style={{width: "100%", marginRight: "5px"}}
                     placeholder="请选择材料..."
                     onChange={this.setPutInCount.bind(this,index,"materialsMainId")}
                     dataSource={materialsList}
@@ -233,9 +275,11 @@ export default class EditDialog extends Component {
                 <Col>
                   <Input
                     placeholder="请输入出货数"
+                    size="large"
                     style={{ height:"30px",lineHeight:"30px" }}
                     value={item.count}
                     htmlType="number"
+                    style={{marginRight: "5px"}}
                     onChange={this.setPutInCount.bind(this,index,"count")}
                   />
                 </Col>

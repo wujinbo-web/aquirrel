@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dialog, Button, Form, Input, Field } from '@icedesign/base';
+import { Dialog, Button, Form, Input, Field, Upload } from '@icedesign/base';
 
 const FormItem = Form.Item;
 
@@ -13,6 +13,7 @@ export default class EditDialog extends Component {
     this.state = {
       visible: false,
       dataIndex: null,
+      defaultList: [],
     };
     this.field = new Field(this);
   }
@@ -33,6 +34,17 @@ export default class EditDialog extends Component {
   };
 
   onOpen = (index, record) => {
+    const { getValue } = this.field;
+    const aliOssUrl = 'https://songshu-image.oss-cn-shanghai.aliyuncs.com/';
+    if(getValue('fileAddress')!=undefined){
+      this.state.defaultList=[
+        {
+          name:'合同',
+          status: "done",
+          imgURL:aliOssUrl+getValue('fileAddress'),
+          downloadURL:aliOssUrl+getValue('fileAddress')
+        }];
+    }
     this.field.setValues({ ...record });
     this.setState({
       visible: true,
@@ -47,7 +59,8 @@ export default class EditDialog extends Component {
   };
 
   render() {
-    const init = this.field.init;
+    const { init, getValue } = this.field;
+    const { defaultList } = this.state;
     const { index, record } = this.props;
     const formItemLayout = {
       labelCol: {
@@ -77,38 +90,48 @@ export default class EditDialog extends Component {
           title="编辑"
         >
           <Form direction="ver" field={this.field}>
-            <FormItem label="标题：" {...formItemLayout}>
+            <FormItem label="签约人：" {...formItemLayout}>
               <Input
-                {...init('title', {
-                  rules: [{ required: true, message: '必填选项' }],
-                })}
+                {...init('signer')}
+              />
+            </FormItem>
+            <FormItem label="签约金额：" {...formItemLayout}>
+              <Input
+                {...init('pmoney')}
               />
             </FormItem>
 
-            <FormItem label="作者：" {...formItemLayout}>
+            <FormItem label="地址：" {...formItemLayout}>
               <Input
-                {...init('author', {
-                  rules: [{ required: true, message: '必填选项' }],
-                })}
+                {...init('address')}
               />
             </FormItem>
 
-            <FormItem label="状态：" {...formItemLayout}>
+            <FormItem label="客户对接人：" {...formItemLayout}>
               <Input
-                {...init('status', {
-                  rules: [{ required: true, message: '必填选项' }],
-                })}
+                {...init('successor')}
               />
             </FormItem>
 
-            <FormItem label="发布时间：" {...formItemLayout}>
+            <FormItem label="对接电话：" {...formItemLayout}>
               <Input
-                {...init('date', {
-                  rules: [{ required: true, message: '必填选项' }],
-                })}
+                {...init('successorPhone')}
               />
             </FormItem>
+
+            <FormItem label="合同：" {...formItemLayout}>
+              <Upload
+                listType="text"
+                action=""
+                defaultFileList={defaultList}
+              />
+            </FormItem>
+
+
           </Form>
+
+
+
         </Dialog>
       </div>
     );

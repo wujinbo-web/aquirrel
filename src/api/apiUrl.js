@@ -1,3 +1,9 @@
+//修改订单信息
+export const updateOrderInfo = 'updateOrder.do';
+
+//获取厂家的列表
+export const queryfactoryList = 'qureyMaterialsClassBy.do';
+
 //编辑客户财务信息
 export const updateUserInfo = "updateCustomer.do";
 //查询财务详情

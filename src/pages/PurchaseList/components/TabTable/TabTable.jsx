@@ -128,7 +128,14 @@ export default class TabTable extends Component {
   typeIdToName = (id) => {
     if(id==null)return "";
     let { customData2 } = this.state;
-    return customData2.filter(item=>item.value==id)[0].label;
+    if(customData2.length>0){
+      let data = customData2.filter(item=>item.value==id);
+      if(data.length>0){
+        return data[0].label;
+      }
+      return "";
+    }
+      return "";
   }
 
   //修改页码

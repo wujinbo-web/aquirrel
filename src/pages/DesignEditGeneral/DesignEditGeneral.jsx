@@ -262,7 +262,7 @@ export default class DesignEditGeneral extends Component {
     let tableText = encodeURI(dataArray.join('_'));
 
     //添加总单
-    const data = await postAddGeneral({orderId:this.state.id,text:tableText});
+    const data = await postAddGeneral({orderId:this.props.history.location.search.split('=')[1],text:tableText});
     if(data.data.state=="success"){
       Toast.success(data.data.msg);
       this.props.history.push("/design/info");

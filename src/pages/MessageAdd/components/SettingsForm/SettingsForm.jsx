@@ -89,7 +89,7 @@ export default class SettingsForm extends Component {
         targetId=values.name.join(',');
       }
       axios
-        .get(`${API_URL}/saveMessage.do?${values.msgType=="system"?`messageParent.type=3`:""}&targetId=${targetId}&messageParent.messageHeader=${values.title}&messageParent.messageContent=${values.description}&messageParent.cmsUserId=${sessionStorage.id}`)
+        .get(`${API_URL}/saveMessage.do?messageParent.type=${values.msgType=="system"?3:1}&targetId=${targetId}&messageParent.messageHeader=${values.title}&messageParent.messageContent=${values.description}&messageParent.cmsUserId=${sessionStorage.id}`)
         .then((response)=>{
           if(response.data.state=="success"){
             Toast.success(response.data.msg);

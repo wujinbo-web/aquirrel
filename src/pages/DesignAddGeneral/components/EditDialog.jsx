@@ -138,6 +138,7 @@ export default class EditDialog extends Component {
         <Button
           size="small"
           type="primary"
+          shape="text"
           style={{marginLeft: "10px"}}
           onClick={() => this.onOpen(index)}
         >

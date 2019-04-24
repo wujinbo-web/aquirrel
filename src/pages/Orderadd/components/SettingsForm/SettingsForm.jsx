@@ -60,6 +60,8 @@ export default class SettingsForm extends Component {
         signer: "",
         pmoney: "",
         drawing_address: "",
+        successor: "", //对接人
+        successorPhone: "",  //对接电话
       },
       customData: [],  //客户下拉列表
       visible: true,  //加载框
@@ -110,24 +112,27 @@ export default class SettingsForm extends Component {
       //日期转化  GMT => 2018-10-08
       let date = new Date(values.contractDate);
       let contractDate=date.getFullYear()+'-'+(date.getMonth() + 1)+'-'+date.getDate();
-      //判断合同是否为空
-      if(values.order=="" || values.drawing_address==""){
-        Toast.error("合同、图纸不能为空");
-        return;
-      }else if (values.order.fileList[values.order.fileList.length-1].imgURL==undefined || values.drawing_address.fileList[values.order.fileList.length-1].imgURL==undefined ){
-        Toast.error("上传中");
-        return;
-      }
-      let fileAddress = values.order.fileList.map((item)=>{
-        return item.imgURL.split("https://songshu-image.oss-cn-shanghai.aliyuncs.com/")[1]
-      }).join(",");
 
-      let drawing_address = values.drawing_address.fileList.map((item)=>{
-        return item.imgURL.split("https://songshu-image.oss-cn-shanghai.aliyuncs.com/")[1]
-      }).join(",");
+      //初始化合同图纸
+      let fileAddress="";
+      let drawing_address="";
+      //判断有合同的情况
+      if(values.order!="" && values.order.fileList[values.order.fileList.length-1].imgURL!=undefined){
+        let fileAddress = values.order.fileList.map((item)=>{
+          return item.imgURL.split("https://songshu-image.oss-cn-shanghai.aliyuncs.com/")[1]
+        }).join(",");
+      }
+      //判断有图纸的情况
+      if(values.drawing_address!=""&&values.drawing_address.fileList[values.order.fileList.length-1].imgURL!=undefined){
+        let drawing_address = values.drawing_address.fileList.map((item)=>{
+          return item.imgURL.split("https://songshu-image.oss-cn-shanghai.aliyuncs.com/")[1]
+        }).join(",");
+      }
+
+
       // 数据=》 order/5349a46196ed43ec9b8b5c7ac8ad815a.jpg,order/4dfb7c649462450b9d92bf04870427d3.jpg
 
-      let query=`order.orderState=12&order.drawingAddress=${drawing_address}&order.customerId=${values.custonId}&order.address=${values.address}&order.pmoney=${values.pmoney}&order.createTime=${contractDate}&order.signer=${values.signer}&order.fileAddress=${fileAddress}&order.text=`;
+      let query=`order.orderState=12&order.successor=${values.successor}&order.successorPhone=${values.successorPhone}&order.drawingAddress=${drawing_address}&order.customerId=${values.custonId}&order.address=${values.address}&order.pmoney=${values.pmoney}&order.createTime=${contractDate}&order.signer=${values.signer}&order.fileAddress=${fileAddress}&order.text=`;
       axios
         .get(`${API_URL}/saveOrder.do?${query}`)
         .then((response)=>{
@@ -182,7 +187,7 @@ export default class SettingsForm extends Component {
                     </Col>
                   </Row>
 
-                  <Row style={styles.formItem}>
+                  <Row style={styles.formItem} required  message="必传">
                     <Col xxs="6" s="3" l="3" style={styles.label}>
                       签约日期：
                     </Col>
@@ -199,10 +204,32 @@ export default class SettingsForm extends Component {
                     地址：
                   </Col>
                   <Col s="8" l="6">
-                    <IceFormBinder name="address" required  message="必填">
+                    <IceFormBinder name="address">
                       <Input size="large" placeholder="请输入订单地址" />
                     </IceFormBinder>
                     <IceFormError name="address" />
+                  </Col>
+                </Row>
+                <Row style={styles.formItem}>
+                  <Col xxs="6" s="3" l="3" style={styles.label}>
+                    客户对接人：
+                  </Col>
+                  <Col s="8" l="6">
+                    <IceFormBinder name="successor">
+                      <Input size="large" placeholder="客户对接人" />
+                    </IceFormBinder>
+                    <IceFormError name="successor" />
+                  </Col>
+                </Row>
+                <Row style={styles.formItem}>
+                  <Col xxs="6" s="3" l="3" style={styles.label}>
+                    对接人联系方式：
+                  </Col>
+                  <Col s="8" l="6">
+                    <IceFormBinder name="successorPhone">
+                      <Input size="large" placeholder="对接人联系方式" />
+                    </IceFormBinder>
+                    <IceFormError name="successorPhone" />
                   </Col>
                 </Row>
 
@@ -223,7 +250,7 @@ export default class SettingsForm extends Component {
                       订单金额：
                   </Col>
                   <Col s="6" l="4">
-                    <IceFormBinder name="pmoney" required  message="必填">
+                    <IceFormBinder name="pmoney">
                       <Input size="large" placeholder="请输入签约金额" />
                     </IceFormBinder>
                     <IceFormError name="pmoney" />

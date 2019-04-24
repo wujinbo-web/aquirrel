@@ -163,7 +163,12 @@ export default class DesignAddGeneral extends Component {
             this.state.dataSource[index].name
           }
           <EditDialog  getFormValues={this.editData} index={index} />
-          <Button shape="warning" size="small" onClick={this.deleteRow.bind(this,index)}>删除</Button>
+          <Button
+            shape="text"
+            size="small"
+            onClick={this.deleteRow.bind(this,index)}
+            style={{color:"red"}}
+          >删除</Button>
         </span>
       )
     }else if(valueKey=="size"){

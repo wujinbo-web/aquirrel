@@ -81,7 +81,10 @@ export default class TabTable extends Component {
   }
 
   componentDidMount() {
+    //获取厂家分类列表
     this.getTypeData();
+    //厂家品牌分类
+    this.getTypeData2();
   }
 
   //修改页码
@@ -92,10 +95,18 @@ export default class TabTable extends Component {
      this.getIndexData();
   }
 
+  //转化品牌名
   typeIdToName = (id) => {
     if(id==null)return "";
     let { customData2 } = this.state;
-    return customData2.filter(item=>item.value==id)[0].label;
+    if(customData2.length>0){
+      let data = customData2.filter(item=>item.value==id);
+      if(data.length>0){
+        return data[0].label;
+      }
+      return "";
+    }
+      return "";
   }
 
   //获取 全部品牌类别类别
@@ -114,8 +125,8 @@ export default class TabTable extends Component {
   //获取查询数据
   getIndexData = async () => {
     this.setState({visible:true});
-    let { current, classId, factory } = this.state;
-    const data = await postQueryMaterials({pageIndex: current,classId,factoryId:factory});
+    let { current, classId, factory,deptId } = this.state;
+    const data = await postQueryMaterials({pageIndex: current,classId,deptId,factoryId:factory});
     if(data.data.state="success"){
       //data.data.total  总数  data.data.pageIndex 页码
       let dataSource = data.data.data.map((item)=>{
@@ -137,6 +148,7 @@ export default class TabTable extends Component {
     }
   }
 
+  //获取厂家分类列表
   getTypeData = async () =>{
     this.setState({ visible: true });
     const response = await queryMaterialsTypeList({ pageSize: 50 });

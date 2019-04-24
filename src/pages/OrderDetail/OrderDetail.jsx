@@ -58,6 +58,8 @@ export default class OrderDetail extends Component {
           totalMoney: arr.order.totalMoney,
           pmoney: arr.order.pmoney,
           drawingAddress: arr.order.drawingAddress,
+          successor: arr.order.successor,  //签约人
+          successorPhone: arr.order.successorPhone,  //签约电话
         }
 
         if(arr.order.text==""){
