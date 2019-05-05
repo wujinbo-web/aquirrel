@@ -118,19 +118,19 @@ export default class SettingsForm extends Component {
       let drawing_address="";
       //判断有合同的情况
       if(values.order!="" && values.order.fileList[values.order.fileList.length-1].imgURL!=undefined){
-        let fileAddress = values.order.fileList.map((item)=>{
+        //https://songshu-image.oss-cn-shanghai.aliyuncs.com/order/2019_4_25/a68263f2723a480bb18cf819aa0710dbbjyh.png
+        fileAddress = values.order.fileList.map((item)=>{
           return item.imgURL.split("https://songshu-image.oss-cn-shanghai.aliyuncs.com/")[1]
         }).join(",");
+        console.log(fileAddress,"成了？");
       }
       //判断有图纸的情况
       if(values.drawing_address!=""&&values.drawing_address.fileList[values.order.fileList.length-1].imgURL!=undefined){
-        let drawing_address = values.drawing_address.fileList.map((item)=>{
+        drawing_address = values.drawing_address.fileList.map((item)=>{
           return item.imgURL.split("https://songshu-image.oss-cn-shanghai.aliyuncs.com/")[1]
         }).join(",");
       }
 
-
-      // 数据=》 order/5349a46196ed43ec9b8b5c7ac8ad815a.jpg,order/4dfb7c649462450b9d92bf04870427d3.jpg
 
       let query=`order.orderState=12&order.successor=${values.successor}&order.successorPhone=${values.successorPhone}&order.drawingAddress=${drawing_address}&order.customerId=${values.custonId}&order.address=${values.address}&order.pmoney=${values.pmoney}&order.createTime=${contractDate}&order.signer=${values.signer}&order.fileAddress=${fileAddress}&order.text=`;
       axios

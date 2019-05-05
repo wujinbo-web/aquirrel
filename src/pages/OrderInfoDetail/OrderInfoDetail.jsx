@@ -18,6 +18,7 @@ export default class DesignAddGeneral extends Component {
     this.state = {
       id:this.props.location.search.split('?')[1].split('&')[0].split('=')[1],
       pic:this.props.location.search.split('?')[1].split('&')[1].split('=')[1],
+      order:this.props.location.search.split('?')[1].split('&')[2].split('=')[1],
       tableData:[],  //总单数据
       tableHead: [], //总单表格
       mesureList: [],
@@ -117,10 +118,24 @@ export default class DesignAddGeneral extends Component {
   }
 
   render() {
-    let { id, pic, tableData, tableHead, mesureList } = this.state;
+    let { id, pic, order, tableData, tableHead, mesureList } = this.state;
     return (<div className="design-add-general-page" >
     <IceContainer>
       <h2 style={{textAlign:"center", borderBottom:"1px solid black"}}>订单{id}</h2>
+        <IceTitle text="下载订单" />
+        {
+          order.split(',').map((item,index)=>{
+            return (
+              <Button
+                key={index}
+                style={{ marginRight: "5px" }}
+                onClick={()=>{window.open(`https://songshu-image.oss-cn-shanghai.aliyuncs.com/${item}`)}}
+              >
+                合同{index+1}
+              </Button>
+            );
+          })
+        }
         <IceTitle text="下载图纸" />
         {
           pic.split(',').map((item,index)=>{

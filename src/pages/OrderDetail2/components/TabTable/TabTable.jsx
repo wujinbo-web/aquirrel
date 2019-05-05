@@ -95,7 +95,7 @@ export default class TabTable extends Component {
   }
 
   redirctDetail = (record) => {
-    this.props.redirctDetail(record.id,record.drawingAddress);
+    this.props.redirctDetail(record.id,record.drawingAddress,record.fileAddress);
   }
   //查找总订单接口
   getOrderData = (pageIndex) => {

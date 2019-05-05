@@ -61,10 +61,12 @@ export default class TabTable extends Component {
         title: '客户对接人',
         dataIndex: 'successor',
         width: 100,
+        key:'successor',
       },
       {
         title: '对接电话',
         dataIndex: 'successorPhone',
+        key:'successorPhone',
         width: 120,
       },
       {
@@ -86,7 +88,7 @@ export default class TabTable extends Component {
       },
       {
         title: '操作',
-        width: 200,
+        width: 240,
         key: 'action',
         render: (value, index, record) => {
           return (
@@ -158,7 +160,7 @@ export default class TabTable extends Component {
   }
 
   //编辑订单
-  submitEdit = async (dataIndex,values) => {
+  submitEdit = async (dataIndex,values,orderFile,designFile) => {
     const { dataSource, tabKey } = this.state;
     dataSource[tabKey][dataIndex] = values;
     this.setState({
@@ -173,9 +175,9 @@ export default class TabTable extends Component {
       "order.customerId":values.customerId,
       "order.adminId":values.adminId==null?"":values.adminId,
       "order.append":values.append==null?"":values.append,
-      "order.drawingAddress":values.drawingAddress,
+      "order.drawingAddress":designFile,
       "order.endTime":values.endTime==null?"":values.endTime,
-      "order.fileAddress":values.fileAddress,
+      "order.fileAddress":orderFile,
       "order.financeState":values.financeState,
       "order.incomeMoney":values.incomeMoney,
       "order.invoiceMoney":values.invoiceMoney,
@@ -187,9 +189,12 @@ export default class TabTable extends Component {
     });
     if(response.data.state=="success"){
       Toast.success("编辑成功");
+
     }else{
       Toast.error(response.data.msg);
     }
+
+    this.getOrderData();
   }
 
   //加载数据

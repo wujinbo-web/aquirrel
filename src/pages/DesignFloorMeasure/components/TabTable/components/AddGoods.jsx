@@ -38,7 +38,7 @@ export default class EditDialog extends Component {
 
   //获取商品数据
   getGoodsList = async () => {
-    let response = await postUrl(queryGoods,{pageSzie: 9999});
+    let response = await postUrl(queryGoods,{pageSize: 9999});
     this.state.dataSource = response.data.data.map(item=>{
       return({
         label: item[0].name+'/'+item[1].name+'/'+item[2].name,

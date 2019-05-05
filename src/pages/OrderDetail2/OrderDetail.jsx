@@ -16,7 +16,7 @@ export default class OrderInfo extends Component {
       </div>
     );
   }
-  redirctDetail = (id,pic) => {
-    this.props.history.push(`/orderinfo/detail?id=${id}&pic=${pic}`);
+  redirctDetail = (id,pic,order) => {
+    this.props.history.push(`/orderinfo/detail?id=${id}&pic=${pic}&order=${order}`);
   }
 }
