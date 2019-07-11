@@ -3,9 +3,10 @@ import IceContainer from '@icedesign/container';
 import { Button, Table, Dialog, Input, Select, Feedback } from '@icedesign/base';
 import IceTitle from '@icedesign/title';
 import axios from 'axios';
-import { API_URL } from '../../config';
+import { API_URL } from '@/config';
 import DeleteBalloon from './component/DeleteBalloon';
-import { postAddGeneral, queryCountList, postDesignFindFloor, getDesignQueryByOrderIdFloor  } from '@/api';
+import { postAddGeneral, queryCountList, postDesignFindFloor, getDesignQueryByOrderIdFloor, postUrl } from '@/api';
+import { downLoadTotalExcel, downMesureExcel } from '@/api/apiUrl';
 import getTabelHeadName from '@/tool/countListToName';
 
 const Toast = Feedback.toast;
@@ -33,9 +34,8 @@ export default class DesignAddGeneral extends Component {
   }
 
   //查询列表数据
-  getIndexData = async (floorNumId) => {
+  getIndexData = async (floorNumId, floorNum) => {
     const data = await getDesignQueryByOrderIdFloor(this.state.id, floorNumId);
-    console.log(data.data);
     //获取导航头数据
     let headData=data.data.room.map((item1)=>{   //101,102
         let itemData={};
@@ -61,9 +61,24 @@ export default class DesignAddGeneral extends Component {
     })
     //console.log(bodyData);//[{floorNum:"301",7:"",8:"",9:""...},{...}]
     //this.state.dataSource=bodyData;
-    this.state.mesureList.push({tableData: bodyData, tableHead: headData2})
+    this.state.mesureList.push({
+      tableData: bodyData, //表格数据体
+      tableHead: headData2, //表头
+      floor: floorNumId, //楼层id
+      floorNum ,
+    })
     console.log(this.state.mesureList,"kankankanka");
     this.setState({});
+  }
+
+  //下载总单excel
+  getTotalExcel=async()=>{
+    window.location.href = `${API_URL}/${downLoadTotalExcel}?orderId=${this.state.id}`;
+  }
+
+  //下载测量单
+  getMesureExcel = async(floor, floorNum) => {
+    window.location.href = `${API_URL}/${downMesureExcel}?orderId=${this.state.id}&floor=${floor}&floorNum=${floorNum}`;
   }
 
   //获取查询楼层数据
@@ -72,7 +87,8 @@ export default class DesignAddGeneral extends Component {
       //查询条件，订单id
       let data = await postDesignFindFloor(this.state.id);
       let data2 = data.data.list.forEach((item)=>{
-        this.getIndexData(item.id);
+        console.log(item,"识别");
+        this.getIndexData(item.id, item.floorNum);
       });
       this.setState({ dataSource: { all: data2 } });
       console.log(data2);
@@ -161,24 +177,39 @@ export default class DesignAddGeneral extends Component {
             }
           </Table>
 
+          <Button 
+            type="primary" 
+            size="small" 
+            style={styles.download}
+            onClick={this.getTotalExcel}
+          >下载总单</Button>
+
         <IceTitle text="测量数据" />
 
         {
           mesureList.map((data,index)=>{
             return(
-            <Table dataSource={data.tableData} key={index}>
-                <Table.Column title="房号" dataIndex="roomNum" width={70} lock />
-                {
-                  data.tableHead.map((item)=>{
-                    return(<Table.Column
-                      key={item.index}
-                      title={item.title}
-                      dataIndex={item.index}
-                      width={90}
-                      />)
-                  })
-                }
-            </Table>
+            <div key={index}>
+              <Table dataSource={data.tableData} >
+                  <Table.Column title="房号" dataIndex="roomNum" width={70} lock />
+                  {
+                    data.tableHead.map((item)=>{
+                      return(<Table.Column
+                        key={item.index}
+                        title={item.title}
+                        dataIndex={item.index}
+                        width={90}
+                        />)
+                    })
+                  }
+              </Table>
+              <Button 
+                type="primary" 
+                size="small" 
+                style={styles.download}
+                onClick={this.getMesureExcel.bind(this, data.floor, data.floorNum)}
+              >下载测量单</Button>
+            </div>
             )
           })
         }
@@ -191,6 +222,9 @@ export default class DesignAddGeneral extends Component {
 }
 
 const styles = {
+  download:{
+    marginTop: '10px',
+  },
   label: {
     textAlign: 'right',
   },

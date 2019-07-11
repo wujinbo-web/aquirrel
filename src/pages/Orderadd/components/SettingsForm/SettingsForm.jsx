@@ -62,6 +62,7 @@ export default class SettingsForm extends Component {
         drawing_address: "",
         successor: "", //对接人
         successorPhone: "",  //对接电话
+        describe: "",
       },
       customData: [],  //客户下拉列表
       visible: true,  //加载框
@@ -132,7 +133,7 @@ export default class SettingsForm extends Component {
       }
 
 
-      let query=`order.orderState=12&order.successor=${values.successor}&order.successorPhone=${values.successorPhone}&order.drawingAddress=${drawing_address}&order.customerId=${values.custonId}&order.address=${values.address}&order.pmoney=${values.pmoney}&order.createTime=${contractDate}&order.signer=${values.signer}&order.fileAddress=${fileAddress}&order.text=`;
+      let query=`order.order_describe=${values.describe}&order.orderState=12&order.successor=${values.successor}&order.successorPhone=${values.successorPhone}&order.drawingAddress=${drawing_address}&order.customerId=${values.custonId}&order.address=${values.address}&order.pmoney=${values.pmoney}&order.createTime=${contractDate}&order.signer=${values.signer}&order.fileAddress=${fileAddress}&order.text=`;
       axios
         .get(`${API_URL}/saveOrder.do?${query}`)
         .then((response)=>{
@@ -178,7 +179,7 @@ export default class SettingsForm extends Component {
                           <Select
                             size="large"
                             placeholder="请选择..."
-                            style={{width:"200px"}}
+                            style={{width:"300px"}}
                             onChange={this.getValue}
                             dataSource={this.state.customData}
                           />
@@ -187,12 +188,12 @@ export default class SettingsForm extends Component {
                     </Col>
                   </Row>
 
-                  <Row style={styles.formItem} required  message="必传">
+                  <Row style={styles.formItem}>
                     <Col xxs="6" s="3" l="3" style={styles.label}>
                       签约日期：
                     </Col>
                     <Col s="12" l="10">
-                      <IceFormBinder name="contractDate">
+                      <IceFormBinder name="contractDate" required  message="必传">
                         <DatePicker/>
                       </IceFormBinder>
                       <IceFormError name="contractDate" />
@@ -223,7 +224,7 @@ export default class SettingsForm extends Component {
                 </Row>
                 <Row style={styles.formItem}>
                   <Col xxs="6" s="3" l="3" style={styles.label}>
-                    对接人联系方式：
+                    对接人手机：
                   </Col>
                   <Col s="8" l="6">
                     <IceFormBinder name="successorPhone">
@@ -238,7 +239,7 @@ export default class SettingsForm extends Component {
                       签约人：
                   </Col>
                   <Col s="6" l="4">
-                    <IceFormBinder name="signer" required  message="必填">
+                    <IceFormBinder name="signer">
                       <Input size="large" placeholder="请输入签约人" />
                     </IceFormBinder>
                     <IceFormError name="signer" />
@@ -267,7 +268,6 @@ export default class SettingsForm extends Component {
                         listType="text-image"
                         action={`${API_URL}/uploadFile.do`}
                         name="file"
-                        accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp"
                         data={(file)=>{
                           return ({
                             dir: `order/${now.getFullYear()}_${now.getMonth()+1}_${now.getDate()}`,
@@ -301,7 +301,6 @@ export default class SettingsForm extends Component {
                         listType="text-image"
                         action={`${API_URL}/uploadFile.do`}
                         name="file"
-                        accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp, .doc, .ppt, .dwt, .dwg, .dws, .dxf"
                         data={(file)=>{
                           return ({
                             dir: `design/${now.getFullYear()}_${now.getMonth()+1}_${now.getDate()}`,
@@ -322,6 +321,17 @@ export default class SettingsForm extends Component {
                       </Upload>
                     </IceFormBinder>
                     <IceFormError name="order" />
+                  </Col>
+                </Row>
+
+                <Row style={styles.formItem}>
+                  <Col xxs="6" s="3" l="3" style={styles.label}>
+                    备注：
+                  </Col>
+                  <Col s="12" l="10" align="center">
+                      <IceFormBinder name="describe">
+                        <Input size="large" placeholder="请填写备注" />
+                      </IceFormBinder>
                   </Col>
                 </Row>
 

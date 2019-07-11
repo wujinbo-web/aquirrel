@@ -129,6 +129,13 @@ export default class EditDialog extends Component {
                 })}
               />
             </FormItem>
+            <FormItem label="材料规格：" {...formItemLayout}>
+              <Input
+                {...init('size', {
+                  rules: [{ required: true, message: '必填选项' }],
+                })}
+              />
+            </FormItem>
             <FormItem label="总入库数：" {...formItemLayout}>
               <Input
                 {...init('putNum', {

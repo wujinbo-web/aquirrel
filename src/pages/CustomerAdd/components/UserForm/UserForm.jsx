@@ -126,8 +126,6 @@ export default class UserForm extends Component {
                     <Col s="12" l="10">
                       <IceFormBinder
                         name="phone"
-                        required
-                        message="必填"
                       >
                         <Input
                           style={{ width: '100%' }}
@@ -144,7 +142,7 @@ export default class UserForm extends Component {
                       地址：
                     </Col>
                     <Col s="12" l="10">
-                      <IceFormBinder name="address" required message="必填">
+                      <IceFormBinder name="address" >
                         <Input
                           size="large"
                           placeholder="请输入地址"

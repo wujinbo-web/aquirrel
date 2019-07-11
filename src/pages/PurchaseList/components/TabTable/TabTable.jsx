@@ -62,6 +62,12 @@ export default class TabTable extends Component {
         width: 100,
       },
       {
+        title: '材料规格',
+        dataIndex: 'size',
+        key: 'size',
+        width: 100,
+      },
+      {
         title: '库存数量',
         dataIndex: 'nowNum',
         key: 'nowNum',
@@ -167,6 +173,7 @@ export default class TabTable extends Component {
           classId: item[0].classId,
           deptId: item[0].deptId,
           unit: item[0].unit,
+          size: item[0].size,
         });
       });
       this.setState({ dataSource:{all:dataSource},total: data.data.total,visible:false, });
@@ -176,7 +183,7 @@ export default class TabTable extends Component {
   //获取列别
   getTypeData = async () =>{
     this.setState({ visible: true });
-    const response = await queryMaterialsTypeList({ pageSize: 50 });
+    const response = await queryMaterialsTypeList({ pageSize: 999 });
     console.log(response);
     let customData=response.data.data.map((item)=>{
       return({ label: item.name, value: item.id });
@@ -210,6 +217,7 @@ export default class TabTable extends Component {
     let params = {
       "materialsMain.id": values.id,
       "materialsMain.name":values.name,
+      "materialsMain.size":values.size,
       "materialsMain.putNum":values.putNum,
       "materialsMain.outNum":values.outNum,
       "materialsMain.nowNum":Number(values.putNum) - Number(values.outNum),
@@ -268,6 +276,7 @@ export default class TabTable extends Component {
     const response = await postAddMaterials(
       {
         "materialsMain.name":values.name,
+        "materialsMain.size":values.size,
         "materialsMain.classId": classId,
         "materialsMain.deptId": values.deptId,
         "materialsMain.price": values.price,

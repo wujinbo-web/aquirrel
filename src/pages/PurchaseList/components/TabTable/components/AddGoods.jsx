@@ -47,7 +47,7 @@ export default class AddGoods extends Component {
   }
 
   onOpen = async () => {
-    const response = await queryMaterialsTypeList({ pageSize: 50 });
+    const response = await queryMaterialsTypeList({ pageSize: 999 });
     let customData=response.data.data.map((item)=>{
       return({ label: item.name, value: item.id });
     })
@@ -97,6 +97,13 @@ export default class AddGoods extends Component {
             <FormItem label="材料名称：" {...formItemLayout}>
               <Input
                 {...init('name', {
+                  rules: [{ required: true, message: '必填选项' }],
+                })}
+              />
+            </FormItem>
+            <FormItem label="材料规格" {...formItemLayout}>
+              <Input
+                {...init('size', {
                   rules: [{ required: true, message: '必填选项' }],
                 })}
               />

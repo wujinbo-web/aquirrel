@@ -9,6 +9,7 @@ import FoundationSymbol from 'foundation-symbol';
 import { enquire } from 'enquire-js';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { Feedback } from '@icedesign/base';
 
 import injectReducer from '../../utils/injectReducer';
 import Authorized from './../../utils/Authorized';
@@ -26,6 +27,7 @@ import './scss/dark.scss';
 import { postUrl } from '@/api';
 import { queryUnreadMessage } from '@/api/apiUrl';
 
+const Toast = Feedback.toast;
 const { AuthorizedRoute } = Authorized;
 /**
  * 根据菜单取得重定向地址.
@@ -68,14 +70,22 @@ class BasicLayout extends Component {
   componentDidMount() {
     this.enquireScreenRegister();
     this.props.userProfile();
+    //先执行一遍
+    this.getUnreadNum();
+    //每隔10秒再执行一边
     setInterval(this.getUnreadNum, 1000*10);
     
   }
 
   //獲取未讀消息數量
   getUnreadNum = async () => {
-    let response = await postUrl(queryUnreadMessage,{id:sessionStorage.id, state:1, pageSize: 100});
-    this.setState({ num:response.data.data.total });
+    try{
+      let response = await postUrl(queryUnreadMessage,{id:sessionStorage.id, state:1, pageSize: 100});
+      this.setState({ num:response.data.data.total });
+    }catch(e){
+      this.props.history.push("/user/login");
+    }
+   
   }
 
   /**

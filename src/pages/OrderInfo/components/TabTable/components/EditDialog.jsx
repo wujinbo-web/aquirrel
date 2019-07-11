@@ -183,6 +183,12 @@ export default class EditDialog extends Component {
               />
             </FormItem>
 
+            <FormItem label="备注" {...formItemLayout}>
+              <Input 
+                {...init('order_describe')}
+              />
+            </FormItem>
+
             <FormItem label="合同：" {...formItemLayout}>
               <Upload
                 listType="text"

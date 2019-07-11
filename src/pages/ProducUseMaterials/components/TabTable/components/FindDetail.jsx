@@ -21,7 +21,8 @@ export default class EditDialog extends Component {
     //请求详情数据
     const response = await queryInOutMaterialsDetail({ materialsRecordId: record.id });
     let dataSource = response.data.data.map((item)=>{
-      return ({ name: item.name, count: item.count });
+      let size = item.size==null?"":item.size;
+      return ({ name: item.name+'/'+size, count: item.count });
     })
     this.setState({
       visible: true,

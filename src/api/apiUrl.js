@@ -1,3 +1,7 @@
+//下载测量单
+export const downMesureExcel = 'measureExcel.do';
+//下载总单
+export const downLoadTotalExcel = 'totalDataExcel.do';
 //修改订单信息
 export const updateOrderInfo = 'updateOrder.do';
 

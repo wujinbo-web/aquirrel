@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
-import { Tab, Feedback, Loading, Pagination, Select, Grid  } from '@icedesign/base';
+import { Tab, Feedback, Loading, Pagination, Select, Grid, Input, Button  } from '@icedesign/base';
 import axios from 'axios';
 import CustomTable from './components/CustomTable';
 import EditDialog from './components/EditDialog';
@@ -39,6 +39,7 @@ export default class TabTable extends Component {
       pinPaiNow: [],
       customData2: [],  //所有品牌列表
       deptId: "",
+      name: "",
     };
     this.columns = [
       {
@@ -125,8 +126,8 @@ export default class TabTable extends Component {
   //获取查询数据
   getIndexData = async () => {
     this.setState({visible:true});
-    let { current, classId, factory,deptId } = this.state;
-    const data = await postQueryMaterials({pageIndex: current,classId,deptId,factoryId:factory});
+    let { current, classId, factory,deptId, name } = this.state;
+    const data = await postQueryMaterials({pageIndex: current,classId,deptId,factoryId:factory, name});
     if(data.data.state="success"){
       //data.data.total  总数  data.data.pageIndex 页码
       let dataSource = data.data.data.map((item)=>{
@@ -179,7 +180,7 @@ export default class TabTable extends Component {
       this.state.classId=value;
     }else if(name=="type2"){
       this.state.deptId=value;
-    }else if (name="factory"){
+    }else if (name=="factory"){
       this.state.factory=value
     }
     this.setState({});
@@ -245,6 +246,21 @@ export default class TabTable extends Component {
                 />
               </Col>
             </Row>
+            <Row>
+            <Col span="2" style={{lineHeight:"32px", textAlign: "center"}}>
+              名称：
+            </Col>
+            <Col span="4">
+              <Input
+                placeholder="请输入商品名称"
+                onChange={(value)=>{this.setState({name: value})}}
+                style={{ width: "100%", marginRight: "10px" }}
+              />
+            </Col>
+            <Col>
+              <Button type="primary" onClick={this.changeSearch}>模糊搜索</Button>
+            </Col>
+          </Row>
           <Tab onChange={this.handleTabChange}>
             {tabs.map((item) => {
               return (

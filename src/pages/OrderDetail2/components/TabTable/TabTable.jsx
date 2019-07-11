@@ -59,11 +59,17 @@ export default class TabTable extends Component {
         title: '对接人',
         dataIndex: 'successor',
         key: 'successor',
+        width: 70,
       },
       {
         title: '对接电话',
         dataIndex: 'successorPhone',
         key: 'successorPhone',
+      },
+      {
+        title: '备注',
+        dataIndex: 'order_describe',
+        key: 'order_describe',
       },
       {
         title: '签约时间',
@@ -74,6 +80,12 @@ export default class TabTable extends Component {
         title: '订单状态',
         dataIndex: 'status',
         key: 'status',
+        width: 120,
+      },
+      {
+        title: '财务状态',
+        dataIndex: 'financeState',
+        key: 'financeState',
         width: 120,
       },
       {
@@ -103,7 +115,7 @@ export default class TabTable extends Component {
     axios
       .get(`${API_URL}/findOrder.do?pageIndex=${pageIndex}`)
       .then((response)=>{
-        let id,customer,signer,address,createTime,status,status2,drawingAddress;
+        let id,customer,signer,address,createTime,status,status2,drawingAddress,order_describe;
         let fileAddress,orderState,financeState,installState,adminId,customerId,successor,successorPhone;
 
         if(response.data.state == "success"){
@@ -122,12 +134,13 @@ export default class TabTable extends Component {
             //剩余参数
             fileAddress=item.order.fileAddress;
             orderState=item.order.orderState;
-            financeState=item.order.financeState;
+            financeState=item.order.financeState?"已结清":"未结清";
             installState=item.order.installState;
             adminId=item.order.adminId;
             customerId=item.order.customerId;
             successor=item.order.successor;
             successorPhone=item.order.successorPhone;
+            order_describe= item.order.order_describe;
             return ({
               id,
               name,
@@ -145,6 +158,7 @@ export default class TabTable extends Component {
               drawingAddress,
               successor,
               successorPhone,
+              order_describe
             });
           })
           //渲染

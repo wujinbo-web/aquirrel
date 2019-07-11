@@ -75,6 +75,11 @@ export default class TabTable extends Component {
         key: 'createTime',
       },
       {
+        title: '备注',
+        dataIndex: 'order_describe',
+        key: 'order_describe',
+      },
+      {
         title: '订单状态',
         dataIndex: 'status',
         key: 'status',
@@ -145,6 +150,7 @@ export default class TabTable extends Component {
               successorPhone: item.order.successorPhone,
               text: item.order.text,
               pmoney: item.order.pmoney,
+              order_describe: item.order.order_describe,
             });
           })
           //渲染
@@ -186,6 +192,7 @@ export default class TabTable extends Component {
       "order.successorPhone":values.successorPhone,
       "order.text":values.text,
       "order.pmoney":values.pmoney,
+      "order.order_describe": values.order_describe,
     });
     if(response.data.state=="success"){
       Toast.success("编辑成功");

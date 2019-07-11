@@ -58,11 +58,6 @@ export default class TabTable extends Component {
         key: 'address',
       },
       {
-        title: '订单统计',
-        dataIndex: 'listnum',
-        key: 'listnum',
-      },
-      {
         title: '操作',
         key: 'action',
         render: (value, index, record) => {

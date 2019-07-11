@@ -60,8 +60,9 @@ export default class EditDialog extends Component {
     const response = await postQueryMaterials({pageSize:999, factoryId:factory, classId, deptId });
     this.state.materialsList = response.data.data.map(item=>{
       //deptId 品牌ID
+      let size = item[0].size==null?"":item[0].size;
       return({
-        label: item[1].name+'/'+ this.transformName2(item[0].deptId) +'/'+item[0].name,
+        label: item[1].name+'/'+ this.transformName2(item[0].deptId) +'/'+item[0].name+ '/'+size,
         value: item[0].id,
         name: item[0].name,
       })
